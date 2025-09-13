@@ -1,0 +1,59 @@
+---
+// Simple cookie consent banner
+---
+<div id="cookie-banner" class="fixed inset-x-0 bottom-0 z-[60] hidden">
+  <div class="container mb-4 rounded-lg border border-neutral-800 bg-neutral-950/95 p-4 backdrop-blur">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <p class="text-sm text-neutral-200">
+        Używamy plików cookie wyłącznie w niezbędnym zakresie oraz do osadzania treści (np. YouTube).
+        Szczegóły w polityce prywatności. Możesz zaakceptować lub odrzucić.
+      </p>
+      <div class="flex shrink-0 gap-2">
+        <a href="/ustawienia" class="rounded-md border border-neutral-700 px-3 py-2 text-sm hover:bg-neutral-900">
+          Ustawienia
+        </a>
+        <button id="cookie-reject" class="rounded-md border border-neutral-700 px-3 py-2 text-sm hover:bg-neutral-900">
+          Odrzuć
+        </button>
+        <button id="cookie-accept" class="rounded-md bg-white/10 px-3 py-2 text-sm hover:bg-white/20">
+          Akceptuj wszystkie
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const KEY = 'cookieConsent';
+  const accepted = 'accepted';
+  const rejected = 'rejected';
+
+  function hideBanner() {
+    const el = document.getElementById('cookie-banner');
+    if (el) el.classList.add('hidden');
+  }
+
+  function showBanner() {
+    const el = document.getElementById('cookie-banner');
+    if (el) el.classList.remove('hidden');
+  }
+
+  function setConsent(value) {
+    try { localStorage.setItem(KEY, value); } catch {}
+    document.dispatchEvent(new CustomEvent('cookie:consent', { detail: value }));
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    let value = null;
+    try { value = localStorage.getItem(KEY); } catch {}
+    if (value !== accepted && value !== rejected) {
+      showBanner();
+    }
+
+    const acceptBtn = document.getElementById('cookie-accept');
+    const rejectBtn = document.getElementById('cookie-reject');
+    acceptBtn?.addEventListener('click', () => { setConsent(accepted); hideBanner(); });
+    rejectBtn?.addEventListener('click', () => { setConsent(rejected); hideBanner(); });
+  });
+</script>
+
