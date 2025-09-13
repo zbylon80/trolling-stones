@@ -1,15 +1,15 @@
 ---
 ---
-<div id="lightbox-overlay" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/90 p-4" role="dialog" aria-modal="true" aria-label="Podgląd zdjęcia">
-  <button id="lightbox-close" class="absolute right-4 top-4 inline-flex items-center justify-center rounded-md bg-white/10 p-2 text-white hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white" aria-label="Zamknij podgląd">
-    ✕
+<div id="lightbox-overlay" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/90 p-4" role="dialog" aria-modal="true" aria-label="Podglad zdjecia">
+  <button id="lightbox-close" class="absolute right-4 top-4 inline-flex items-center justify-center rounded-md bg-white/10 p-2 text-white hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white" aria-label="Zamknij podglad">
+    &times;
   </button>
-  <img id="lightbox-image" alt="Podgląd" class="max-h-[90vh] max-w-[90vw] object-contain rounded" />
+  <img id="lightbox-image" alt="Podglad" class="max-h-[90vh] max-w-[90vw] object-contain rounded" />
   <div id="lightbox-caption" class="absolute bottom-4 left-1/2 -translate-x-1/2 text-center text-neutral-300 text-sm px-3"></div>
-  <!-- Kliknięcie tła zamyka -->
+  <!-- Klikniecie tla zamyka -->
   <button id="lightbox-backdrop" class="absolute inset-0 -z-10" aria-hidden="true"></button>
   <style is:inline>
-    /* brak dodatkowych styli; tailwind użyty w klasach */
+    /* Tailwind classes handle styling */
   </style>
   <script>
     const overlay = document.getElementById('lightbox-overlay');
@@ -20,7 +20,7 @@
 
     function openLightbox(src, alt) {
       imgEl.src = src;
-      imgEl.alt = alt || 'Podgląd';
+      imgEl.alt = alt || 'Podglad';
       captionEl.textContent = alt || '';
       overlay.classList.remove('hidden');
       overlay.classList.add('flex');
@@ -34,7 +34,7 @@
       document.body.style.overflow = '';
     }
 
-    // Delegacja: wszystkie elementy z data-lightbox
+    // Delegation: elements with data-lightbox
     document.addEventListener('click', (e) => {
       const trigger = e.target.closest('[data-lightbox]');
       if (trigger) {
@@ -45,7 +45,7 @@
       }
     });
 
-    // Zamknięcie
+    // Close actions
     closeBtn?.addEventListener('click', closeLightbox);
     backdropBtn?.addEventListener('click', closeLightbox);
     document.addEventListener('keydown', (e) => {

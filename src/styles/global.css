@@ -6,6 +6,12 @@
   color-scheme: light dark;
 }
 
+/* Stabilizuje layout przy zmianie zakładek — rezerwuje miejsce na pionowy scrollbar */
+html { scrollbar-gutter: stable; }
+@supports not (scrollbar-gutter: stable) {
+  html { overflow-y: scroll; }
+}
+
 body {
   /* Dopasowanie tła do grafiki (czysta czerń) */
   background-color: #000000;

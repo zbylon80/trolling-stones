@@ -3,17 +3,17 @@ import Layout from "@components/Layout.astro";
 import Lightbox from "@components/Lightbox.astro";
 
 const members = [
-  { key: 'walec', name: "Artur 'Walec' Dembicki", role: 'gitara prowadząca' },
-  { key: 'slodki', name: "Krzysztof 'Słodki' Słodkowski", role: 'bas' },
-  { key: 'hamo', name: "Piotr 'Hamo' Abraham", role: 'bębny' },
-  { key: 'piter', name: "Piotr 'Piter' Jędrzejewski", role: 'klawisze' },
+  { key: 'walec', name: "Artur 'Walec' Dembicki", role: 'gitara prowadzaca' },
+  { key: 'slodki', name: "Krzysztof 'Slodki' Slodkowski", role: 'bas' },
+  { key: 'hamo', name: "Piotr 'Hamo' Abraham", role: 'perkusja' },
+  { key: 'piter', name: "Piotr 'Piter' Jedrzejewski", role: 'klawisze' },
   { key: 'wiciu', name: "Witold 'Wiciu' Piasek", role: 'gitara rytmiczna' },
   { key: 'zbylon', name: "Zbigniew 'Zbylon' Kalinowski", role: 'wokal, harmonijka' },
 ];
 ---
-<Layout title="Skład — TRolling Stones">
+<Layout title="Sklad - TRolling Stones">
   <section class="container py-12">
-    <h1 class="text-3xl font-bold mb-6">Skład</h1>
+    <h1 class="text-3xl font-bold mb-6">Sklad</h1>
 
     <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
       {members.map((m) => (
@@ -21,14 +21,14 @@ const members = [
           <div class="overflow-hidden rounded-lg">
             <img
               src={`/images/members/${m.key}.jpg`}
-              alt={`${m.name} — ${m.role}`}
+              alt={`${m.name} - ${m.role}`}
               class="rounded-lg mx-auto transition-transform duration-300 ease-out group-hover:scale-105 cursor-zoom-in"
               data-lightbox
               loading="lazy"
             />
           </div>
           <figcaption class="mt-2 text-sm font-medium">
-            {m.name} — {m.role}
+            {m.name} - {m.role}
           </figcaption>
         </figure>
       ))}
@@ -36,3 +36,4 @@ const members = [
   </section>
   <Lightbox />
 </Layout>
+
