@@ -1,0 +1,56 @@
+---
+---
+<div id="lightbox-overlay" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/90 p-4" role="dialog" aria-modal="true" aria-label="Podgląd zdjęcia">
+  <button id="lightbox-close" class="absolute right-4 top-4 inline-flex items-center justify-center rounded-md bg-white/10 p-2 text-white hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white" aria-label="Zamknij podgląd">
+    ✕
+  </button>
+  <img id="lightbox-image" alt="Podgląd" class="max-h-[90vh] max-w-[90vw] object-contain rounded" />
+  <div id="lightbox-caption" class="absolute bottom-4 left-1/2 -translate-x-1/2 text-center text-neutral-300 text-sm px-3"></div>
+  <!-- Kliknięcie tła zamyka -->
+  <button id="lightbox-backdrop" class="absolute inset-0 -z-10" aria-hidden="true"></button>
+  <style is:inline>
+    /* brak dodatkowych styli; tailwind użyty w klasach */
+  </style>
+  <script>
+    const overlay = document.getElementById('lightbox-overlay');
+    const imgEl = document.getElementById('lightbox-image');
+    const captionEl = document.getElementById('lightbox-caption');
+    const closeBtn = document.getElementById('lightbox-close');
+    const backdropBtn = document.getElementById('lightbox-backdrop');
+
+    function openLightbox(src, alt) {
+      imgEl.src = src;
+      imgEl.alt = alt || 'Podgląd';
+      captionEl.textContent = alt || '';
+      overlay.classList.remove('hidden');
+      overlay.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeLightbox() {
+      overlay.classList.add('hidden');
+      overlay.classList.remove('flex');
+      imgEl.src = '';
+      captionEl.textContent = '';
+      document.body.style.overflow = '';
+    }
+
+    // Delegacja: wszystkie elementy z data-lightbox
+    document.addEventListener('click', (e) => {
+      const trigger = e.target.closest('[data-lightbox]');
+      if (trigger) {
+        e.preventDefault();
+        const full = trigger.getAttribute('data-full') || trigger.getAttribute('src') || trigger.getAttribute('href');
+        const alt = trigger.getAttribute('alt') || trigger.getAttribute('data-alt') || '';
+        if (full) openLightbox(full, alt);
+      }
+    });
+
+    // Zamknięcie
+    closeBtn?.addEventListener('click', closeLightbox);
+    backdropBtn?.addEventListener('click', closeLightbox);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeLightbox();
+    });
+  </script>
+</div>
+

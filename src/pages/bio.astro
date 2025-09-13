@@ -2,11 +2,30 @@
 import Layout from "@components/Layout.astro";
 ---
 <Layout title="Bio — TRolling Stones">
-  <section class="container py-12">
-    <h1 class="text-3xl font-bold mb-4">Bio</h1>
-    <p class="text-neutral-300 max-w-3xl">
-      Zespół TRolling Stones powstał w 2015 roku, początkowo pod nazwą The Rolling Stones Tribute. Założyli go trójmiejscy muzycy, których połączyła bezgraniczna miłość do rock’n’rolla i chęć dzielenia się energią kultowych kawałków z publicznością. Z czasem nazwa trochę się „utrollowała”, ale duch pozostał ten sam – na scenie jest głośno, dziko i zawsze z przymrużeniem oka. Bo w końcu rock to nie tylko muzyka, ale i dobra zabawa! 🎸😎
-    </p>
+  <section class="container py-12 relative min-h-[60vh]">
+    <img
+      src="/images/background01.jpg"
+      alt=""
+      aria-hidden="true"
+      class="absolute inset-0 w-full h-full object-contain object-center pointer-events-none select-none"
+    />
+    <div class="absolute inset-0 bg-black/55"></div>
+
+    <div class="relative">
+      <h1 class="text-4xl md:text-5xl font-extrabold mb-6 text-white drop-shadow">Bio</h1>
+      <div class="max-w-3xl text-neutral-100 text-lg md:text-xl leading-relaxed">
+        <p>
+          Zespół TRolling Stones powstał w 2015 roku, początkowo pod nazwą
+          The Rolling Stones Tribute. Założyli go trójmiejscy muzycy, których
+          połączyła bezgraniczna miłość do rock’n’rolla i chęć dzielenia się
+          energią kultowych kawałków z publicznością.
+        </p>
+        <p class="mt-4">
+          Z czasem nazwa trochę się „zutrollowała”, ale duch pozostał ten sam —
+          na scenie jest głośno, dziko i zawsze z przymrużeniem oka. Bo w końcu
+          rock to nie tylko muzyka, ale i dobra zabawa!
+        </p>
+      </div>
+    </div>
   </section>
 </Layout>
-
