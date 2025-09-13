@@ -1,19 +1,39 @@
 ---
 import Layout from "@components/Layout.astro";
+import Lightbox from "@components/Lightbox.astro";
 ---
 <Layout title="Kontakt - TRolling Stones">
   <section class="container py-12">
     <h1 class="text-3xl font-bold">Kontakt</h1>
-    <p class="mt-2 text-neutral-300">Rezerwacje koncertów, media, współprace.</p>
+    <p class="mt-2 text-neutral-300">Rezerwacje koncertów, media, współpraca.</p>
+
     <div class="mt-6 grid md:grid-cols-2 gap-6">
       <div class="space-y-2">
-        <h2 class="text-xl font-semibold">Booking / Management</h2>
-        <p class="text-neutral-300">
-          E-mail: <a href="mailto:booking@trollingstones.pl">booking@trollingstones.pl</a>
-        </p>
-        <p class="text-neutral-300">
-          Tel.: <a href="tel:+48509243245">+48 509 243 245</a> - Manager: Daniel Macidowski
-        </p>
+        <div class="sm:flex sm:items-start sm:gap-4">
+          <div class="group overflow-hidden rounded-lg shadow mb-3 sm:mb-0 w-40 h-40 shrink-0">
+            <img
+              src="/images/manager.jpg"
+              alt="Daniel Macidowski – Manager TRolling Stones"
+              class="w-40 h-40 object-cover rounded-lg transition-transform duration-300 ease-out group-hover:scale-105 cursor-zoom-in"
+              width="160"
+              height="160"
+              loading="lazy"
+              data-lightbox
+            />
+          </div>
+          <div class="space-y-2">
+            <h2 class="text-xl font-semibold">Manager Daniel Macidłowski</h2>
+            <p class="text-neutral-300">
+              E-mail: <a href="mailto:booking@trollingstones.pl">booking@trollingstones.pl</a>
+            </p>
+            <p class="text-neutral-300">
+              Tel.: <a href="tel:+48509243245">+48 509 243 245</a>
+            </p>
+            <p>
+              <a href="/assets/Rider-techniczy-Trolling-Stones-25.03.2025.pdf" target="_blank" rel="noopener">Rider techniczny (PDF)</a>
+            </p>
+          </div>
+        </div>
       </div>
       <div class="space-y-2">
         <h2 class="text-xl font-semibold">Social media</h2>
@@ -46,5 +66,6 @@ import Layout from "@components/Layout.astro";
       </div>
     </div>
   </section>
+  <Lightbox />
 </Layout>
 
