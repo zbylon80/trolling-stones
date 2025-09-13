@@ -36,12 +36,12 @@ jobs:
       - name: Deploy via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
-          server: ${{ secrets.EI_FTP_SERVER || secrets.FTP_SERVER }}
-          username: ${{ secrets.EI_FTP_USERNAME || secrets.FTP_USERNAME }}
-          password: ${{ secrets.EI_FTP_PASSWORD || secrets.FTP_PASSWORD }}
+          server: ${{ secrets.TS_FTP_HOST || secrets.EI_FTP_SERVER || secrets.FTP_SERVER }}
+          username: ${{ secrets.TS_FTP_USERNAME || secrets.EI_FTP_USERNAME || secrets.FTP_USERNAME }}
+          password: ${{ secrets.TS_FTP_PASSWORD || secrets.EI_FTP_PASSWORD || secrets.FTP_PASSWORD }}
           protocol: ftps
           local-dir: dist/
-          server-dir: ${{ secrets.EI_FTP_SERVER_DIR || secrets.FTP_SERVER_DIR }}
+          server-dir: ${{ secrets.TS_FTP_DIR || secrets.EI_FTP_SERVER_DIR || secrets.FTP_SERVER_DIR }}
           exclude: |
             **/.git*
             **/.git*/**
