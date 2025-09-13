@@ -5,18 +5,18 @@ const gigs = [
     date: '2025-12-06',
     city: 'Gdynia',
     venue: 'Blues Club',
-    tickets: null, // sprzedaz wkrotce
+    tickets: null, // sprzedaż wkrótce
   },
 ];
 ---
 <Layout title="Koncerty - TRolling Stones">
   <section class="container py-12">
     <h1 class="text-3xl font-bold">Koncerty</h1>
-    <p class="mt-2 text-neutral-300">Nadchodzace daty wystepow.</p>
+    <p class="mt-2 text-neutral-300">Nadchodzące daty występów.</p>
 
     <div class="mt-6 divide-y divide-neutral-800 border border-neutral-800 rounded-lg overflow-hidden">
       {gigs.length === 0 ? (
-        <div class="p-6 text-neutral-400">Brak ogloszonych koncertow.</div>
+        <div class="p-6 text-neutral-400">Brak ogłoszonych koncertów.</div>
       ) : (
         gigs.map(g => (
           <div class="p-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
@@ -28,7 +28,7 @@ const gigs = [
               {g.tickets ? (
                 <a class="px-3 py-1 rounded bg-brand-600 hover:bg-brand-500 text-white" href={g.tickets}>Bilety</a>
               ) : (
-                <span class="text-neutral-400">Sprzedaz wkrotce</span>
+                <span class="text-neutral-400">Sprzedaż wkrótce</span>
               )}
             </div>
           </div>
