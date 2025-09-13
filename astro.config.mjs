@@ -1,5 +1,6 @@
 import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
+import { fileURLToPath } from 'node:url';
 
 // https://astro.build/config
 export default defineConfig({
@@ -7,7 +8,7 @@ export default defineConfig({
   integrations: [tailwind({ applyBaseStyles: true })],
   output: 'static',
   alias: {
-    '@components': './src/components',
-    '@styles': './src/styles',
+    '@components': fileURLToPath(new URL('./src/components', import.meta.url)),
+    '@styles': fileURLToPath(new URL('./src/styles', import.meta.url)),
   }
 });
