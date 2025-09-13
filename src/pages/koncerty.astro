@@ -1,9 +1,12 @@
 ---
 import Layout from "@components/Layout.astro";
 const gigs = [
-  // Przykładowe pozycje; później podepniemy źródło danych/MD
-  { date: '2025-10-18', city: 'Warszawa', venue: 'Klub XYZ', tickets: '#' },
-  { date: '2025-11-02', city: 'Kraków', venue: 'Hala ABC', tickets: '#' },
+  {
+    date: '2025-12-06',
+    city: 'Gdynia',
+    venue: 'Blues Club',
+    tickets: null, // sprzedaż wkrótce
+  },
 ];
 ---
 <Layout title="Koncerty — TRolling Stones">
@@ -22,7 +25,11 @@ const gigs = [
               <div class="text-neutral-300">{g.city} — {g.venue}</div>
             </div>
             <div>
-              <a class="px-3 py-1 rounded bg-brand-600 hover:bg-brand-500 text-white" href={g.tickets}>Bilety</a>
+              {g.tickets ? (
+                <a class="px-3 py-1 rounded bg-brand-600 hover:bg-brand-500 text-white" href={g.tickets}>Bilety</a>
+              ) : (
+                <span class="text-neutral-400">Sprzedaż wkrótce</span>
+              )}
             </div>
           </div>
         ))
