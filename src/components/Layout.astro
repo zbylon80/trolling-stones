@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import CookieBanner from "./CookieBanner.astro";
 const siteOrigin = Astro.site?.origin ?? Astro.url?.origin ?? '';
 const canonicalUrl = siteOrigin + Astro.url.pathname;
 const ogImage = siteOrigin + '/images/hero.jpg';
@@ -65,6 +66,7 @@ const { title = 'TRolling Stones', description = 'Oficjalna strona zespołu', } 
         © {new Date().getFullYear()} TRolling Stones — wszelkie prawa zastrzeżone.
       </div>
     </footer>
+    <CookieBanner />
   </body>
   </html>
 
