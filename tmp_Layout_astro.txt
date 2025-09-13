@@ -1,8 +1,5 @@
 ---
 import "../styles/global.css";
-const siteOrigin = Astro.site?.origin ?? Astro.url?.origin ?? '';
-const canonicalUrl = siteOrigin + Astro.url.pathname;
-const ogImage = siteOrigin + '/images/hero.jpg';
 const { title = 'TRolling Stones', description = 'Oficjalna strona zespołu', } = Astro.props;
 ---
 <!doctype html>
@@ -14,29 +11,6 @@ const { title = 'TRolling Stones', description = 'Oficjalna strona zespołu', } 
     <meta name="description" content={description} />
     <meta name="theme-color" content="#000000" />
     <link rel="icon" href="/favicon.ico" />
-    <link rel="canonical" href={canonicalUrl} />
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:locale" content="pl_PL" />
-    <meta property="og:image" content={ogImage} />
-    {siteOrigin && <meta property="og:url" content={canonicalUrl} />}
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={title} />
-    <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={ogImage} />
-    <script type="application/ld+json">{JSON.stringify({
-      '@context': 'https://schema.org',
-      '@type': 'MusicGroup',
-      name: 'TRolling Stones',
-      url: (Astro.site?.origin ?? ''),
-      sameAs: [
-        'https://www.youtube.com/@TRollnStones',
-        'https://www.facebook.com/stones3city',
-        'https://www.instagram.com/trollnstones/',
-        'https://www.tiktok.com/@trollnstones'
-      ]
-    })}</script>
   </head>
   <body>
     <header class="border-b border-neutral-800">
@@ -66,3 +40,4 @@ const { title = 'TRolling Stones', description = 'Oficjalna strona zespołu', } 
     </footer>
   </body>
   </html>
+

@@ -37,3 +37,21 @@ const gigs = [
     </div>
   </section>
 </Layout>
+
+<script type="application/ld+json">{JSON.stringify({
+  '@context': 'https://schema.org',
+  '@graph': gigs.map(g => ({
+    '@type': 'MusicEvent',
+    name: `TRolling Stones — ${g.venue}`,
+    startDate: g.date,
+    eventStatus: 'https://schema.org/EventScheduled',
+    location: {
+      '@type': 'Place',
+      name: g.venue,
+      address: { '@type': 'PostalAddress', addressLocality: g.city, addressCountry: 'PL' }
+    },
+    performer: { '@type': 'MusicGroup', name: 'TRolling Stones' },
+    url: (Astro.site?.origin ? `${Astro.site.origin}/koncerty` : '/koncerty'),
+    offers: g.tickets ? { '@type': 'Offer', url: g.tickets, availability: 'https://schema.org/InStock' } : undefined
+  }))
+})}</script>
