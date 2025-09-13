@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light dark;
+}
+
+body {
+  /* Dopasowanie tła do grafiki (czysta czerń) */
+  background-color: #000000;
+  @apply text-neutral-100 antialiased;
+}
+
+a {
+  @apply text-brand-400 hover:text-brand-300 underline-offset-4 hover:underline;
+}
+
+.container {
+  @apply mx-auto max-w-6xl px-4;
+}
