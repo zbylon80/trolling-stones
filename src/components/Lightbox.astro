@@ -18,39 +18,59 @@
     const closeBtn = document.getElementById('lightbox-close');
     const backdropBtn = document.getElementById('lightbox-backdrop');
 
-    function openLightbox(src, alt) {
-      imgEl.src = src;
-      imgEl.alt = alt || 'Podglad';
-      captionEl.textContent = alt || '';
-      overlay.classList.remove('hidden');
-      overlay.classList.add('flex');
-      document.body.style.overflow = 'hidden';
-    }
-    function closeLightbox() {
-      overlay.classList.add('hidden');
-      overlay.classList.remove('flex');
-      imgEl.src = '';
-      captionEl.textContent = '';
-      document.body.style.overflow = '';
-    }
+    if (!(overlay instanceof HTMLElement) || !(imgEl instanceof HTMLImageElement) || !(captionEl instanceof HTMLElement)) {
+      console.warn('Lightbox: missing required DOM nodes');
+    } else {
+      const openLightbox = (src: string, altText = '') => {
+        const caption = altText.trim();
+        imgEl.src = src;
+        imgEl.alt = caption || 'Podglad';
+        captionEl.textContent = caption;
+        overlay.classList.remove('hidden');
+        overlay.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+      };
 
-    // Delegation: elements with data-lightbox
-    document.addEventListener('click', (e) => {
-      const trigger = e.target.closest('[data-lightbox]');
-      if (trigger) {
-        e.preventDefault();
-        const full = trigger.getAttribute('data-full') || trigger.getAttribute('src') || trigger.getAttribute('href');
-        const alt = trigger.getAttribute('alt') || trigger.getAttribute('data-alt') || '';
-        if (full) openLightbox(full, alt);
-      }
-    });
+      const closeLightbox = () => {
+        overlay.classList.add('hidden');
+        overlay.classList.remove('flex');
+        imgEl.src = '';
+        captionEl.textContent = '';
+        document.body.style.overflow = '';
+      };
 
-    // Close actions
-    closeBtn?.addEventListener('click', closeLightbox);
-    backdropBtn?.addEventListener('click', closeLightbox);
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeLightbox();
-    });
+      // Delegation: elements with data-lightbox
+      document.addEventListener('click', (event) => {
+        const target = event.target;
+        if (!(target instanceof Element)) {
+          return;
+        }
+
+        const trigger = target.closest('[data-lightbox]');
+        if (!trigger) {
+          return;
+        }
+
+        event.preventDefault();
+        const full =
+          trigger.getAttribute('data-full') ??
+          trigger.getAttribute('src') ??
+          trigger.getAttribute('href');
+        const alt = trigger.getAttribute('data-alt') ?? trigger.getAttribute('alt') ?? '';
+        if (full) {
+          openLightbox(full, alt);
+        }
+      });
+
+      // Close actions
+      closeBtn?.addEventListener('click', closeLightbox);
+      backdropBtn?.addEventListener('click', closeLightbox);
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          closeLightbox();
+        }
+      });
+    }
   </script>
 </div>
 
