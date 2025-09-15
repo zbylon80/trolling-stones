@@ -2,7 +2,17 @@
 // Component to display random YouTube clip from channel with navigation arrows
 ---
 <div class="relative">
-  <div id="yt-container" class="relative w-full" style="padding-top: 56.25%"></div>
+  <div id="yt-container" class="relative w-full" style="padding-top: 56.25%">
+    <iframe
+      class="absolute inset-0 h-full w-full rounded-lg border border-neutral-800"
+      src="https://www.youtube-nocookie.com/embed/Va2NqLJPnkw"
+      title="YouTube video"
+      frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      referrerpolicy="strict-origin-when-cross-origin"
+      allowfullscreen
+    ></iframe>
+  </div>
   <button
     id="prev"
     class="absolute left-0 top-1/2 -translate-y-1/2 p-2 text-xl bg-neutral-800/70 hover:bg-neutral-700/70 text-white rounded-full"
@@ -23,28 +33,24 @@
   const nextBtn = document.getElementById("next");
   const apiKey = import.meta.env.PUBLIC_YOUTUBE_API_KEY;
   const username = "TRollnStones"; // channel username
-  let videos = [];
+  const fallback = "Va2NqLJPnkw";
+  let videos = [fallback];
   let index = 0;
 
   async function init() {
     try {
-      const channelRes = await fetch(
-        `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&forUsername=${username}&key=${apiKey}`
-      );
+      const channelRes = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=contentDetails&forUsername=${username}&key=${apiKey}`);
       const channelData = await channelRes.json();
       const uploadId = channelData.items[0].contentDetails.relatedPlaylists.uploads;
-      const playlistRes = await fetch(
-        `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=${uploadId}&key=${apiKey}`
-      );
+      const playlistRes = await fetch(`https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=${uploadId}&key=${apiKey}`);
       const playlistData = await playlistRes.json();
       videos = playlistData.items.map((i) => i.snippet.resourceId.videoId);
       index = Math.floor(Math.random() * videos.length);
-      render();
     } catch (err) {
-      videos = ["Va2NqLJPnkw"]; // fallback video
+      videos = [fallback];
       index = 0;
-      render();
     }
+    render();
   }
 
   function render() {
