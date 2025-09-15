@@ -1,46 +1,80 @@
 ---
+
 ---
-<div id="lightbox-overlay" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/90 p-4" role="dialog" aria-modal="true" aria-label="Podglad zdjecia">
-  <button id="lightbox-close" class="absolute right-4 top-4 inline-flex items-center justify-center rounded-md bg-white/10 p-2 text-white hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white" aria-label="Zamknij podglad">
+
+<div
+  id='lightbox-overlay'
+  class='fixed inset-0 z-50 hidden items-center justify-center bg-black/90 p-4'
+  role='dialog'
+  aria-modal='true'
+  aria-label='Podglad zdjecia'
+>
+  <button
+    id='lightbox-close'
+    class='absolute right-4 top-4 inline-flex items-center justify-center rounded-md bg-white/10 p-2 text-white hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white'
+    aria-label='Zamknij podglad'
+  >
     &times;
   </button>
-  <img id="lightbox-image" alt="Podglad" class="max-h-[90vh] max-w-[90vw] object-contain rounded" />
-  <div id="lightbox-caption" class="absolute bottom-4 left-1/2 -translate-x-1/2 text-center text-neutral-300 text-sm px-3"></div>
+  <img
+    id='lightbox-image'
+    alt='Podglad'
+    class='max-h-[90vh] max-w-[90vw] object-contain rounded'
+  />
+  <div
+    id='lightbox-caption'
+    class='absolute bottom-4 left-1/2 -translate-x-1/2 text-center text-neutral-300 text-sm px-3'
+  >
+  </div>
   <!-- Klikniecie tla zamyka -->
-  <button id="lightbox-backdrop" class="absolute inset-0 -z-10" aria-hidden="true"></button>
+  <button
+    id='lightbox-backdrop'
+    class='absolute inset-0 -z-10'
+    aria-hidden='true'></button>
   <style is:inline>
     /* Tailwind classes handle styling */
   </style>
   <script>
-    const overlay = document.getElementById('lightbox-overlay');
-    const imgEl = document.getElementById('lightbox-image');
-    const captionEl = document.getElementById('lightbox-caption');
-    const closeBtn = document.getElementById('lightbox-close');
-    const backdropBtn = document.getElementById('lightbox-backdrop');
+    const overlay = document.querySelector<HTMLDivElement>('#lightbox-overlay');
+    const imgEl = document.querySelector<HTMLImageElement>('#lightbox-image');
+    const captionEl =
+      document.querySelector<HTMLDivElement>('#lightbox-caption');
+    const closeBtn =
+      document.querySelector<HTMLButtonElement>('#lightbox-close');
+    const backdropBtn =
+      document.querySelector<HTMLButtonElement>('#lightbox-backdrop');
 
-    function openLightbox(src, alt) {
+    function openLightbox(src: string, alt?: string) {
+      if (!imgEl || !overlay) return;
       imgEl.src = src;
       imgEl.alt = alt || 'Podglad';
-      captionEl.textContent = alt || '';
+      if (captionEl) captionEl.textContent = alt || '';
       overlay.classList.remove('hidden');
       overlay.classList.add('flex');
       document.body.style.overflow = 'hidden';
     }
     function closeLightbox() {
+      if (!overlay) return;
       overlay.classList.add('hidden');
       overlay.classList.remove('flex');
-      imgEl.src = '';
-      captionEl.textContent = '';
+      if (imgEl) imgEl.src = '';
+      if (captionEl) captionEl.textContent = '';
       document.body.style.overflow = '';
     }
 
     // Delegation: elements with data-lightbox
     document.addEventListener('click', (e) => {
-      const trigger = e.target.closest('[data-lightbox]');
+      const target = e.target;
+      if (!(target instanceof Element)) return;
+      const trigger = target.closest('[data-lightbox]');
       if (trigger) {
         e.preventDefault();
-        const full = trigger.getAttribute('data-full') || trigger.getAttribute('src') || trigger.getAttribute('href');
-        const alt = trigger.getAttribute('alt') || trigger.getAttribute('data-alt') || '';
+        const full =
+          trigger.getAttribute('data-full') ||
+          trigger.getAttribute('src') ||
+          trigger.getAttribute('href');
+        const alt =
+          trigger.getAttribute('alt') || trigger.getAttribute('data-alt') || '';
         if (full) openLightbox(full, alt);
       }
     });
@@ -53,4 +87,3 @@
     });
   </script>
 </div>
-

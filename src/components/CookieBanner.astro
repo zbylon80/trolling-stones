@@ -38,7 +38,7 @@
     if (el) el.classList.remove('hidden');
   }
 
-  function setConsent(value) {
+  function setConsent(value: string) {
     try { localStorage.setItem(KEY, value); } catch {}
     document.dispatchEvent(new CustomEvent('cookie:consent', { detail: value }));
   }
