@@ -1,0 +1,64 @@
+---
+// Component to display random YouTube clip from channel with navigation arrows
+---
+<div class="relative">
+  <div id="yt-container" class="relative w-full" style="padding-top: 56.25%"></div>
+  <button
+    id="prev"
+    class="absolute left-0 top-1/2 -translate-y-1/2 p-2 text-xl bg-neutral-800/70 hover:bg-neutral-700/70 text-white rounded-full"
+    aria-label="Poprzedni klip">
+    ‹
+  </button>
+  <button
+    id="next"
+    class="absolute right-0 top-1/2 -translate-y-1/2 p-2 text-xl bg-neutral-800/70 hover:bg-neutral-700/70 text-white rounded-full"
+    aria-label="Następny klip">
+    ›
+  </button>
+</div>
+
+<script client:load>
+  const container = document.getElementById("yt-container");
+  const prevBtn = document.getElementById("prev");
+  const nextBtn = document.getElementById("next");
+  const apiKey = import.meta.env.PUBLIC_YOUTUBE_API_KEY;
+  const username = "TRollnStones"; // channel username
+  let videos = [];
+  let index = 0;
+
+  async function init() {
+    try {
+      const channelRes = await fetch(
+        `https://www.googleapis.com/youtube/v3/channels?part=contentDetails&forUsername=${username}&key=${apiKey}`
+      );
+      const channelData = await channelRes.json();
+      const uploadId = channelData.items[0].contentDetails.relatedPlaylists.uploads;
+      const playlistRes = await fetch(
+        `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=${uploadId}&key=${apiKey}`
+      );
+      const playlistData = await playlistRes.json();
+      videos = playlistData.items.map((i) => i.snippet.resourceId.videoId);
+      index = Math.floor(Math.random() * videos.length);
+      render();
+    } catch (err) {
+      videos = ["Va2NqLJPnkw"]; // fallback video
+      index = 0;
+      render();
+    }
+  }
+
+  function render() {
+    const id = videos[index];
+    container.innerHTML = `<iframe class="absolute inset-0 h-full w-full rounded-lg border border-neutral-800" src="https://www.youtube-nocookie.com/embed/${id}" title="YouTube video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
+  }
+
+  prevBtn.addEventListener("click", () => {
+    index = (index - 1 + videos.length) % videos.length;
+    render();
+  });
+  nextBtn.addEventListener("click", () => {
+    index = (index + 1) % videos.length;
+    render();
+  });
+  init();
+</script>
