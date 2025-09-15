@@ -1,16 +1,26 @@
 ---
 import Layout from "@components/Layout.astro";
+
+const facebookPagePluginBase =
+  "https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fstones3city&tabs=timeline&small_header=false&adapt_container_width=true&hide_cover=true&show_facepile=false";
+const facebookPluginHeight = 1200;
+const facebookPluginDefaultWidth = 500;
 ---
+
 <Layout title="Aktualności - TRolling Stones">
   <section class="container py-12">
     <h1 class="text-3xl font-bold">Aktualności</h1>
     <div class="mt-6 rounded-lg border border-neutral-800 bg-black p-4">
-      <div class="mx-auto w-full max-w-[560px]">
+      <div id="facebook-feed" class="mx-auto w-full max-w-[560px]">
         <iframe
+          id="facebook-feed-iframe"
+          data-base-src={facebookPagePluginBase}
+          data-base-height={facebookPluginHeight}
+          data-current-width={facebookPluginDefaultWidth}
           title="Posty z Facebooka - TRolling Stones"
-          src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fstones3city&tabs=timeline&width=500&height=1200&small_header=false&adapt_container_width=true&hide_cover=true&show_facepile=false"
-          width="500"
-          height="1200"
+          src={`${facebookPagePluginBase}&width=${facebookPluginDefaultWidth}&height=${facebookPluginHeight}`}
+          width={facebookPluginDefaultWidth}
+          height={facebookPluginHeight}
           style="border:none;overflow:hidden;width:100%;display:block;background:#000"
           scrolling="no"
           frameborder="0"
@@ -20,5 +30,58 @@ import Layout from "@components/Layout.astro";
       </div>
     </div>
   </section>
+  <script is:inline>
+    const container = document.getElementById('facebook-feed');
+    const iframe = document.getElementById('facebook-feed-iframe');
+
+    if (container && iframe) {
+      const baseSrc = iframe.dataset.baseSrc ?? '';
+      const baseHeight = Number.parseInt(iframe.dataset.baseHeight ?? '', 10) || iframe.height || 1200;
+
+      const clampWidth = (width) => {
+        const clamped = Math.round(width);
+        return Math.max(180, Math.min(500, clamped));
+      };
+
+      const updateIframe = (width) => {
+        if (!baseSrc) return;
+        const clampedWidth = clampWidth(width);
+        if (iframe.dataset.currentWidth === String(clampedWidth)) return;
+
+        const url = new URL(baseSrc);
+        url.searchParams.set('width', String(clampedWidth));
+        url.searchParams.set('height', String(baseHeight));
+        iframe.src = url.toString();
+        iframe.width = String(clampedWidth);
+        iframe.height = String(baseHeight);
+        iframe.dataset.currentWidth = String(clampedWidth);
+      };
+
+      const updateWidth = () => {
+        const availableWidth = container.clientWidth;
+        if (availableWidth > 0) {
+          updateIframe(availableWidth);
+        }
+      };
+
+      const setupResizeObserver = () => {
+        if (typeof ResizeObserver !== 'undefined') {
+          const observer = new ResizeObserver(() => updateWidth());
+          observer.observe(container);
+          return () => observer.disconnect();
+        }
+
+        const listener = () => updateWidth();
+        window.addEventListener('resize', listener);
+        return () => window.removeEventListener('resize', listener);
+      };
+
+      updateWidth();
+      const cleanup = setupResizeObserver();
+      if (cleanup) {
+        document.addEventListener('astro:before-swap', cleanup, { once: true });
+      }
+    }
+  </script>
 </Layout>
 
