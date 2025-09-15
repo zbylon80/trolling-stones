@@ -1,5 +1,5 @@
 ---
-// Component to display random YouTube clip from channel with navigation arrows
+// Component to display random YouTube clip with navigation arrows
 ---
 <div class="relative">
   <div id="yt-container" class="relative w-full" style="padding-top: 56.25%">
@@ -15,13 +15,13 @@
   </div>
   <button
     id="prev"
-    class="absolute left-0 top-1/2 -translate-y-1/2 p-2 text-xl bg-neutral-800/70 hover:bg-neutral-700/70 text-white rounded-full"
+    class="absolute left-0 top-1/2 -translate-y-1/2 p-2 text-xl bg-neutral-800/70 hover:bg-neutral-700/70 text-white rounded-full z-10"
     aria-label="Poprzedni klip">
     ‹
   </button>
   <button
     id="next"
-    class="absolute right-0 top-1/2 -translate-y-1/2 p-2 text-xl bg-neutral-800/70 hover:bg-neutral-700/70 text-white rounded-full"
+    class="absolute right-0 top-1/2 -translate-y-1/2 p-2 text-xl bg-neutral-800/70 hover:bg-neutral-700/70 text-white rounded-full z-10"
     aria-label="Następny klip">
     ›
   </button>
@@ -31,27 +31,13 @@
   const container = document.getElementById("yt-container");
   const prevBtn = document.getElementById("prev");
   const nextBtn = document.getElementById("next");
-  const apiKey = import.meta.env.PUBLIC_YOUTUBE_API_KEY;
-  const username = "TRollnStones"; // channel username
-  const fallback = "Va2NqLJPnkw";
-  let videos = [fallback];
-  let index = 0;
-
-  async function init() {
-    try {
-      const channelRes = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=contentDetails&forUsername=${username}&key=${apiKey}`);
-      const channelData = await channelRes.json();
-      const uploadId = channelData.items[0].contentDetails.relatedPlaylists.uploads;
-      const playlistRes = await fetch(`https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=50&playlistId=${uploadId}&key=${apiKey}`);
-      const playlistData = await playlistRes.json();
-      videos = playlistData.items.map((i) => i.snippet.resourceId.videoId);
-      index = Math.floor(Math.random() * videos.length);
-    } catch (err) {
-      videos = [fallback];
-      index = 0;
-    }
-    render();
-  }
+  const videos = [
+    "Va2NqLJPnkw",
+    "P7VS3KmmEVk",
+    "V29vfbnwk94",
+    "qhkNdJ04e1c",
+  ];
+  let index = Math.floor(Math.random() * videos.length);
 
   function render() {
     const id = videos[index];
@@ -66,5 +52,5 @@
     index = (index + 1) % videos.length;
     render();
   });
-  init();
+  render();
 </script>
