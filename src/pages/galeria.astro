@@ -1,6 +1,7 @@
 ---
-import Layout from "@components/Layout.astro";
-import Lightbox from "@components/Lightbox.astro";
+import Layout from '@components/Layout.astro';
+import Lightbox from '@components/Lightbox.astro';
+
 const photos = [
   { src: '/images/poster01.jpg', alt: 'Plakat 01 - TRolling Stones' },
   { src: '/images/poster02.jpg', alt: 'Plakat 02 - TRolling Stones' },
@@ -12,13 +13,13 @@ const photos = [
 <Layout title="Galeria - TRolling Stones">
   <section class="container py-12">
     <h1 class="text-3xl font-bold">Galeria</h1>
-    <div class="mt-6 grid sm:grid-cols-2 md:grid-cols-3 gap-4">
-      {photos.map((p) => (
+    <div class="mt-6 grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+      {photos.map((photo) => (
         <figure class="group overflow-hidden rounded-lg" style="aspect-ratio: 16 / 9;">
           <img
-            src={p.src}
-            alt={p.alt}
-            class="w-full h-full object-cover transition-transform duration-300 ease-out group-hover:scale-105 cursor-zoom-in"
+            src={photo.src}
+            alt={photo.alt}
+            class="h-full w-full cursor-zoom-in object-cover transition-transform duration-300 ease-out group-hover:scale-105"
             data-lightbox
             loading="lazy"
           />
@@ -28,4 +29,3 @@ const photos = [
   </section>
   <Lightbox />
 </Layout>
-

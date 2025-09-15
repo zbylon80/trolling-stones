@@ -1,10 +1,15 @@
 ---
-import "../styles/global.css";
-import CookieBanner from "./CookieBanner.astro";
+import '../styles/global.css';
+import CookieBanner from './CookieBanner.astro';
+
 const siteOrigin = Astro.site?.origin ?? Astro.url?.origin ?? '';
 const canonicalUrl = siteOrigin + Astro.url.pathname;
 const ogImage = siteOrigin + '/images/hero.jpg';
-const { title = 'TRolling Stones', description = 'Oficjalna strona zespołu', } = Astro.props;
+
+const {
+  title = 'TRolling Stones',
+  description = 'Oficjalna strona zespołu',
+} = Astro.props;
 ---
 <!doctype html>
 <html lang="pl">
@@ -15,7 +20,10 @@ const { title = 'TRolling Stones', description = 'Oficjalna strona zespołu', } 
     <meta name="description" content={description} />
     <meta name="theme-color" content="#000000" />
     <link rel="icon" href="/favicon.ico" />
-    <meta name="google-site-verification" content="yzvYq1K4LrHnxUqZLI39cGlQVfze41ElrWh1v36kU3Y" />
+    <meta
+      name="google-site-verification"
+      content="yzvYq1K4LrHnxUqZLI39cGlQVfze41ElrWh1v36kU3Y"
+    />
     <link rel="canonical" href={canonicalUrl} />
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
@@ -27,33 +35,42 @@ const { title = 'TRolling Stones', description = 'Oficjalna strona zespołu', } 
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
-    <script type="application/ld+json">{JSON.stringify({
-      '@context': 'https://schema.org',
-      '@type': 'MusicGroup',
-      name: 'TRolling Stones',
-      url: (Astro.site?.origin ?? ''),
-      sameAs: [
-        'https://www.youtube.com/@TRollnStones',
-        'https://www.facebook.com/stones3city',
-        'https://www.instagram.com/trollnstones/',
-        'https://www.tiktok.com/@trollnstones'
-      ]
-    })}</script>
+    <script type="application/ld+json">
+      {JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'MusicGroup',
+        name: 'TRolling Stones',
+        url: Astro.site?.origin ?? '',
+        sameAs: [
+          'https://www.youtube.com/@TRollnStones',
+          'https://www.facebook.com/stones3city',
+          'https://www.instagram.com/trollnstones/',
+          'https://www.tiktok.com/@trollnstones',
+        ],
+      })}
+    </script>
   </head>
   <body>
     <header class="sticky top-0 z-50 border-b border-neutral-800 bg-black">
-      <div class="container flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between pt-2 pb-1 sm:pt-1 sm:pb-0.5 md:py-0">
-        <a href="/" class="flex items-center gap-3 font-bold tracking-wide text-lg sm:text-xl">
-          <img src="/images/logo.jpg" alt="Logo TRolling Stones" class="h-20 w-20 sm:h-[7.5rem] sm:w-[7.5rem] md:h-[11.25rem] md:w-[11.25rem] rounded-full object-cover" width="144" height="144" />
+      <div
+        class="container flex flex-col gap-3 pt-2 pb-1 sm:flex-row sm:items-center sm:justify-between sm:pt-1 sm:pb-0.5 md:py-0"
+      >
+        <a href="/" class="flex items-center gap-3 text-lg font-bold tracking-wide sm:text-xl">
+          <img
+            src="/images/logo.jpg"
+            alt="Logo TRolling Stones"
+            class="h-20 w-20 rounded-full object-cover sm:h-[7.5rem] sm:w-[7.5rem] md:h-[11.25rem] md:w-[11.25rem]"
+            width="144"
+            height="144"
+          />
           <span>TRolling Stones</span>
         </a>
-        <nav class="flex flex-wrap justify-center sm:justify-end gap-3 sm:gap-4 text-sm">
+        <nav class="flex flex-wrap justify-center gap-3 text-sm sm:justify-end sm:gap-4">
           <a href="/koncerty">Koncerty</a>
           <a href="/galeria">Galeria</a>
           <a href="/aktualnosci">Aktualności</a>
           <a href="/bio">Bio</a>
           <a href="/sklad">Skład</a>
-          
           <a href="/kontakt">Kontakt</a>
         </nav>
       </div>
@@ -61,12 +78,11 @@ const { title = 'TRolling Stones', description = 'Oficjalna strona zespołu', } 
     <main>
       <slot />
     </main>
-    <footer class="border-t border-neutral-800 mt-16">
+    <footer class="mt-16 border-t border-neutral-800">
       <div class="container py-8 text-sm text-neutral-400">
         © {new Date().getFullYear()} TRolling Stones — wszelkie prawa zastrzeżone.
       </div>
     </footer>
     <CookieBanner />
   </body>
-  </html>
-
+</html>

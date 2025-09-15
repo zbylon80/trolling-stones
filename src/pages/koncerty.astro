@@ -1,11 +1,12 @@
 ---
-import Layout from "@components/Layout.astro";
+import Layout from '@components/Layout.astro';
+
 const gigs = [
   {
     date: '2025-12-06',
     city: 'Gdynia',
     venue: 'Blues Club',
-    tickets: null, // sprzedaż wkrótce
+    tickets: null,
   },
 ];
 ---
@@ -14,19 +15,25 @@ const gigs = [
     <h1 class="text-3xl font-bold">Koncerty</h1>
     <p class="mt-2 text-neutral-300">Nadchodzące daty występów.</p>
 
-    <div class="mt-6 divide-y divide-neutral-800 border border-neutral-800 rounded-lg overflow-hidden">
+    <div class="mt-6 overflow-hidden rounded-lg divide-y divide-neutral-800 border border-neutral-800">
       {gigs.length === 0 ? (
         <div class="p-6 text-neutral-400">Brak ogłoszonych koncertów.</div>
       ) : (
-        gigs.map(g => (
-          <div class="p-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        gigs.map((gig) => (
+          <div class="flex flex-col gap-2 p-6 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <div class="font-semibold">{new Date(g.date).toLocaleDateString('pl-PL')}</div>
-              <div class="text-neutral-300">{g.city} - {g.venue}</div>
+              <div class="font-semibold">
+                {new Date(gig.date).toLocaleDateString('pl-PL')}
+              </div>
+              <div class="text-neutral-300">
+                {gig.city} – {gig.venue}
+              </div>
             </div>
             <div>
-              {g.tickets ? (
-                <a class="px-3 py-1 rounded bg-brand-600 hover:bg-brand-500 text-white" href={g.tickets}>Bilety</a>
+              {gig.tickets ? (
+                <a class="rounded bg-brand-600 px-3 py-1 text-white hover:bg-brand-500" href={gig.tickets}>
+                  Bilety
+                </a>
               ) : (
                 <span class="text-neutral-400">Sprzedaż wkrótce</span>
               )}
@@ -38,21 +45,28 @@ const gigs = [
   </section>
 </Layout>
 
-<script type="application/ld+json">{JSON.stringify({
-  '@context': 'https://schema.org',
-  '@graph': gigs.map(g => ({
-    '@type': 'MusicEvent',
-    name: `TRolling Stones - ${g.venue}`,
-    startDate: g.date,
-    eventStatus: 'https://schema.org/EventScheduled',
-    location: {
-      '@type': 'Place',
-      name: g.venue,
-      address: { '@type': 'PostalAddress', addressLocality: g.city, addressCountry: 'PL' }
-    },
-    performer: { '@type': 'MusicGroup', name: 'TRolling Stones' },
-    url: (Astro.site?.origin ? `${Astro.site.origin}/koncerty` : '/koncerty'),
-    offers: g.tickets ? { '@type': 'Offer', url: g.tickets, availability: 'https://schema.org/InStock' } : undefined
-  }))
-})}</script>
-
+<script type="application/ld+json">
+  {JSON.stringify({
+    '@context': 'https://schema.org',
+    '@graph': gigs.map((gig) => ({
+      '@type': 'MusicEvent',
+      name: `TRolling Stones - ${gig.venue}`,
+      startDate: gig.date,
+      eventStatus: 'https://schema.org/EventScheduled',
+      location: {
+        '@type': 'Place',
+        name: gig.venue,
+        address: {
+          '@type': 'PostalAddress',
+          addressLocality: gig.city,
+          addressCountry: 'PL',
+        },
+      },
+      performer: { '@type': 'MusicGroup', name: 'TRolling Stones' },
+      url: Astro.site?.origin ? `${Astro.site.origin}/koncerty` : '/koncerty',
+      offers: gig.tickets
+        ? { '@type': 'Offer', url: gig.tickets, availability: 'https://schema.org/InStock' }
+        : undefined,
+    })),
+  })}
+</script>

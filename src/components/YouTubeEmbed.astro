@@ -1,8 +1,9 @@
 ---
 interface Props {
-  id: string; // YouTube video ID
+  id: string;
   title?: string;
 }
+
 const { id, title = 'YouTube video' } = Astro.props as Props;
 ---
 <div class="relative w-full" style="padding-top: 56.25%">
@@ -13,7 +14,6 @@ const { id, title = 'YouTube video' } = Astro.props as Props;
     frameborder="0"
     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
     referrerpolicy="strict-origin-when-cross-origin"
-    allowfullscreen>
-  </iframe>
-  </div>
-
+    allowfullscreen
+  ></iframe>
+</div>

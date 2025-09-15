@@ -30,30 +30,52 @@
 
   function hideBanner() {
     const el = document.getElementById('cookie-banner');
-    if (el) el.classList.add('hidden');
+    if (el) {
+      el.classList.add('hidden');
+    }
   }
 
   function showBanner() {
     const el = document.getElementById('cookie-banner');
-    if (el) el.classList.remove('hidden');
+    if (el) {
+      el.classList.remove('hidden');
+    }
   }
 
   function setConsent(value) {
-    try { localStorage.setItem(KEY, value); } catch {}
+    try {
+      localStorage.setItem(KEY, value);
+    } catch (error) {
+      console.warn('Nie udało się zapisać zgody cookies', error);
+    }
+
     document.dispatchEvent(new CustomEvent('cookie:consent', { detail: value }));
   }
 
   document.addEventListener('DOMContentLoaded', () => {
     let value = null;
-    try { value = localStorage.getItem(KEY); } catch {}
+
+    try {
+      value = localStorage.getItem(KEY);
+    } catch (error) {
+      console.warn('Nie udało się odczytać zgody cookies', error);
+    }
+
     if (value !== accepted && value !== rejected) {
       showBanner();
     }
 
     const acceptBtn = document.getElementById('cookie-accept');
     const rejectBtn = document.getElementById('cookie-reject');
-    acceptBtn?.addEventListener('click', () => { setConsent(accepted); hideBanner(); });
-    rejectBtn?.addEventListener('click', () => { setConsent(rejected); hideBanner(); });
+
+    acceptBtn?.addEventListener('click', () => {
+      setConsent(accepted);
+      hideBanner();
+    });
+
+    rejectBtn?.addEventListener('click', () => {
+      setConsent(rejected);
+      hideBanner();
+    });
   });
 </script>
-

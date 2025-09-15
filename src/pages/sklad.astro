@@ -1,6 +1,6 @@
 ---
-import Layout from "@components/Layout.astro";
-import Lightbox from "@components/Lightbox.astro";
+import Layout from '@components/Layout.astro';
+import Lightbox from '@components/Lightbox.astro';
 
 const members = [
   { key: 'walec', name: "Artur 'Walec' Dembicki", role: 'gitara prowadząca' },
@@ -13,22 +13,22 @@ const members = [
 ---
 <Layout title="Skład - TRolling Stones">
   <section class="container py-12">
-    <h1 class="text-3xl font-bold mb-6">Skład</h1>
+    <h1 class="mb-6 text-3xl font-bold">Skład</h1>
 
-    <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
-      {members.map((m) => (
-        <figure class="text-center group">
+    <div class="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
+      {members.map((member) => (
+        <figure class="group text-center">
           <div class="overflow-hidden rounded-lg">
             <img
-              src={`/images/members/${m.key}.jpg`}
-              alt={`${m.name} - ${m.role}`}
-              class="rounded-lg mx-auto transition-transform duration-300 ease-out group-hover:scale-105 cursor-zoom-in"
+              src={`/images/members/${member.key}.jpg`}
+              alt={`${member.name} - ${member.role}`}
+              class="mx-auto cursor-zoom-in rounded-lg transition-transform duration-300 ease-out group-hover:scale-105"
               data-lightbox
               loading="lazy"
             />
           </div>
           <figcaption class="mt-2 text-sm font-medium">
-            {m.name} - {m.role}
+            {member.name} - {member.role}
           </figcaption>
         </figure>
       ))}
@@ -36,4 +36,3 @@ const members = [
   </section>
   <Lightbox />
 </Layout>
-

@@ -12,6 +12,9 @@ export default defineConfig({
     host: true,
     port: 4321,
   },
+  build: {
+    format: 'file',
+  },
   alias: {
     '@components': fileURLToPath(new URL('./src/components', import.meta.url)),
     '@styles': fileURLToPath(new URL('./src/styles', import.meta.url)),

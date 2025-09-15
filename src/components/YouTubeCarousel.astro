@@ -1,5 +1,5 @@
 ---
-// Component to display random YouTube clip with navigation arrows
+// Komponent wyświetlający losowy klip YouTube z nawigacją
 ---
 <div class="relative">
   <div id="yt-container" class="relative w-full" style="padding-top: 56.25%">
@@ -15,42 +15,55 @@
   </div>
   <button
     id="prev"
-    class="absolute left-0 top-1/2 -translate-y-1/2 p-2 text-xl bg-neutral-800/70 hover:bg-neutral-700/70 text-white rounded-full z-10"
-    aria-label="Poprzedni klip">
+    class="absolute left-0 top-1/2 z-10 -translate-y-1/2 rounded-full bg-neutral-800/70 p-2 text-xl text-white hover:bg-neutral-700/70"
+    aria-label="Poprzedni klip"
+  >
     ‹
   </button>
   <button
     id="next"
-    class="absolute right-0 top-1/2 -translate-y-1/2 p-2 text-xl bg-neutral-800/70 hover:bg-neutral-700/70 text-white rounded-full z-10"
-    aria-label="Następny klip">
+    class="absolute right-0 top-1/2 z-10 -translate-y-1/2 rounded-full bg-neutral-800/70 p-2 text-xl text-white hover:bg-neutral-700/70"
+    aria-label="Następny klip"
+  >
     ›
   </button>
 </div>
 
 <script client:load>
-  const container = document.getElementById("yt-container");
-  const prevBtn = document.getElementById("prev");
-  const nextBtn = document.getElementById("next");
-  const videos = [
-    "Va2NqLJPnkw",
-    "P7VS3KmmEVk",
-    "V29vfbnwk94",
-    "qhkNdJ04e1c",
-  ];
+  const container = document.getElementById('yt-container');
+  const prevBtn = document.getElementById('prev');
+  const nextBtn = document.getElementById('next');
+  if (!container || !prevBtn || !nextBtn) {
+    console.warn('YouTubeCarousel: brak wymaganych elementów');
+    return;
+  }
+  const videos = ['Va2NqLJPnkw', 'P7VS3KmmEVk', 'V29vfbnwk94', 'qhkNdJ04e1c'];
   let index = Math.floor(Math.random() * videos.length);
 
   function render() {
     const id = videos[index];
-    container.innerHTML = `<iframe class="absolute inset-0 h-full w-full rounded-lg border border-neutral-800" src="https://www.youtube-nocookie.com/embed/${id}" title="YouTube video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
+    container.innerHTML = `
+      <iframe
+        class="absolute inset-0 h-full w-full rounded-lg border border-neutral-800"
+        src="https://www.youtube-nocookie.com/embed/${id}"
+        title="YouTube video"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allowfullscreen
+      ></iframe>
+    `.trim();
   }
 
-  prevBtn.addEventListener("click", () => {
+  prevBtn?.addEventListener('click', () => {
     index = (index - 1 + videos.length) % videos.length;
     render();
   });
-  nextBtn.addEventListener("click", () => {
+
+  nextBtn?.addEventListener('click', () => {
     index = (index + 1) % videos.length;
     render();
   });
+
   render();
 </script>
