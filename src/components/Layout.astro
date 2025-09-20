@@ -1,10 +1,29 @@
 ---
 import "../styles/global.css";
 import CookieBanner from "./CookieBanner.astro";
+
 const siteOrigin = Astro.site?.origin ?? Astro.url?.origin ?? '';
-const canonicalUrl = siteOrigin + Astro.url.pathname;
-const ogImage = siteOrigin + '/images/hero.jpg';
-const { title = 'TRolling Stones', description = 'Oficjalna strona zespołu', } = Astro.props;
+const pathName = Astro.url.pathname ?? '/';
+const canonicalUrl = siteOrigin ? `${siteOrigin}${pathName}` : pathName;
+const ogImage = siteOrigin ? `${siteOrigin}/images/hero.jpg` : '/images/hero.jpg';
+const logoPath = '/images/logo.jpg';
+const logoUrl = siteOrigin ? `${siteOrigin}${logoPath}` : logoPath;
+const { title = 'TRolling Stones', description = 'Oficjalna strona zespołu' } = Astro.props;
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'MusicGroup',
+  name: 'TRolling Stones',
+  url: siteOrigin || undefined,
+  logo: logoUrl,
+  image: [logoUrl, ogImage],
+  sameAs: [
+    'https://www.youtube.com/@TRollnStones',
+    'https://www.facebook.com/stones3city',
+    'https://www.instagram.com/trollnstones/',
+    'https://www.tiktok.com/@trollnstones'
+  ]
+};
 ---
 <!doctype html>
 <html lang="pl">
@@ -14,7 +33,8 @@ const { title = 'TRolling Stones', description = 'Oficjalna strona zespołu', } 
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="theme-color" content="#000000" />
-    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/jpeg" href="/images/logo.jpg" />
     <meta name="google-site-verification" content="yzvYq1K4LrHnxUqZLI39cGlQVfze41ElrWh1v36kU3Y" />
     <link rel="canonical" href={canonicalUrl} />
     <meta property="og:type" content="website" />
@@ -27,18 +47,7 @@ const { title = 'TRolling Stones', description = 'Oficjalna strona zespołu', } 
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
-    <script type="application/ld+json">{JSON.stringify({
-      '@context': 'https://schema.org',
-      '@type': 'MusicGroup',
-      name: 'TRolling Stones',
-      url: (Astro.site?.origin ?? ''),
-      sameAs: [
-        'https://www.youtube.com/@TRollnStones',
-        'https://www.facebook.com/stones3city',
-        'https://www.instagram.com/trollnstones/',
-        'https://www.tiktok.com/@trollnstones'
-      ]
-    })}</script>
+    <script type="application/ld+json">{JSON.stringify(structuredData)}</script>
   </head>
   <body>
     <header class="sticky top-0 z-50 border-b border-neutral-800 bg-black">
@@ -53,7 +62,7 @@ const { title = 'TRolling Stones', description = 'Oficjalna strona zespołu', } 
           <a href="/aktualnosci">Aktualności</a>
           <a href="/bio">Bio</a>
           <a href="/sklad">Skład</a>
-          
+
           <a href="/kontakt">Kontakt</a>
         </nav>
       </div>
@@ -63,10 +72,10 @@ const { title = 'TRolling Stones', description = 'Oficjalna strona zespołu', } 
     </main>
     <footer class="border-t border-neutral-800 mt-16">
       <div class="container py-8 text-sm text-neutral-400">
-        © {new Date().getFullYear()} TRolling Stones — wszelkie prawa zastrzeżone.
+        &copy; {new Date().getFullYear()} TRolling Stones &ndash; wszelkie prawa zastrzeżone.
       </div>
     </footer>
     <CookieBanner />
   </body>
-  </html>
+</html>
 
