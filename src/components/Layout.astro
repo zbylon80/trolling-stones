@@ -8,7 +8,7 @@ const canonicalUrl = siteOrigin ? `${siteOrigin}${pathName}` : pathName;
 const ogImage = siteOrigin ? `${siteOrigin}/images/hero.jpg` : '/images/hero.jpg';
 const logoPath = '/images/logo.jpg';
 const logoUrl = siteOrigin ? `${siteOrigin}${logoPath}` : logoPath;
-const { title = 'TRolling Stones', description = 'Oficjalna strona zespo\u0142u' } = Astro.props;
+const { title = 'TRolling Stones', description = 'Oficjalna strona zespołu' } = Astro.props;
 
 const structuredData = {
   '@context': 'https://schema.org',
@@ -59,9 +59,9 @@ const structuredData = {
         <nav class="flex flex-wrap justify-center sm:justify-end gap-3 sm:gap-4 text-sm">
           <a href="/koncerty">Koncerty</a>
           <a href="/galeria">Galeria</a>
-          <a href="/aktualnosci">Aktualno\u015bci</a>
+          <a href="/aktualnosci">Aktualności</a>
           <a href="/bio">Bio</a>
-          <a href="/sklad">Sk\u0142ad</a>
+          <a href="/sklad">Skład</a>
 
           <a href="/kontakt">Kontakt</a>
         </nav>
@@ -72,9 +72,10 @@ const structuredData = {
     </main>
     <footer class="border-t border-neutral-800 mt-16">
       <div class="container py-8 text-sm text-neutral-400">
-        \u00a9 {new Date().getFullYear()} TRolling Stones \u2013 wszelkie prawa zastrze\u017cone.
+        &copy; {new Date().getFullYear()} TRolling Stones &ndash; wszelkie prawa zastrzeżone.
       </div>
     </footer>
     <CookieBanner />
   </body>
 </html>
+
