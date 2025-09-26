@@ -9,7 +9,9 @@
     "build": "astro build",
     "preview": "astro preview",
     "preview:lan": "astro preview --host",
-    "astro": "astro"
+    "astro": "astro",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.6.0",
@@ -17,6 +19,7 @@
   },
   "devDependencies": {
     "@astrojs/tailwind": "^6.0.2",
+    "@playwright/test": "^1.55.1",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.14",
