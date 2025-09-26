@@ -16,6 +16,20 @@
   >
     &times;
   </button>
+  <button
+    id='lightbox-prev'
+    class='absolute left-4 top-1/2 hidden -translate-y-1/2 p-3 text-xl bg-neutral-800/70 hover:bg-neutral-700/70 text-white rounded-full'
+    aria-label='Poprzednie zdjecie'
+  >
+    &lsaquo;
+  </button>
+  <button
+    id='lightbox-next'
+    class='absolute right-4 top-1/2 hidden -translate-y-1/2 p-3 text-xl bg-neutral-800/70 hover:bg-neutral-700/70 text-white rounded-full'
+    aria-label='Nastepne zdjecie'
+  >
+    &rsaquo;
+  </button>
   <img
     id='lightbox-image'
     alt='Podglad'
@@ -43,16 +57,58 @@
       document.querySelector<HTMLButtonElement>('#lightbox-close');
     const backdropBtn =
       document.querySelector<HTMLButtonElement>('#lightbox-backdrop');
+    const prevBtn =
+      document.querySelector<HTMLButtonElement>('#lightbox-prev');
+    const nextBtn =
+      document.querySelector<HTMLButtonElement>('#lightbox-next');
 
-    function openLightbox(src: string, alt?: string) {
-      if (!imgEl || !overlay) return;
-      imgEl.src = src;
+    let triggers: Element[] = [];
+    let currentIndex = -1;
+
+    function collectTriggers(source: Element) {
+      const group = source.getAttribute('data-lightbox-group');
+      triggers = Array.from(document.querySelectorAll('[data-lightbox]')).filter(
+        (el) => {
+          const elGroup = el.getAttribute('data-lightbox-group');
+          return elGroup === group || (!elGroup && !group);
+        }
+      );
+    }
+
+    function updateNavVisibility() {
+      const hasMultiple = triggers.length > 1;
+      prevBtn?.classList.toggle('hidden', !hasMultiple);
+      nextBtn?.classList.toggle('hidden', !hasMultiple);
+    }
+
+    function render(index: number) {
+      const trigger = triggers[index];
+      if (!trigger || !imgEl) return;
+
+      const full =
+        trigger.getAttribute('data-full') ||
+        trigger.getAttribute('src') ||
+        trigger.getAttribute('href');
+      if (!full) return;
+
+      const alt =
+        trigger.getAttribute('alt') || trigger.getAttribute('data-alt') || '';
+
+      imgEl.src = full;
       imgEl.alt = alt || 'Podglad';
       if (captionEl) captionEl.textContent = alt || '';
+      currentIndex = index;
+      updateNavVisibility();
+    }
+
+    function openLightbox(index: number) {
+      if (!overlay) return;
+      render(index);
       overlay.classList.remove('hidden');
       overlay.classList.add('flex');
       document.body.style.overflow = 'hidden';
     }
+
     function closeLightbox() {
       if (!overlay) return;
       overlay.classList.add('hidden');
@@ -60,6 +116,15 @@
       if (imgEl) imgEl.src = '';
       if (captionEl) captionEl.textContent = '';
       document.body.style.overflow = '';
+      triggers = [];
+      currentIndex = -1;
+      updateNavVisibility();
+    }
+
+    function showRelative(step: number) {
+      if (triggers.length < 2) return;
+      const nextIndex = (currentIndex + step + triggers.length) % triggers.length;
+      render(nextIndex);
     }
 
     // Delegation: elements with data-lightbox
@@ -69,21 +134,31 @@
       const trigger = target.closest('[data-lightbox]');
       if (trigger) {
         e.preventDefault();
-        const full =
-          trigger.getAttribute('data-full') ||
-          trigger.getAttribute('src') ||
-          trigger.getAttribute('href');
-        const alt =
-          trigger.getAttribute('alt') || trigger.getAttribute('data-alt') || '';
-        if (full) openLightbox(full, alt);
+        collectTriggers(trigger);
+        const index = triggers.indexOf(trigger);
+        if (index !== -1) openLightbox(index);
       }
     });
 
     // Close actions
     closeBtn?.addEventListener('click', closeLightbox);
     backdropBtn?.addEventListener('click', closeLightbox);
+    prevBtn?.addEventListener('click', () => showRelative(-1));
+    nextBtn?.addEventListener('click', () => showRelative(1));
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'Escape') {
+        closeLightbox();
+        return;
+      }
+      if (!overlay || overlay.classList.contains('hidden')) return;
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        showRelative(-1);
+      }
+      if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        showRelative(1);
+      }
     });
   </script>
 </div>
