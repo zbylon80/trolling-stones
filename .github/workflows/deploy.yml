@@ -1,4 +1,4 @@
-name: Build and Deploy to Hostinger
+﻿name: Build and Deploy to Hostinger
 
 on:
   push:
@@ -29,6 +29,14 @@ jobs:
         run: |
           npm ci --no-audit --no-fund
 
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright tests
+        env:
+          CI: '1'
+        run: npm run test:e2e
+
       - name: Build
         run: |
           npm run build
@@ -49,3 +57,5 @@ jobs:
             **/.astro/**
             **/.github/**
             **/README*
+
+
