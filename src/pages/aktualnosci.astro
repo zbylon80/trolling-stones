@@ -5,18 +5,38 @@ const facebookPagePluginBase =
   "https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fstones3city&tabs=timeline&small_header=false&adapt_container_width=true&hide_cover=true&show_facepile=false";
 const facebookPluginHeight = 1200;
 const facebookPluginDefaultWidth = 500;
+const facebookProfileUrl = "https://www.facebook.com/stones3city";
 ---
 
 <Layout title="Aktualności - TRolling Stones">
   <section class="container py-12">
     <h1 class="text-3xl font-bold">Aktualności</h1>
     <div class="mt-6 rounded-lg border border-neutral-800 bg-black p-4">
-      <div id="facebook-feed" class="mx-auto w-full max-w-[560px]">
+      <div id="facebook-feed" class="mx-auto w-full max-w-[560px] space-y-4">
+        <div
+          id="facebook-feed-fallback"
+          class="rounded-md border border-neutral-700 bg-neutral-900 p-4 text-center md:hidden"
+        >
+          <p class="text-lg font-semibold">Zobacz nasze aktualności na Facebooku</p>
+          <p class="mt-2 text-sm text-neutral-300">
+            Mobilna wersja strony nie obsługuje podglądu. Dotknij poniższy przycisk, aby przejść do profilu.
+          </p>
+          <a
+            class="mt-4 inline-flex items-center justify-center rounded-md border border-neutral-600 px-4 py-2 text-sm font-medium hover:border-neutral-500 hover:text-white"
+            href={facebookProfileUrl}
+            rel="noopener"
+            target="_blank"
+          >
+            Otwórz profil na Facebooku
+          </a>
+        </div>
         <iframe
           id="facebook-feed-iframe"
+          class="hidden w-full rounded-md md:block"
           data-base-src={facebookPagePluginBase}
           data-base-height={facebookPluginHeight}
           data-current-width={facebookPluginDefaultWidth}
+          data-default-width={facebookPluginDefaultWidth}
           title="Posty z Facebooka - TRolling Stones"
           src={`${facebookPagePluginBase}&width=${facebookPluginDefaultWidth}&height=${facebookPluginHeight}`}
           width={facebookPluginDefaultWidth}
@@ -25,7 +45,8 @@ const facebookPluginDefaultWidth = 500;
           scrolling="no"
           frameborder="0"
           allow="encrypted-media; picture-in-picture; web-share"
-          allowfullscreen>
+          allowfullscreen
+        >
         </iframe>
       </div>
     </div>
@@ -33,55 +54,126 @@ const facebookPluginDefaultWidth = 500;
   <script is:inline>
     const container = document.getElementById('facebook-feed');
     const iframe = document.getElementById('facebook-feed-iframe');
+    const fallback = document.getElementById('facebook-feed-fallback');
 
-    if (container && iframe) {
-      const baseSrc = iframe.dataset.baseSrc ?? '';
-      const baseHeight = Number.parseInt(iframe.dataset.baseHeight ?? '', 10) || iframe.height || 1200;
-
-      const clampWidth = (width) => {
-        const clamped = Math.round(width);
-        return Math.max(180, Math.min(500, clamped));
-      };
-
-      const updateIframe = (width) => {
-        if (!baseSrc) return;
-        const clampedWidth = clampWidth(width);
-        if (iframe.dataset.currentWidth === String(clampedWidth)) return;
-
-        const url = new URL(baseSrc);
-        url.searchParams.set('width', String(clampedWidth));
-        url.searchParams.set('height', String(baseHeight));
-        iframe.src = url.toString();
-        iframe.width = String(clampedWidth);
-        iframe.height = String(baseHeight);
-        iframe.dataset.currentWidth = String(clampedWidth);
-      };
-
-      const updateWidth = () => {
-        const availableWidth = container.clientWidth;
-        if (availableWidth > 0) {
-          updateIframe(availableWidth);
-        }
-      };
-
-      const setupResizeObserver = () => {
-        if (typeof ResizeObserver !== 'undefined') {
-          const observer = new ResizeObserver(() => updateWidth());
-          observer.observe(container);
-          return () => observer.disconnect();
-        }
-
-        const listener = () => updateWidth();
-        window.addEventListener('resize', listener);
-        return () => window.removeEventListener('resize', listener);
-      };
-
-      updateWidth();
-      const cleanup = setupResizeObserver();
-      if (cleanup) {
-        document.addEventListener('astro:before-swap', cleanup, { once: true });
-      }
+    if (!container || !iframe || !fallback) {
+      return;
     }
+
+    const baseSrc = iframe.dataset.baseSrc ?? '';
+    const baseHeight =
+      Number.parseInt(iframe.dataset.baseHeight ?? '', 10) || iframe.height || 1200;
+    const defaultWidth =
+      Number.parseInt(iframe.dataset.defaultWidth ?? '', 10) || 500;
+    const desktopQuery = window.matchMedia('(min-width: 768px)');
+    let cleanupResize = null;
+
+    const clampWidth = (width) => {
+      const clamped = Math.round(width);
+      return Math.max(180, Math.min(500, clamped));
+    };
+
+    const updateIframe = (width) => {
+      if (!baseSrc) {
+        return;
+      }
+
+      const clampedWidth = clampWidth(width);
+      if (
+        iframe.dataset.currentWidth === String(clampedWidth) &&
+        iframe.dataset.loaded === '1'
+      ) {
+        return;
+      }
+
+      const url = new URL(baseSrc);
+      url.searchParams.set('width', String(clampedWidth));
+      url.searchParams.set('height', String(baseHeight));
+      iframe.src = url.toString();
+      iframe.width = String(clampedWidth);
+      iframe.height = String(baseHeight);
+      iframe.dataset.currentWidth = String(clampedWidth);
+      iframe.dataset.loaded = '1';
+    };
+
+    const updateWidth = () => {
+      const availableWidth = container.clientWidth;
+      if (availableWidth > 0) {
+        updateIframe(availableWidth);
+      } else {
+        updateIframe(defaultWidth);
+      }
+    };
+
+    const setupResizeObserver = () => {
+      if (typeof ResizeObserver !== 'undefined') {
+        const observer = new ResizeObserver(() => updateWidth());
+        observer.observe(container);
+        return () => observer.disconnect();
+      }
+
+      const listener = () => updateWidth();
+      window.addEventListener('resize', listener);
+      return () => window.removeEventListener('resize', listener);
+    };
+
+    const activateEmbed = () => {
+      fallback.classList.add('hidden');
+      iframe.classList.remove('hidden');
+      updateWidth();
+
+      if (cleanupResize) {
+        cleanupResize();
+        cleanupResize = null;
+      }
+
+      cleanupResize = setupResizeObserver();
+    };
+
+    const deactivateEmbed = () => {
+      if (cleanupResize) {
+        cleanupResize();
+        cleanupResize = null;
+      }
+
+      iframe.src = 'about:blank';
+      iframe.width = String(defaultWidth);
+      iframe.dataset.currentWidth = String(defaultWidth);
+      delete iframe.dataset.loaded;
+      iframe.classList.add('hidden');
+      fallback.classList.remove('hidden');
+    };
+
+    const handleModeChange = () => {
+      if (desktopQuery.matches) {
+        activateEmbed();
+      } else {
+        deactivateEmbed();
+      }
+    };
+
+    const cleanupMedia = (() => {
+      const listener = () => handleModeChange();
+      if (typeof desktopQuery.addEventListener === 'function') {
+        desktopQuery.addEventListener('change', listener);
+        return () => desktopQuery.removeEventListener('change', listener);
+      }
+
+      desktopQuery.addListener(listener);
+      return () => desktopQuery.removeListener(listener);
+    })();
+
+    handleModeChange();
+
+    document.addEventListener(
+      'astro:before-swap',
+      () => {
+        if (cleanupResize) {
+          cleanupResize();
+        }
+        cleanupMedia?.();
+      },
+      { once: true },
+    );
   </script>
 </Layout>
-
