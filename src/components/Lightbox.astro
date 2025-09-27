@@ -96,7 +96,16 @@
 
       imgEl.src = full;
       imgEl.alt = alt || 'Podglad';
-      if (captionEl) captionEl.textContent = alt || '';
+      const hideCaption = trigger.hasAttribute('data-lightbox-hide-caption');
+      if (captionEl) {
+        if (hideCaption || !alt) {
+          captionEl.textContent = '';
+          captionEl.classList.add('hidden');
+        } else {
+          captionEl.textContent = alt;
+          captionEl.classList.remove('hidden');
+        }
+      }
       currentIndex = index;
       updateNavVisibility();
     }
@@ -114,7 +123,10 @@
       overlay.classList.add('hidden');
       overlay.classList.remove('flex');
       if (imgEl) imgEl.src = '';
-      if (captionEl) captionEl.textContent = '';
+      if (captionEl) {
+        captionEl.textContent = '';
+        captionEl.classList.add('hidden');
+      }
       document.body.style.overflow = '';
       triggers = [];
       currentIndex = -1;
