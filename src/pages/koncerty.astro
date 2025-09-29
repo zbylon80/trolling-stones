@@ -5,7 +5,7 @@ const gigs = [
     date: '2025-12-06',
     city: 'Gdynia',
     venue: 'Blues Club',
-    tickets: null, // sprzedaż wkrótce
+    tickets: 'https://www.kupbilecik.pl/imprezy/178393/gdynia/trolling.stones/?fbclid=IwY2xjawNHhslleHRuA2FlbQIxMABicmlkETBPN1BKejlTMDkzQ2I0dzFyAR4W4ngcY4VxRQ4ienRv9TzSDmHQbZ_GLHKyZcAfwTbdOuTJY2OmlqjwSig9Yw_aem_y9hSvaAwf86E_6Zy5wFcRQ', // tickets available
   },
 ];
 ---
@@ -26,7 +26,7 @@ const gigs = [
             </div>
             <div>
               {g.tickets ? (
-                <a class="px-3 py-1 rounded bg-brand-600 hover:bg-brand-500 text-white" href={g.tickets}>Bilety</a>
+                <a class="px-3 py-1 rounded bg-brand-600 hover:bg-brand-500 text-white" href={g.tickets}>Kup bilety</a>
               ) : (
                 <span class="text-neutral-400">Sprzedaż wkrótce</span>
               )}
@@ -55,4 +55,6 @@ const gigs = [
     offers: g.tickets ? { '@type': 'Offer', url: g.tickets, availability: 'https://schema.org/InStock' } : undefined
   }))
 })}</script>
+
+
 
