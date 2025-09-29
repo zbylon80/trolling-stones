@@ -1,42 +1,109 @@
 ---
 import Layout from "@components/Layout.astro";
+import { news } from "../data/news";
 
+const facebookPageUrl = "https://www.facebook.com/stones3city";
 const facebookPagePluginBase =
   "https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fstones3city&tabs=timeline&small_header=false&adapt_container_width=true&hide_cover=true&show_facepile=false";
 const facebookPluginHeight = 1200;
 const facebookPluginDefaultWidth = 500;
+
+const sortedNews = [...news].sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
 ---
 
 <Layout title="Aktualności - TRolling Stones">
   <section class="container py-12">
     <h1 class="text-3xl font-bold">Aktualności</h1>
-    <div class="mt-6 rounded-lg border border-neutral-800 bg-black p-4">
-      <div id="facebook-feed" class="mx-auto w-full max-w-[560px]">
-        <iframe
-          id="facebook-feed-iframe"
-          data-base-src={facebookPagePluginBase}
-          data-base-height={facebookPluginHeight}
-          data-current-width={facebookPluginDefaultWidth}
-          title="Posty z Facebooka - TRolling Stones"
-          src={`${facebookPagePluginBase}&width=${facebookPluginDefaultWidth}&height=${facebookPluginHeight}`}
-          width={facebookPluginDefaultWidth}
-          height={facebookPluginHeight}
-          style="border:none;overflow:hidden;width:100%;display:block;background:#000"
-          scrolling="no"
-          frameborder="0"
-          allow="encrypted-media; picture-in-picture; web-share"
-          allowfullscreen>
-        </iframe>
+    <p class="mt-2 max-w-2xl text-neutral-300">
+      Bądź na bieżąco z koncertami, premierami i kulisami TRolling Stones.
+    </p>
+
+    <div class="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)]">
+      <div class="space-y-6">
+        {sortedNews.map((item) => (
+          <article class="rounded-xl border border-neutral-800 bg-black/60 p-6 shadow-lg shadow-black/20 backdrop-blur">
+            <time datetime={item.date} class="text-xs font-semibold uppercase tracking-widest text-neutral-400">
+              {new Date(`${item.date}T00:00:00Z`).toLocaleDateString("pl-PL", {
+                day: "2-digit",
+                month: "long",
+                year: "numeric"
+              })}
+            </time>
+            <h2 class="mt-2 text-xl font-semibold text-white">{item.title}</h2>
+            <p class="mt-3 leading-relaxed text-neutral-300">{item.summary}</p>
+            {item.links && (
+              <div class="mt-4 flex flex-wrap gap-3">
+                {item.links.map((link) => (
+                  <a
+                    class="inline-flex items-center gap-2 rounded-md border border-neutral-700 px-3 py-2 text-sm text-neutral-100 transition hover:border-neutral-500 hover:text-white"
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    {link.label}
+                    <span aria-hidden="true">↗</span>
+                  </a>
+                ))}
+              </div>
+            )}
+          </article>
+        ))}
+
+        {sortedNews.length === 0 && (
+          <div class="rounded-lg border border-dashed border-neutral-700 p-6 text-neutral-400">
+            Na razie brak nowych informacji. Zaglądaj do nas ponownie!
+          </div>
+        )}
       </div>
+
+      <aside class="space-y-4 rounded-xl border border-neutral-800 bg-black/60 p-6 shadow-lg shadow-black/20 backdrop-blur">
+        <div>
+          <h2 class="text-lg font-semibold text-white">Profil na Facebooku</h2>
+          <p class="mt-2 text-sm text-neutral-300">
+            Oficjalne aktualności publikujemy na Facebooku. Jeśli widget nie wyświetli treści, skorzystaj z przycisku, aby otworzyć profil bezpośrednio w nowej karcie.
+          </p>
+        </div>
+        <a
+          class="inline-flex w-full items-center justify-center gap-2 rounded-md bg-brand-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-500"
+          href={facebookPageUrl}
+          target="_blank"
+          rel="noopener"
+        >
+          Przejdź na Facebooka
+          <span aria-hidden="true">↗</span>
+        </a>
+        <div id="facebook-feed" class="overflow-hidden rounded-lg border border-neutral-800 bg-black/70">
+          <iframe
+            id="facebook-feed-iframe"
+            data-base-src={facebookPagePluginBase}
+            data-base-height={facebookPluginHeight}
+            data-current-width={facebookPluginDefaultWidth}
+            title="Posty z Facebooka - TRolling Stones"
+            src={`${facebookPagePluginBase}&width=${facebookPluginDefaultWidth}&height=${facebookPluginHeight}`}
+            width={facebookPluginDefaultWidth}
+            height={facebookPluginHeight}
+            style="border:none;overflow:hidden;width:100%;display:block;background:#000"
+            scrolling="no"
+            frameborder="0"
+            allow="encrypted-media; picture-in-picture; web-share"
+            allowfullscreen
+            loading="lazy"
+          ></iframe>
+        </div>
+        <p class="text-xs text-neutral-500">
+          Meta często blokuje osadzanie treści bez zalogowania. W takiej sytuacji użyj przycisku powyżej – tam aktualności na pewno działają.
+        </p>
+      </aside>
     </div>
   </section>
+
   <script is:inline>
-    const container = document.getElementById('facebook-feed');
-    const iframe = document.getElementById('facebook-feed-iframe');
+    const container = document.getElementById("facebook-feed");
+    const iframe = document.getElementById("facebook-feed-iframe");
 
     if (container && iframe) {
-      const baseSrc = iframe.dataset.baseSrc ?? '';
-      const baseHeight = Number.parseInt(iframe.dataset.baseHeight ?? '', 10) || iframe.height || 1200;
+      const baseSrc = iframe.dataset.baseSrc ?? "";
+      const baseHeight = Number.parseInt(iframe.dataset.baseHeight ?? "", 10) || Number(iframe.getAttribute("height")) || 1200;
 
       const clampWidth = (width) => {
         const clamped = Math.round(width);
@@ -49,8 +116,8 @@ const facebookPluginDefaultWidth = 500;
         if (iframe.dataset.currentWidth === String(clampedWidth)) return;
 
         const url = new URL(baseSrc);
-        url.searchParams.set('width', String(clampedWidth));
-        url.searchParams.set('height', String(baseHeight));
+        url.searchParams.set("width", String(clampedWidth));
+        url.searchParams.set("height", String(baseHeight));
         iframe.src = url.toString();
         iframe.width = String(clampedWidth);
         iframe.height = String(baseHeight);
@@ -65,23 +132,22 @@ const facebookPluginDefaultWidth = 500;
       };
 
       const setupResizeObserver = () => {
-        if (typeof ResizeObserver !== 'undefined') {
+        if (typeof ResizeObserver !== "undefined") {
           const observer = new ResizeObserver(() => updateWidth());
           observer.observe(container);
           return () => observer.disconnect();
         }
 
         const listener = () => updateWidth();
-        window.addEventListener('resize', listener);
-        return () => window.removeEventListener('resize', listener);
+        window.addEventListener("resize", listener);
+        return () => window.removeEventListener("resize", listener);
       };
 
       updateWidth();
       const cleanup = setupResizeObserver();
       if (cleanup) {
-        document.addEventListener('astro:before-swap', cleanup, { once: true });
+        document.addEventListener("astro:before-swap", cleanup, { once: true });
       }
     }
   </script>
 </Layout>
-
