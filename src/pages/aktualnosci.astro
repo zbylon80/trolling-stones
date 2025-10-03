@@ -3,10 +3,6 @@ import Layout from "@components/Layout.astro";
 import { news } from "../data/news";
 
 const facebookPageUrl = "https://www.facebook.com/stones3city";
-const facebookPagePluginBase =
-  "https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Fstones3city&tabs=timeline&small_header=false&adapt_container_width=true&hide_cover=true&show_facepile=false";
-const facebookPluginHeight = 1200;
-const facebookPluginDefaultWidth = 500;
 
 const sortedNews = [...news].sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
 ---
@@ -41,7 +37,7 @@ const sortedNews = [...news].sort((a, b) => (a.date < b.date ? 1 : a.date > b.da
                     rel="noopener"
                   >
                     {link.label}
-                    <span aria-hidden="true">↗</span>
+                    <span aria-hidden="true">&rarr;</span>
                   </a>
                 ))}
               </div>
@@ -58,9 +54,9 @@ const sortedNews = [...news].sort((a, b) => (a.date < b.date ? 1 : a.date > b.da
 
       <aside class="space-y-4 rounded-xl border border-neutral-800 bg-black/60 p-6 shadow-lg shadow-black/20 backdrop-blur">
         <div>
-          <h2 class="text-lg font-semibold text-white">Profil na Facebooku</h2>
+          <h2 class="text-lg font-semibold text-white">Śledź nas na Facebooku</h2>
           <p class="mt-2 text-sm text-neutral-300">
-            Oficjalne aktualności publikujemy na Facebooku. Jeśli widget nie wyświetli treści, skorzystaj z przycisku, aby otworzyć profil bezpośrednio w nowej karcie.
+            Facebook pokazuje najświeższe zapowiedzi koncertów i materiały zza kulis. Kliknij przycisk poniżej, aby otworzyć profil w nowej karcie.
           </p>
         </div>
         <a
@@ -70,84 +66,9 @@ const sortedNews = [...news].sort((a, b) => (a.date < b.date ? 1 : a.date > b.da
           rel="noopener"
         >
           Przejdź na Facebooka
-          <span aria-hidden="true">↗</span>
+          <span aria-hidden="true">&rarr;</span>
         </a>
-        <div id="facebook-feed" class="overflow-hidden rounded-lg border border-neutral-800 bg-black/70">
-          <iframe
-            id="facebook-feed-iframe"
-            data-base-src={facebookPagePluginBase}
-            data-base-height={facebookPluginHeight}
-            data-current-width={facebookPluginDefaultWidth}
-            title="Posty z Facebooka - TRolling Stones"
-            src={`${facebookPagePluginBase}&width=${facebookPluginDefaultWidth}&height=${facebookPluginHeight}`}
-            width={facebookPluginDefaultWidth}
-            height={facebookPluginHeight}
-            style="border:none;overflow:hidden;width:100%;display:block;background:#000"
-            scrolling="no"
-            frameborder="0"
-            allow="encrypted-media; picture-in-picture; web-share"
-            allowfullscreen
-            loading="lazy"
-          ></iframe>
-        </div>
-        <p class="text-xs text-neutral-500">
-          Meta często blokuje osadzanie treści bez zalogowania. W takiej sytuacji użyj przycisku powyżej – tam aktualności na pewno działają.
-        </p>
       </aside>
     </div>
   </section>
-
-  <script is:inline>
-    const container = document.getElementById("facebook-feed");
-    const iframe = document.getElementById("facebook-feed-iframe");
-
-    if (container && iframe) {
-      const baseSrc = iframe.dataset.baseSrc ?? "";
-      const baseHeight = Number.parseInt(iframe.dataset.baseHeight ?? "", 10) || Number(iframe.getAttribute("height")) || 1200;
-
-      const clampWidth = (width) => {
-        const clamped = Math.round(width);
-        return Math.max(180, Math.min(500, clamped));
-      };
-
-      const updateIframe = (width) => {
-        if (!baseSrc) return;
-        const clampedWidth = clampWidth(width);
-        if (iframe.dataset.currentWidth === String(clampedWidth)) return;
-
-        const url = new URL(baseSrc);
-        url.searchParams.set("width", String(clampedWidth));
-        url.searchParams.set("height", String(baseHeight));
-        iframe.src = url.toString();
-        iframe.width = String(clampedWidth);
-        iframe.height = String(baseHeight);
-        iframe.dataset.currentWidth = String(clampedWidth);
-      };
-
-      const updateWidth = () => {
-        const availableWidth = container.clientWidth;
-        if (availableWidth > 0) {
-          updateIframe(availableWidth);
-        }
-      };
-
-      const setupResizeObserver = () => {
-        if (typeof ResizeObserver !== "undefined") {
-          const observer = new ResizeObserver(() => updateWidth());
-          observer.observe(container);
-          return () => observer.disconnect();
-        }
-
-        const listener = () => updateWidth();
-        window.addEventListener("resize", listener);
-        return () => window.removeEventListener("resize", listener);
-      };
-
-      updateWidth();
-      const cleanup = setupResizeObserver();
-      if (cleanup) {
-        document.addEventListener("astro:before-swap", cleanup, { once: true });
-      }
-    }
-  </script>
 </Layout>
