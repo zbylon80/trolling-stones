@@ -14,61 +14,61 @@ const sortedNews = [...news].sort((a, b) => (a.date < b.date ? 1 : a.date > b.da
       Bądź na bieżąco z koncertami, premierami i kulisami TRolling Stones.
     </p>
 
-    <div class="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)]">
-      <div class="space-y-6">
-        {sortedNews.map((item) => (
-          <article class="rounded-xl border border-neutral-800 bg-black/60 p-6 shadow-lg shadow-black/20 backdrop-blur">
-            <time datetime={item.date} class="text-xs font-semibold uppercase tracking-widest text-neutral-400">
-              {new Date(`${item.date}T00:00:00Z`).toLocaleDateString("pl-PL", {
-                day: "2-digit",
-                month: "long",
-                year: "numeric"
-              })}
-            </time>
-            <h2 class="mt-2 text-xl font-semibold text-white">{item.title}</h2>
-            <p class="mt-3 leading-relaxed text-neutral-300">{item.summary}</p>
-            {item.links && (
-              <div class="mt-4 flex flex-wrap gap-3">
-                {item.links.map((link) => (
-                  <a
-                    class="inline-flex items-center gap-2 rounded-md border border-neutral-700 px-3 py-2 text-sm text-neutral-100 transition hover:border-neutral-500 hover:text-white"
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    {link.label}
-                    <span aria-hidden="true">&rarr;</span>
-                  </a>
-                ))}
-              </div>
-            )}
-          </article>
-        ))}
+    <div class="mt-8 space-y-6">
+      {sortedNews.map((item) => (
+        <article class="rounded-xl border border-neutral-800 bg-black/60 p-6 shadow-lg shadow-black/20 backdrop-blur">
+          <time datetime={item.date} class="text-xs font-semibold uppercase tracking-widest text-neutral-400">
+            {new Date(`${item.date}T00:00:00Z`).toLocaleDateString("pl-PL", {
+              day: "2-digit",
+              month: "long",
+              year: "numeric"
+            })}
+          </time>
+          <h2 class="mt-2 text-xl font-semibold text-white">{item.title}</h2>
+          <p class="mt-3 leading-relaxed text-neutral-300">{item.summary}</p>
+          {item.links && (
+            <div class="mt-4 flex flex-wrap gap-3">
+              {item.links.map((link) => (
+                <a
+                  class="inline-flex items-center gap-2 rounded-md border border-neutral-700 px-3 py-2 text-sm text-neutral-100 transition hover:border-neutral-500 hover:text-white"
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener"
+                >
+                  {link.label}
+                  <span aria-hidden="true">&rarr;</span>
+                </a>
+              ))}
+            </div>
+          )}
+        </article>
+      ))}
 
-        {sortedNews.length === 0 && (
-          <div class="rounded-lg border border-dashed border-neutral-700 p-6 text-neutral-400">
-            Na razie brak nowych informacji. Zaglądaj do nas ponownie!
-          </div>
-        )}
-      </div>
-
-      <aside class="space-y-4 rounded-xl border border-neutral-800 bg-black/60 p-6 shadow-lg shadow-black/20 backdrop-blur">
-        <div>
-          <h2 class="text-lg font-semibold text-white">Śledź nas na Facebooku</h2>
-          <p class="mt-2 text-sm text-neutral-300">
-            Facebook pokazuje najświeższe zapowiedzi koncertów i materiały zza kulis. Kliknij przycisk poniżej, aby otworzyć profil w nowej karcie.
-          </p>
+      {sortedNews.length === 0 && (
+        <div class="rounded-lg border border-dashed border-neutral-700 p-6 text-neutral-400">
+          Na razie brak nowych informacji. Zaglądaj do nas ponownie!
         </div>
+      )}
+    </div>
+
+    <div class="mt-12 rounded-xl border border-neutral-800 bg-black/60 p-6 text-center shadow-lg shadow-black/20 backdrop-blur">
+      <h2 class="text-lg font-semibold text-white">Śledź nas na Facebooku</h2>
+      <p class="mt-2 text-sm text-neutral-300">
+        Facebook pokazuje najświeższe zapowiedzi koncertów i materiały zza kulis. Kliknij przycisk poniżej, aby otworzyć profil w nowej karcie.
+      </p>
+      <div class="mt-6 flex justify-center">
         <a
-          class="inline-flex w-full items-center justify-center gap-2 rounded-md bg-brand-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-500"
+          class="inline-flex items-center gap-3 rounded-full bg-gradient-to-b from-brand-500 to-brand-700 px-8 py-3 text-base font-semibold text-white shadow-[0_10px_30px_-12px_rgba(190,18,60,0.75)] transition hover:from-brand-400 hover:to-brand-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-300"
           href={facebookPageUrl}
           target="_blank"
           rel="noopener"
         >
-          Przejdź na Facebooka
-          <span aria-hidden="true">&rarr;</span>
+          <span>Przejdź na Facebooka</span>
+          <svg class="h-4 w-4 text-white" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path d="M13.5 2a.75.75 0 0 1 .75.75v4a.75.75 0 1 1-1.5 0V4.56L8.28 9.53a.75.75 0 0 1-1.06-1.06L11.69 3.5H9.25a.75.75 0 0 1 0-1.5h4.25ZM5 3.75A2.75 2.75 0 0 0 2.25 6.5v7.75A2.75 2.75 0 0 0 5 17h7.75A2.75 2.75 0 0 0 15.5 14.25v-3a.75.75 0 0 0-1.5 0v3a1.25 1.25 0 0 1-1.25 1.25H5A1.25 1.25 0 0 1 3.75 14.25V6.5A1.25 1.25 0 0 1 5 5.25h3a.75.75 0 0 0 0-1.5H5Z" />
+          </svg>
         </a>
-      </aside>
+      </div>
     </div>
   </section>
 </Layout>
