@@ -1,0 +1,24 @@
+[
+  {
+    "id": "2025-10-11-gdynia-xvbcvbcvb",
+    "date": "2025-10-11",
+    "city": "Gdynia",
+    "venue": "xvbcvbcvb",
+    "description": "tddfadfsadf",
+    "logo": "/images/logo_blu.png",
+    "ticketsEnabled": false,
+    "ticketsUrl": "https://www.kupbilecik.pl/imprezy/178393/gdynia/trolling.stones/?fbclid=IwY2xjawNHhslleHRuA2FlbQIxMABicmlkETBPN1BKejlTMDkzQ2I0dzFyAR4W4ngcY4VxRQ4ienRv9TzSDmHQbZ_GLHKyZcAfwTbdOuTJY2OmlqjwSig9Yw_aem_y9hSvaAwf86E_6Zy5wFcRQ",
+    "ticketsSoldOut": false
+  },
+  {
+    "id": "2025-12-06-gdynia-blues-club",
+    "date": "2025-12-06",
+    "city": "Gdynia",
+    "venue": "Blues Club",
+    "description": "Specjalny koncert z goscmi i swiatecznymi niespodziankami.",
+    "logo": "/images/logo_blu.png",
+    "ticketsEnabled": true,
+    "ticketsUrl": "https://www.kupbilecik.pl/imprezy/178393/gdynia/trolling.stones/?fbclid=IwY2xjawNHhslleHRuA2FlbQIxMABicmlkETBPN1BKejlTMDkzQ2I0dzFyAR4W4ngcY4VxRQ4ienRv9TzSDmHQbZ_GLHKyZcAfwTbdOuTJY2OmlqjwSig9Yw_aem_y9hSvaAwf86E_6Zy5wFcRQ",
+    "ticketsSoldOut": false
+  }
+]
