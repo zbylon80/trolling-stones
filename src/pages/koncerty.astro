@@ -1,33 +1,25 @@
-﻿---
+---
 import Layout from "@components/Layout.astro";
-import { readGigs } from "../utils/gigs";
-
-export const prerender = false;
-
-const gigs = await readGigs();
-const sortedGigs = [...gigs].sort((a, b) => a.date.localeCompare(b.date));
-const dateFormatter = new Intl.DateTimeFormat('pl-PL', {
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric',
-});
-
-const displayGigs = sortedGigs.map((gig) => {
-  const parsed = new Date(`${gig.date}T00:00:00`);
-  const displayDate = Number.isNaN(parsed.getTime()) ? gig.date : dateFormatter.format(parsed);
-  return { ...gig, displayDate };
-});
+const gigs = [
+  {
+    date: '2025-12-06',
+    city: 'Gdynia',
+    venue: 'Blues Club',
+    logo: '/images/logo_blu.png',
+    tickets: 'https://www.kupbilecik.pl/imprezy/178393/gdynia/trolling.stones/?fbclid=IwY2xjawNHhslleHRuA2FlbQIxMABicmlkETBPN1BKejlTMDkzQ2I0dzFyAR4W4ngcY4VxRQ4ienRv9TzSDmHQbZ_GLHKyZcAfwTbdOuTJY2OmlqjwSig9Yw_aem_y9hSvaAwf86E_6Zy5wFcRQ', // tickets available
+  },
+];
 ---
 <Layout title="Koncerty - TRolling Stones">
   <section class="container py-12">
     <h1 class="text-3xl font-bold">Koncerty</h1>
-    <p class="mt-2 text-neutral-300">Nadchodzace daty wystepow.</p>
+    <p class="mt-2 text-neutral-300">Nadchodzące daty występów.</p>
 
     <div class="mt-6 divide-y divide-neutral-800 border border-neutral-800 rounded-lg overflow-hidden">
-      {displayGigs.length === 0 ? (
-        <div class="p-6 text-neutral-400">Brak ogloszonych koncertow.</div>
+      {gigs.length === 0 ? (
+        <div class="p-6 text-neutral-400">Brak ogłoszonych koncertów.</div>
       ) : (
-        displayGigs.map((g) => (
+        gigs.map(g => (
           <div class="p-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div class="flex items-start gap-4">
               {g.logo && (
@@ -38,25 +30,16 @@ const displayGigs = sortedGigs.map((gig) => {
                   loading="lazy"
                 />
               )}
-              <div class="space-y-2">
-                <div>
-                  <div class="font-semibold">{g.displayDate}</div>
-                  <div class="text-neutral-300">{g.city} - {g.venue}</div>
-                </div>
-                {g.description && (
-                  <p class="text-sm text-neutral-400 whitespace-pre-line">{g.description}</p>
-                )}
+              <div>
+                <div class="font-semibold">{new Date(g.date).toLocaleDateString("pl-PL")}</div>
+                <div class="text-neutral-300">{g.city} - {g.venue}</div>
               </div>
             </div>
             <div class="flex w-full justify-start sm:w-auto sm:justify-end">
-              {g.ticketsSoldOut ? (
-                <span class="px-3 py-1 rounded border border-neutral-700 bg-neutral-900 text-neutral-300 uppercase tracking-wide">
-                  SOLD OUT
-                </span>
-              ) : g.ticketsEnabled && g.ticketsUrl ? (
-                <a class="px-3 py-1 rounded bg-brand-600 hover:bg-brand-500 text-white" href={g.ticketsUrl}>Kup bilety</a>
+              {g.tickets ? (
+                <a class="px-3 py-1 rounded bg-brand-600 hover:bg-brand-500 text-white" href={g.tickets}>Kup bilety</a>
               ) : (
-                <span class="text-neutral-400">Sprzedaz wkrotce</span>
+                <span class="text-neutral-400">Sprzedaż wkrótce</span>
               )}
             </div>
           </div>
@@ -68,7 +51,7 @@ const displayGigs = sortedGigs.map((gig) => {
 
 <script type="application/ld+json">{JSON.stringify({
   '@context': 'https://schema.org',
-  '@graph': displayGigs.map((g) => ({
+  '@graph': gigs.map(g => ({
     '@type': 'MusicEvent',
     name: `TRolling Stones - ${g.venue}`,
     startDate: g.date,
@@ -76,15 +59,13 @@ const displayGigs = sortedGigs.map((gig) => {
     location: {
       '@type': 'Place',
       name: g.venue,
-      address: { '@type': 'PostalAddress', addressLocality: g.city, addressCountry: 'PL' },
+      address: { '@type': 'PostalAddress', addressLocality: g.city, addressCountry: 'PL' }
     },
     performer: { '@type': 'MusicGroup', name: 'TRolling Stones' },
-    image: g.logo ? [g.logo] : undefined,
     url: (Astro.site?.origin ? `${Astro.site.origin}/koncerty` : '/koncerty'),
-    offers: g.ticketsSoldOut
-      ? { '@type': 'Offer', availability: 'https://schema.org/SoldOut' }
-      : g.ticketsEnabled && g.ticketsUrl
-        ? { '@type': 'Offer', url: g.ticketsUrl, availability: 'https://schema.org/InStock' }
-        : undefined,
-  })),
+    offers: g.tickets ? { '@type': 'Offer', url: g.tickets, availability: 'https://schema.org/InStock' } : undefined
+  }))
 })}</script>
+
+
+
