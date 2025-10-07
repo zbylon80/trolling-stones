@@ -19,13 +19,19 @@ const sections = [
 ];
 
 const activeSection = "gigs";
-const pageTitle = isAuthenticated ? "Panel treści" : "Logowanie do panelu";
+const pageTitle = isAuthenticated ? "Panel treÅ›ci" : "Logowanie do panelu";
 ---
 <AdminLayout title={`Panel administracyjny - ${pageTitle}`}>
   {isAuthenticated ? (
     <section class="space-y-8">
       <header class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
+        <div class="flex flex-col gap-2">
+          <a
+            href="/"
+            class="inline-flex w-fit items-center rounded border border-neutral-700 px-3 py-1 text-sm font-semibold uppercase tracking-wide hover:bg-neutral-900 mb-2"
+          >
+            TRolling Stones
+          </a>
           <h1 class="text-3xl font-semibold">Panel tresci</h1>
           <p class="text-neutral-400">Wybierz zakladke do edycji. Aktualnie dostepna jest sekcja koncertowa.</p>
         </div>
@@ -63,7 +69,7 @@ const pageTitle = isAuthenticated ? "Panel treści" : "Logowanie do panelu";
       </nav>
 
       <p class="text-sm text-neutral-400">
-        {sections.find((section) => section.id === activeSection)?.note ?? "Funkcje dla tej sekcji pojawią się wkrótce."}
+        {sections.find((section) => section.id === activeSection)?.note ?? "Funkcje dla tej sekcji pojawiÄ… siÄ™ wkrÃ³tce."}
       </p>
 
       <div id="status" class="hidden rounded border border-neutral-700 bg-neutral-900 px-4 py-3 text-sm"></div>
@@ -242,6 +248,12 @@ const pageTitle = isAuthenticated ? "Panel treści" : "Logowanie do panelu";
     </section>
   ) : (
     <section class="mx-auto max-w-md rounded border border-neutral-800 bg-neutral-950 p-8 shadow-sm">
+      <a
+        href="/"
+        class="inline-flex w-fit items-center rounded border border-neutral-700 px-3 py-1 text-sm font-semibold uppercase tracking-wide hover:bg-neutral-900 mb-4"
+      >
+        TRolling Stones
+      </a>
       <h1 class="text-2xl font-semibold">Panel tresci</h1>
       <p class="mt-2 text-sm text-neutral-400">Podaj haslo, aby uzyskac dostep.</p>
       <form id="login-form" class="mt-6 space-y-4">
