@@ -2,7 +2,6 @@ import crypto from 'node:crypto';
 
 export const adminCookieName = 'admin_session';
 const sessionTtlMs = 1000 * 60 * 60 * 12;
-const sessions = new Map<string, number>();
 
 const envPassword = (() => {
   const envSource =
@@ -23,40 +22,60 @@ export function verifyPassword(candidate: string): boolean {
   return candidate === requireAdminPassword();
 }
 
+function signSessionPayload(payload: string): Buffer {
+  const hmac = crypto.createHmac('sha256', requireAdminPassword());
+  hmac.update(payload);
+  return hmac.digest();
+}
+
 export function createSession(): string {
-  purgeExpiredSessions();
-  const token = crypto.randomBytes(24).toString('hex');
-  sessions.set(token, Date.now());
-  return token;
+  const issuedAt = Date.now();
+  const nonce = crypto.randomBytes(16).toString('hex');
+  const payload = `${issuedAt}:${nonce}`;
+  const signature = signSessionPayload(payload).toString('hex');
+  return `${payload}.${signature}`;
 }
 
 export function isSessionValid(token: string | undefined | null): boolean {
   if (!token) {
     return false;
   }
-  const created = sessions.get(token);
-  if (!created) {
+
+  const [payload, signature] = token.split('.');
+  if (!payload || !signature) {
     return false;
   }
-  if (Date.now() - created > sessionTtlMs) {
-    sessions.delete(token);
+
+  let expectedSignature: Buffer;
+  let providedSignature: Buffer;
+  try {
+    expectedSignature = signSessionPayload(payload);
+    providedSignature = Buffer.from(signature, 'hex');
+  } catch {
     return false;
   }
+
+  if (expectedSignature.length !== providedSignature.length) {
+    return false;
+  }
+
+  if (!crypto.timingSafeEqual(expectedSignature, providedSignature)) {
+    return false;
+  }
+
+  const [issuedAtRaw] = payload.split(':');
+  const issuedAt = Number.parseInt(issuedAtRaw, 10);
+  if (!Number.isFinite(issuedAt)) {
+    return false;
+  }
+
+  if (Date.now() - issuedAt > sessionTtlMs) {
+    return false;
+  }
+
   return true;
 }
 
-export function destroySession(token: string | undefined | null): void {
-  if (!token) {
-    return;
-  }
-  sessions.delete(token);
-}
-
-function purgeExpiredSessions(): void {
-  const now = Date.now();
-  for (const [token, created] of sessions.entries()) {
-    if (now - created > sessionTtlMs) {
-      sessions.delete(token);
-    }
-  }
+export function destroySession(_: string | undefined | null): void {
+  // Stateless sessions rely on cookie removal to invalidate tokens.
 }

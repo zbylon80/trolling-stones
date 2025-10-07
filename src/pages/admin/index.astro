@@ -295,11 +295,38 @@ const pageTitle = isAuthenticated ? "Panel treÅ›ci" : "Logowanie do panelu";
       statusBox.dataset.timerId = String(timerId);
     }
 
-    async function callApi(path, options) {
-      const response = await fetch(path, {
-        headers: { 'content-type': 'application/json' },
-        credentials: 'same-origin',
+    const envSource =
+      typeof import.meta !== 'undefined' && import.meta.env && typeof import.meta.env === 'object'
+        ? import.meta.env
+        : {};
+    const rawApiUrl = typeof envSource.VITE_API_URL === 'string' ? envSource.VITE_API_URL.trim() : '';
+    const useAbsoluteApiBase =
+      rawApiUrl !== '' &&
+      (envSource.PROD === 'true' ||
+        envSource.PROD === true ||
+        (typeof envSource.VITE_USE_REMOTE_API === 'string' && envSource.VITE_USE_REMOTE_API.toLowerCase() === 'true'));
+    const API_BASE_URL = useAbsoluteApiBase ? rawApiUrl.replace(/\/+$/, '') : '';
+
+    const resolveApiUrl = (path) => {
+      if (!path) {
+        return API_BASE_URL || '/';
+      }
+      if (/^https?:\/\//i.test(path)) {
+        return path;
+      }
+      const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+      return API_BASE_URL ? `${API_BASE_URL}${normalizedPath}` : normalizedPath;
+    };
+
+    async function callApi(path, options = {}) {
+      const baseHeaders = {
+        'content-type': 'application/json',
+        ...(options.headers ?? {}),
+      };
+      const response = await fetch(resolveApiUrl(path), {
+        credentials: 'include',
         ...options,
+        headers: baseHeaders,
       });
       const data = await response.json().catch(() => ({}));
       if (!response.ok) {
@@ -333,12 +360,14 @@ const pageTitle = isAuthenticated ? "Panel treÅ›ci" : "Logowanie do panelu";
     const logoutButton = document.getElementById('logout-button');
     if (logoutButton) {
       logoutButton.addEventListener('click', async () => {
+        logoutButton.disabled = true;
         try {
-          await callApi('/api/logout', { method: 'POST', body: '{}' });
-          window.location.reload();
+          await callApi('/api/logout', { method: 'POST', body: '{}', keepalive: true });
         } catch (error) {
           const message = error instanceof Error ? error.message : 'Nie udalo sie wylogowac.';
           showStatus(message, 'error');
+        } finally {
+          window.location.href = resolveApiUrl('/api/logout?redirect=/admin');
         }
       });
     }
