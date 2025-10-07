@@ -8,6 +8,7 @@
     "dev:lan": "astro dev --host",
     "build": "astro build",
     "preview": "astro preview",
+    "start": "node ./dist/server/entry.mjs",
     "preview:lan": "astro preview --host",
     "astro": "astro"
   },
