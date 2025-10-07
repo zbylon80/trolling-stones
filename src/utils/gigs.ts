@@ -1,4 +1,6 @@
-import { readFile, writeFile } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 export type Gig = {
@@ -13,12 +15,30 @@ export type Gig = {
   ticketsSoldOut: boolean;
 };
 
-const gigsFileUrl = new URL('../data/gigs.json', import.meta.url);
-const gigsFilePath = fileURLToPath(gigsFileUrl);
+const gigFileCandidates = [
+  process.env.GIGS_FILE_PATH ? resolve(process.cwd(), process.env.GIGS_FILE_PATH) : undefined,
+  fileURLToPath(new URL('../../src/data/gigs.json', import.meta.url)),
+  fileURLToPath(new URL('../data/gigs.json', import.meta.url)),
+].filter(Boolean) as string[];
+
+const preferredGigFilePath = gigFileCandidates[0];
+
+function resolveGigFileForRead(): string {
+  for (const candidate of gigFileCandidates) {
+    if (existsSync(candidate)) {
+      return candidate;
+    }
+  }
+  return preferredGigFilePath;
+}
+
+async function ensureGigDirectory(filePath: string): Promise<void> {
+  await mkdir(dirname(filePath), { recursive: true });
+}
 
 export async function readGigs(): Promise<Gig[]> {
   try {
-    const data = await readFile(gigsFilePath, 'utf-8');
+    const data = await readFile(resolveGigFileForRead(), 'utf-8');
     const parsed = JSON.parse(data);
     if (!Array.isArray(parsed)) {
       return [];
@@ -36,7 +56,8 @@ export async function writeGigs(gigs: Gig[]): Promise<void> {
   const sanitized = gigs.map(normalizeGig).filter(Boolean) as Gig[];
   const sorted = [...sanitized].sort((a, b) => a.date.localeCompare(b.date));
   const payload = JSON.stringify(sorted, null, 2);
-  await writeFile(gigsFilePath, payload, 'utf-8');
+  await ensureGigDirectory(preferredGigFilePath);
+  await writeFile(preferredGigFilePath, payload, 'utf-8');
 }
 
 function normalizeGig(value: unknown): Gig | null {
