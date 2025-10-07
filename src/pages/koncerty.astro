@@ -21,11 +21,11 @@ const displayGigs = sortedGigs.map((gig) => {
 <Layout title="Koncerty - TRolling Stones">
   <section class="container py-12">
     <h1 class="text-3xl font-bold">Koncerty</h1>
-    <p class="mt-2 text-neutral-300">Nadchodzace daty wystepow.</p>
+    <p class="mt-2 text-neutral-300">Nadchodzące daty występów.</p>
 
     <div class="mt-6 divide-y divide-neutral-800 border border-neutral-800 rounded-lg overflow-hidden">
       {displayGigs.length === 0 ? (
-        <div class="p-6 text-neutral-400">Brak ogloszonych koncertow.</div>
+        <div class="p-6 text-neutral-400">Brak ogłoszonych koncertów.</div>
       ) : (
         displayGigs.map((g) => (
           <div class="p-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
