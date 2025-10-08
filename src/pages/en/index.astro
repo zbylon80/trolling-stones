@@ -1,0 +1,63 @@
+---
+import Layout from "@components/Layout.astro";
+import YouTubeCarousel from "@components/YouTubeCarousel.astro";
+---
+<Layout
+  lang="en"
+  title="TRolling Stones - official website"
+  description="Music, shows, photos and fresh news from TRolling Stones."
+>
+  <section class="container py-12 md:py-16">
+    <h1 class="sr-only">TRolling Stones - official website</h1>
+    <img
+      src="/images/hero.jpg"
+      alt="TRolling Stones - Tribute to The Rolling Stones"
+      class="w-full max-w-3xl rounded-lg mx-auto"
+      loading="eager"
+      width="1200"
+      height="1200"
+    />
+    <p class="mt-6 max-w-2xl text-neutral-300 mx-auto text-center">
+      Rock'n'roll with pulsating energy. Check our upcoming shows, watch the clips and stay up to date with the latest news.
+    </p>
+    <div class="mt-8 flex gap-3 justify-center">
+      <a class="px-4 py-2 rounded bg-brand-600 hover:bg-brand-500 text-white" href="/en/koncerty">See shows</a>
+      <a class="px-4 py-2 rounded border border-neutral-700 hover:border-neutral-600" href="/en/aktualnosci">Latest news</a>
+    </div>
+  </section>
+
+  <section class="container py-10">
+    <h2 class="text-2xl font-semibold mb-4">Latest videos</h2>
+    <YouTubeCarousel />
+  </section>
+
+  <section class="container py-10">
+    <h2 class="text-2xl font-semibold mb-4">Listen and follow</h2>
+    <ul class="grid md:grid-cols-4 gap-4 text-neutral-300">
+      <li>
+        <a class="inline-flex items-center gap-2" href="https://www.youtube.com/@TRollnStones" target="_blank" rel="noopener">
+          <img src="https://cdn.simpleicons.org/youtube/ffffff" alt="" width="20" height="20" loading="lazy" />
+          <span>YouTube</span>
+        </a>
+      </li>
+      <li>
+        <a class="inline-flex items-center gap-2" href="https://www.facebook.com/stones3city" target="_blank" rel="noopener">
+          <img src="https://cdn.simpleicons.org/facebook/ffffff" alt="" width="20" height="20" loading="lazy" />
+          <span>Facebook</span>
+        </a>
+      </li>
+      <li>
+        <a class="inline-flex items-center gap-2" href="https://www.instagram.com/trollnstones/?hl=en" target="_blank" rel="noopener">
+          <img src="https://cdn.simpleicons.org/instagram/ffffff" alt="" width="20" height="20" loading="lazy" />
+          <span>Instagram</span>
+        </a>
+      </li>
+      <li>
+        <a class="inline-flex items-center gap-2" href="https://www.tiktok.com/@trollnstones" target="_blank" rel="noopener">
+          <img src="https://cdn.simpleicons.org/tiktok/ffffff" alt="" width="20" height="20" loading="lazy" />
+          <span>TikTok</span>
+        </a>
+      </li>
+    </ul>
+  </section>
+</Layout>
