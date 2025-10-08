@@ -1,0 +1,80 @@
+---
+import Layout from "@components/Layout.astro";
+
+const gigs = [
+  {
+    date: "2025-12-06",
+    city: "Gdynia",
+    venue: "Blues Club",
+    logo: "/images/logo_blu.png",
+    tickets:
+      "https://www.kupbilecik.pl/imprezy/178393/gdynia/trolling.stones/?fbclid=IwY2xjawNHhslleHRuA2FlbQIxMABicmlkETBPN1BKejlTMDkzQ2I0dzFyAR4W4ngcY4VxRQ4ienRv9TzSDmHQbZ_GLHKyZcAfwTbdOuTJY2OmlqjwSig9Yw_aem_y9hSvaAwf86E_6Zy5wFcRQ"
+  }
+];
+---
+<Layout lang="en" title="Shows - TRolling Stones">
+  <section class="container py-12">
+    <h1 class="text-3xl font-bold">Shows</h1>
+    <p class="mt-2 text-neutral-300">Upcoming show dates.</p>
+
+    <div class="mt-6 divide-y divide-neutral-800 border border-neutral-800 rounded-lg overflow-hidden">
+      {gigs.length === 0 ? (
+        <div class="p-6 text-neutral-400">No shows announced yet.</div>
+      ) : (
+        gigs.map((g) => (
+          <div class="p-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div class="flex items-start gap-4">
+              {g.logo && (
+                <img
+                  src={g.logo}
+                  alt={`Logo ${g.venue}`}
+                  class="h-16 w-16 flex-shrink-0 rounded-lg border border-neutral-800 bg-white/5 object-contain p-2"
+                  loading="lazy"
+                />
+              )}
+              <div>
+                <div class="font-semibold">
+                  {new Date(g.date).toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric" })}
+                </div>
+                <div class="text-neutral-300">
+                  {g.city} - {g.venue}
+                </div>
+              </div>
+            </div>
+            <div class="flex w-full justify-start sm:w-auto sm:justify-end">
+              {g.tickets ? (
+                <a class="px-3 py-1 rounded bg-brand-600 hover:bg-brand-500 text-white" href={g.tickets}>
+                  Buy tickets
+                </a>
+              ) : (
+                <span class="text-neutral-400">Tickets soon</span>
+              )}
+            </div>
+          </div>
+        ))
+      )}
+    </div>
+  </section>
+</Layout>
+
+<script
+  type="application/ld+json"
+>{JSON.stringify({
+  "@context": "https://schema.org",
+  "@graph": gigs.map((g) => ({
+    "@type": "MusicEvent",
+    name: `TRolling Stones - ${g.venue}`,
+    startDate: g.date,
+    eventStatus: "https://schema.org/EventScheduled",
+    location: {
+      "@type": "Place",
+      name: g.venue,
+      address: { "@type": "PostalAddress", addressLocality: g.city, addressCountry: "PL" }
+    },
+    performer: { "@type": "MusicGroup", name: "TRolling Stones" },
+    url: Astro.site?.origin ? `${Astro.site.origin}/en/koncerty` : "/en/koncerty",
+    offers: g.tickets
+      ? { "@type": "Offer", url: g.tickets, availability: "https://schema.org/InStock" }
+      : undefined
+  }))
+})}</script>

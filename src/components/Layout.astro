@@ -2,31 +2,80 @@
 import "../styles/global.css";
 import CookieBanner from "./CookieBanner.astro";
 
-const siteOrigin = Astro.site?.origin ?? Astro.url?.origin ?? '';
-const pathName = Astro.url.pathname ?? '/';
+const siteOrigin = Astro.site?.origin ?? Astro.url?.origin ?? "";
+const rawPathName = Astro.url.pathname ?? "/";
+const pathName =
+  rawPathName.length > 1 && rawPathName.endsWith("/")
+    ? rawPathName.slice(0, -1)
+    : rawPathName;
 const canonicalUrl = siteOrigin ? `${siteOrigin}${pathName}` : pathName;
-const ogImage = siteOrigin ? `${siteOrigin}/images/hero.jpg` : '/images/hero.jpg';
-const logoPath = '/images/logo.jpg';
+const ogImage = siteOrigin ? `${siteOrigin}/images/hero.jpg` : "/images/hero.jpg";
+const logoPath = "/images/logo.jpg";
 const logoUrl = siteOrigin ? `${siteOrigin}${logoPath}` : logoPath;
-const { title = 'TRolling Stones', description = 'Oficjalna strona zespołu' } = Astro.props;
+const providedLang = Astro.props.lang;
+const lang = providedLang === "en" ? "en" : "pl";
+
+const defaults = {
+  pl: {
+    title: "TRolling Stones",
+    description: "Oficjalna strona zespolu TRolling Stones",
+    locale: "pl_PL",
+    nav: [
+      { label: "Koncerty", slug: "/koncerty" },
+      { label: "Galeria", slug: "/galeria" },
+      { label: "Aktualnosci", slug: "/aktualnosci" },
+      { label: "Bio", slug: "/bio" },
+      { label: "Sklad", slug: "/sklad" },
+      { label: "Kontakt", slug: "/kontakt" }
+    ],
+    toggleLabel: "EN",
+    toggleTitle: "Switch to English",
+    footer: "© " + new Date().getFullYear() + " TRolling Stones – wszelkie prawa zastrzezone."
+  },
+  en: {
+    title: "TRolling Stones",
+    description: "Official website of TRolling Stones",
+    locale: "en_US",
+    nav: [
+      { label: "Shows", slug: "/koncerty" },
+      { label: "Gallery", slug: "/galeria" },
+      { label: "News", slug: "/aktualnosci" },
+      { label: "Bio", slug: "/bio" },
+      { label: "Line-up", slug: "/sklad" },
+      { label: "Contact", slug: "/kontakt" }
+    ],
+    toggleLabel: "PL",
+    toggleTitle: "Przelacz na polski",
+    footer: "© " + new Date().getFullYear() + " TRolling Stones – all rights reserved."
+  }
+} as const;
+
+const basePath = lang === "en" ? "/en" : "";
+const homeHref = lang === "en" ? "/en" : "/";
+
+const plHref = pathName.startsWith("/en") ? pathName.replace(/^\/en/, "") || "/" : pathName || "/";
+const enHref =
+  pathName.startsWith("/en") ? pathName : pathName === "/" ? "/en" : `/en${pathName}`;
+
+const { title = defaults[lang].title, description = defaults[lang].description } = Astro.props;
 
 const structuredData = {
-  '@context': 'https://schema.org',
-  '@type': 'MusicGroup',
-  name: 'TRolling Stones',
+  "@context": "https://schema.org",
+  "@type": "MusicGroup",
+  name: "TRolling Stones",
   url: siteOrigin || undefined,
   logo: logoUrl,
   image: [logoUrl, ogImage],
   sameAs: [
-    'https://www.youtube.com/@TRollnStones',
-    'https://www.facebook.com/stones3city',
-    'https://www.instagram.com/trollnstones/',
-    'https://www.tiktok.com/@trollnstones'
+    "https://www.youtube.com/@TRollnStones",
+    "https://www.facebook.com/stones3city",
+    "https://www.instagram.com/trollnstones/",
+    "https://www.tiktok.com/@trollnstones"
   ]
 };
 ---
 <!doctype html>
-<html lang="pl">
+<html lang={lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -42,7 +91,7 @@ const structuredData = {
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:locale" content="pl_PL" />
+    <meta property="og:locale" content={defaults[lang].locale} />
     <meta property="og:image" content={ogImage} />
     {siteOrigin && <meta property="og:url" content={canonicalUrl} />}
     <meta name="twitter:card" content="summary_large_image" />
@@ -52,20 +101,43 @@ const structuredData = {
     <script type="application/ld+json">{JSON.stringify(structuredData)}</script>
   </head>
   <body>
-    <header class="sticky top-0 z-50 border-b border-neutral-800 bg-black/90">
-      <div class="container flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between pt-2 pb-1 sm:pt-1 sm:pb-0.5 md:py-0">
-        <a href="/" class="flex items-center gap-3 font-bold tracking-wide text-lg sm:text-xl">
-          <img src="/images/logo.jpg" alt="Logo TRolling Stones" class="h-20 w-20 sm:h-[7.5rem] sm:w-[7.5rem] md:h-[11.25rem] md:w-[11.25rem] rounded-full object-cover" width="144" height="144" />
-          <span>TRolling Stones</span>
-        </a>
+    <div class="sticky top-0 z-50 border-b border-neutral-800/60 bg-black/95 backdrop-blur">
+      <div class="container flex justify-end gap-2 py-1">
+        {(["pl", "en"] as const).map((code) => (
+          <a
+            href={code === "pl" ? plHref : enHref}
+            class:list={{
+              "flex items-center gap-2 rounded px-2 py-1 text-xs uppercase tracking-wide transition": true,
+              "border border-neutral-700 hover:border-neutral-500 text-neutral-200": lang !== code,
+              "border border-white/40 bg-white/10 text-white": lang === code
+            }}
+            aria-current={lang === code ? "page" : undefined}
+            aria-label={code === "pl" ? "Polski" : "English"}
+          >
+            <img
+              src={code === "pl" ? "/images/flags/pl.svg" : "/images/flags/gb.svg"}
+              alt=""
+              width="16"
+              height="16"
+              class="h-4 w-4"
+            />
+            {code.toUpperCase()}
+          </a>
+        ))}
+      </div>
+    </div>
+    <header class="sticky top-[2.25rem] z-40 border-b border-neutral-800 bg-black/90">
+      <div class="container flex flex-col gap-3 pt-2 pb-1 sm:flex-row sm:items-center sm:justify-between sm:pt-1 sm:pb-0.5 md:py-0">
+        <div class="flex items-center justify-between gap-3">
+          <a href={homeHref} class="flex items-center gap-3 font-bold tracking-wide text-lg sm:text-xl">
+            <img src="/images/logo.jpg" alt="Logo TRolling Stones" class="h-20 w-20 sm:h-[7.5rem] sm:w-[7.5rem] md:h-[11.25rem] md:w-[11.25rem] rounded-full object-cover" width="144" height="144" />
+            <span>TRolling Stones</span>
+          </a>
+        </div>
         <nav class="flex flex-wrap justify-center sm:justify-end gap-3 sm:gap-4 text-sm">
-          <a href="/koncerty">Koncerty</a>
-          <a href="/galeria">Galeria</a>
-          <a href="/aktualnosci">Aktualności</a>
-          <a href="/bio">Bio</a>
-          <a href="/sklad">Skład</a>
-
-          <a href="/kontakt">Kontakt</a>
+          {defaults[lang].nav.map((link) => (
+            <a href={`${basePath}${link.slug}`}>{link.label}</a>
+          ))}
         </nav>
       </div>
     </header>
@@ -74,9 +146,9 @@ const structuredData = {
     </main>
     <footer class="border-t border-neutral-800 mt-16">
       <div class="container py-8 text-sm text-neutral-400">
-        &copy; {new Date().getFullYear()} TRolling Stones &ndash; wszelkie prawa zastrzeżone.
+        {defaults[lang].footer}
       </div>
     </footer>
-    <CookieBanner />
+    <CookieBanner lang={lang} />
   </body>
 </html>

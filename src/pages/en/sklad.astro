@@ -1,0 +1,38 @@
+---
+import Layout from "@components/Layout.astro";
+import Lightbox from "@components/Lightbox.astro";
+
+const members = [
+  { key: "walec", name: "Artur 'Walec' Dembicki", role: "lead guitar" },
+  { key: "slodki", name: "Krzysztof 'Słodki' Słodkowski", role: "bass" },
+  { key: "hamo", name: "Piotr 'Hamo' Abraham", role: "drums" },
+  { key: "piter", name: "Piotr 'Piter' Jędrzejewski", role: "keys" },
+  { key: "wiciu", name: "Witold 'Wiciu' Piasek", role: "rhythm guitar" },
+  { key: "zbylon", name: "Zbigniew 'Zbylon' Kalinowski", role: "vocals, harmonica" }
+];
+---
+<Layout lang="en" title="Line-up - TRolling Stones">
+  <section class="container py-12">
+    <h1 class="text-3xl font-bold mb-6">Line-up</h1>
+
+    <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+      {members.map((m) => (
+        <figure class="text-center group">
+          <div class="overflow-hidden rounded-lg">
+            <img
+              src={`/images/members/${m.key}.jpg`}
+              alt={`${m.name} - ${m.role}`}
+              class="rounded-lg mx-auto transition-transform duration-300 ease-out group-hover:scale-105 cursor-zoom-in"
+              data-lightbox
+              loading="lazy"
+            />
+          </div>
+          <figcaption class="mt-2 text-sm font-medium">
+            {m.name} - {m.role}
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+  </section>
+  <Lightbox />
+</Layout>

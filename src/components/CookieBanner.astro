@@ -1,22 +1,38 @@
 ---
-// Simple cookie consent banner
+const lang = Astro.props.lang === "en" ? "en" : "pl";
+
+const texts = {
+  pl: {
+    message:
+      "Uzywamy plikow cookie tylko w niezbednym zakresie oraz do osadzania tresci (np. YouTube). Szczegoly znajdziesz w polityce prywatnosci. Mozesz zaakceptowac lub odrzucic.",
+    settings: "Ustawienia",
+    reject: "Odrzuc",
+    accept: "Akceptuj wszystkie"
+  },
+  en: {
+    message:
+      "We use cookies only where necessary and for embedded media (e.g. YouTube). See the privacy policy for details. You can accept or reject.",
+    settings: "Settings",
+    reject: "Reject",
+    accept: "Accept all"
+  }
+} as const;
 ---
 <div id="cookie-banner" class="fixed inset-x-0 bottom-0 z-[60] hidden">
   <div class="container mb-4 rounded-lg border border-neutral-800 bg-neutral-950/95 p-4 backdrop-blur">
     <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       <p class="text-sm text-neutral-200">
-        Używamy plików cookie wyłącznie w niezbędnym zakresie oraz do osadzania treści (np. YouTube).
-        Szczegóły w polityce prywatności. Możesz zaakceptować lub odrzucić.
+        {texts[lang].message}
       </p>
       <div class="flex shrink-0 gap-2">
         <a href="/ustawienia" class="rounded-md border border-neutral-700 px-3 py-2 text-sm hover:bg-neutral-900">
-          Ustawienia
+          {texts[lang].settings}
         </a>
         <button id="cookie-reject" class="rounded-md border border-neutral-700 px-3 py-2 text-sm hover:bg-neutral-900">
-          Odrzuć
+          {texts[lang].reject}
         </button>
         <button id="cookie-accept" class="rounded-md bg-white/10 px-3 py-2 text-sm hover:bg-white/20">
-          Akceptuj wszystkie
+          {texts[lang].accept}
         </button>
       </div>
     </div>
@@ -56,4 +72,3 @@
     rejectBtn?.addEventListener('click', () => { setConsent(rejected); hideBanner(); });
   });
 </script>
-
