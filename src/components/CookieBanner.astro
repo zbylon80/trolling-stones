@@ -4,15 +4,13 @@ const lang = Astro.props.lang === "en" ? "en" : "pl";
 const texts = {
   pl: {
     message:
-      "Uzywamy plikow cookie tylko w niezbednym zakresie oraz do osadzania tresci (np. YouTube). Szczegoly znajdziesz w polityce prywatnosci. Mozesz zaakceptowac lub odrzucic.",
-    settings: "Ustawienia",
-    reject: "Odrzuc",
+      "Używamy plików cookie tylko w niezbędnym zakresie oraz do osadzania treści (np. YouTube). Szczegóły znajdziesz w polityce prywatności. Możesz zaakceptować lub odrzucić.",
+    reject: "Odrzuć",
     accept: "Akceptuj wszystkie"
   },
   en: {
     message:
       "We use cookies only where necessary and for embedded media (e.g. YouTube). See the privacy policy for details. You can accept or reject.",
-    settings: "Settings",
     reject: "Reject",
     accept: "Accept all"
   }
@@ -25,9 +23,6 @@ const texts = {
         {texts[lang].message}
       </p>
       <div class="flex shrink-0 gap-2">
-        <a href="/ustawienia" class="rounded-md border border-neutral-700 px-3 py-2 text-sm hover:bg-neutral-900">
-          {texts[lang].settings}
-        </a>
         <button id="cookie-reject" class="rounded-md border border-neutral-700 px-3 py-2 text-sm hover:bg-neutral-900">
           {texts[lang].reject}
         </button>

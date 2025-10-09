@@ -1,29 +1,39 @@
 ---
-// Component to display random YouTube clip with navigation arrows
----
+interface Props {
+  lang?: "pl" | "en";
+}
 
-<div class='relative'>
-  <div id='yt-container' class='relative w-full' style='padding-top: 56.25%'>
+const { lang = "pl" } = Astro.props as Props;
+const locale = lang === "en" ? "en" : "pl";
+const labels = {
+  pl: { prev: "Poprzedni klip", next: "Następny klip" },
+  en: { prev: "Previous clip", next: "Next clip" },
+} as const;
+---
+<div class="relative">
+  <div id="yt-container" class="relative w-full" style="padding-top: 56.25%">
     <iframe
-      class='absolute inset-0 h-full w-full rounded-lg border border-neutral-800'
-      src='https://www.youtube-nocookie.com/embed/Va2NqLJPnkw'
-      title='YouTube video'
-      frameborder='0'
-      allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
-      referrerpolicy='strict-origin-when-cross-origin'
+      class="absolute inset-0 h-full w-full rounded-lg border border-neutral-800"
+      src="https://www.youtube-nocookie.com/embed/Va2NqLJPnkw"
+      title="YouTube video"
+      frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      referrerpolicy="strict-origin-when-cross-origin"
       allowfullscreen></iframe>
   </div>
   <button
-    id='prev'
-    class='absolute left-0 top-1/2 -translate-y-1/2 p-2 text-xl bg-neutral-800/70 hover:bg-neutral-700/70 text-white rounded-full z-10'
-    aria-label='Poprzedni klip'
+    id="prev"
+    class="absolute left-0 top-1/2 -translate-y-1/2 p-2 text-xl bg-neutral-800/70 hover:bg-neutral-700/70 text-white rounded-full z-10"
+    aria-label={labels[locale].prev}
+    type="button"
   >
     ‹
   </button>
   <button
-    id='next'
-    class='absolute right-0 top-1/2 -translate-y-1/2 p-2 text-xl bg-neutral-800/70 hover:bg-neutral-700/70 text-white rounded-full z-10'
-    aria-label='Następny klip'
+    id="next"
+    class="absolute right-0 top-1/2 -translate-y-1/2 p-2 text-xl bg-neutral-800/70 hover:bg-neutral-700/70 text-white rounded-full z-10"
+    aria-label={labels[locale].next}
+    type="button"
   >
     ›
   </button>
