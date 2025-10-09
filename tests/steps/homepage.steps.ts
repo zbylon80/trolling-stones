@@ -6,6 +6,10 @@ Given('I open the homepage', async function (this: PlaywrightWorld) {
   await this.page.goto('http://localhost:4321/');
 });
 
+Given('I open the homepage in English', async function (this: PlaywrightWorld) {
+  await this.page.goto('/en/');
+});
+
 Then('I should see the hero title', async function (this: PlaywrightWorld) {
   const heading = this.page.getByRole('heading', { level: 1 });
   await expect(heading).toBeVisible();

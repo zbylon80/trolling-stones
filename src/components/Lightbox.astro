@@ -7,32 +7,32 @@
   class='fixed inset-0 z-50 hidden items-center justify-center bg-black/90 p-4'
   role='dialog'
   aria-modal='true'
-  aria-label='Podglad zdjecia'
+  aria-label='Podgląd zdjęcia'
 >
   <button
     id='lightbox-close'
     class='absolute right-4 top-4 inline-flex items-center justify-center rounded-md bg-white/10 p-2 text-white hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white'
-    aria-label='Zamknij podglad'
+    aria-label='Zamknij podgląd'
   >
     &times;
   </button>
   <button
     id='lightbox-prev'
     class='absolute left-4 top-1/2 hidden -translate-y-1/2 p-3 text-xl bg-neutral-800/70 hover:bg-neutral-700/70 text-white rounded-full'
-    aria-label='Poprzednie zdjecie'
+    aria-label='Poprzednie zdjęcie'
   >
     &lsaquo;
   </button>
   <button
     id='lightbox-next'
     class='absolute right-4 top-1/2 hidden -translate-y-1/2 p-3 text-xl bg-neutral-800/70 hover:bg-neutral-700/70 text-white rounded-full'
-    aria-label='Nastepne zdjecie'
+    aria-label='Następne zdjęcie'
   >
     &rsaquo;
   </button>
   <img
     id='lightbox-image'
-    alt='Podglad'
+    alt='Podgląd'
     class='max-h-[90vh] max-w-[90vw] object-contain rounded'
   />
   <div
@@ -40,7 +40,7 @@
     class='absolute bottom-4 left-1/2 -translate-x-1/2 text-center text-neutral-300 text-sm px-3'
   >
   </div>
-  <!-- Klikniecie tla zamyka -->
+  <!-- Kliknięcie tła zamyka -->
   <button
     id='lightbox-backdrop'
     class='absolute inset-0 -z-10'
@@ -95,7 +95,7 @@
         trigger.getAttribute('alt') || trigger.getAttribute('data-alt') || '';
 
       imgEl.src = full;
-      imgEl.alt = alt || 'Podglad';
+      imgEl.alt = alt || 'Podgląd';
       const hideCaption = trigger.hasAttribute('data-lightbox-hide-caption');
       if (captionEl) {
         if (hideCaption || !alt) {
