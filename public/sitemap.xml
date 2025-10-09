@@ -6,32 +6,67 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://trollingstones.pl/koncerty</loc>
+    <loc>https://trollingstones.pl/koncerty/</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://trollingstones.pl/galeria</loc>
+    <loc>https://trollingstones.pl/galeria/</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://trollingstones.pl/aktualnosci</loc>
+    <loc>https://trollingstones.pl/aktualnosci/</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://trollingstones.pl/bio</loc>
+    <loc>https://trollingstones.pl/bio/</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://trollingstones.pl/sklad</loc>
+    <loc>https://trollingstones.pl/sklad/</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://trollingstones.pl/kontakt</loc>
+    <loc>https://trollingstones.pl/kontakt/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://trollingstones.pl/en/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://trollingstones.pl/en/koncerty/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://trollingstones.pl/en/galeria/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://trollingstones.pl/en/aktualnosci/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://trollingstones.pl/en/bio/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://trollingstones.pl/en/sklad/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://trollingstones.pl/en/kontakt/</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
