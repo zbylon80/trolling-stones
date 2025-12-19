@@ -8,11 +8,20 @@ export type NewsItem = {
   date: string;
   title: string;
   summary: string;
+  image?: string;
   video?: string;
   links?: NewsLink[];
 };
 
 export const news: NewsItem[] = [
+  {
+    id: "2025-12-07-blues-club-podziekowania",
+    date: "2025-12-07",
+    title: "Dziękujemy za ogień w Blues Clubie!",
+    summary:
+      "Dziękujemy z całą mocą za ten wczorajszy ogień! To, co wydarzyło się na scenie, przeszło nasze najśmielsze oczekiwania. Wasza energia, wasze głosy i ta fala dźwięku wracająca do nas ze sceny – coś absolutnie nie do podrobienia. Jeszcze długo będziemy żyć tym, co razem odpaliliśmy. Ogromne ukłony dla naszych wyjątkowych gości: Paula Szczepkowska, która dołożyła do naszego grania serce i magię oraz słodkie dźwięki z nieba; Krzysztof Jaryczewski, za jego moc i charyzmę – to zaszczyt wystąpić na jednej scenie z legendą; oraz Oskara Abraham, naszego wcześniej nieogłoszonego gościa, który rozpalił atmosferę jeszcze bardziej. Oskar jesteś sigmą! Wielkie, szczere dzięki dla ludzi, bez których ten wieczór nie brzmiałby i nie wyglądał tak epicko: Emil Kohnke – nasz realizator, który jak nikt potrafi okiełznać dźwięk i zrobić z niego ścianę ognia; Klaudia Czyżewska – odpowiedzialna za światła, dzięki której każdy riff i każdy refren miał swój własny blask; Krzysiek i cała ekipa Blues Club Gdynia – za profesjonalizm, klimat i wsparcie na każdym kroku. Jesteście niesamowici. Do zobaczenia na kolejnych koncertach – po takim wieczorze wiemy jedno: dopiero się rozkręcamy! 🔥🎸",
+    image: "/images/blues.jpg"
+  },
   {
     id: '2025-12-06-gdynia',
     date: '2025-12-06',

@@ -2,6 +2,14 @@ import type { NewsItem } from "./news";
 
 export const newsEn: NewsItem[] = [
   {
+    id: "2025-12-07-blues-club-thank-you",
+    date: "2025-12-07",
+    title: "Thank you Blues Club for the fire!",
+    summary:
+      "Thank you with all our might for that blaze last night! What happened on stage went beyond our wildest expectations. Your energy, your voices and that wave of sound coming back to us were impossible to duplicate. We’ll be living off what we lit together for a long time. Huge bows to our special guests: Paula Szczepkowska, who poured heart and magic into our set with sweet sounds from above; Krzysztof Jaryczewski, for his power and charisma – an honor to share the stage with a legend; and Oskar Abraham, our unannounced guest who heated things up even more. Oskar, you’re sigma! Massive thanks to the people without whom the night wouldn’t have sounded or looked so epic: Emil Kohnke – our sound engineer who tames audio and turns it into a wall of fire; Klaudia Czyżewska – on lights, making every riff and chorus shine; Krzysiek and the whole Blues Club Gdynia crew – for professionalism, vibe and support every step of the way. You’re amazing. See you at the next shows – after a night like that we know one thing: we’re just getting started! 🔥🎸",
+    image: "/images/blues.jpg"
+  },
+  {
     id: "2025-12-06-gdynia",
     date: "2025-12-06",
     title: "Blues Club Gdynia - special guests show",
