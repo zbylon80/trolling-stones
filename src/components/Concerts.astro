@@ -72,7 +72,7 @@ const structuredData = {
       <div class="upcoming-list">
         {upcomingGigs.map((gig, index) => (
           <article class="show-poster">
-            <img class="poster-photo" src={gig.photo ?? "/images/background01.jpg"} alt="" width="2042" height="1361" loading={index === 0 ? "eager" : "lazy"} />
+            <img class="poster-photo" src={gig.photo ?? "/images/background01.jpg"} alt="" width="907" height="1361" loading={index === 0 ? "eager" : "lazy"} />
             <div class="poster-shade" aria-hidden="true"></div>
             <div class="poster-copy">
               <p class="poster-kicker">{index === 0 ? copy.next : copy.live} <span aria-hidden="true">/</span> {gig.date.slice(0, 4)}</p>
@@ -157,9 +157,9 @@ const structuredData = {
   .live-label span { width: .4rem; height: .4rem; border-radius: 50%; background: #ed5144; box-shadow: 0 0 12px #ed5144a0; }
   .upcoming-list { display: grid; gap: 1.5rem; }
   .show-poster { position: relative; isolation: isolate; overflow: hidden; min-height: 440px; border: 1px solid #51302a; border-radius: 1rem; background: #17110e; }
-  .poster-photo { position: absolute; z-index: -3; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 20%; }
-  .poster-shade { position: absolute; z-index: -2; inset: 0; background: linear-gradient(90deg, rgba(19,12,10,.97) 0%, rgba(19,12,10,.9) 28%, rgba(19,12,10,.45) 58%, rgba(19,12,10,.05) 100%), linear-gradient(0deg, rgba(16,10,8,.6), transparent 45%); }
-  .poster-copy { position: relative; padding: 2.8rem; width: 64%; }
+  .poster-photo { position: absolute; z-index: -3; inset: 0 0 0 auto; width: 52%; height: 100%; object-fit: cover; object-position: 50% 30%; }
+  .poster-shade { position: absolute; z-index: -2; inset: 0; background: linear-gradient(90deg, #130c0a 0%, #130c0a 42%, rgba(19,12,10,.7) 49%, transparent 68%), linear-gradient(0deg, rgba(16,10,8,.55), transparent 45%); }
+  .poster-copy { position: relative; padding: 2.8rem; width: 55%; }
   .poster-kicker { margin-bottom: 1.25rem; color: #f79883; font-size: .7rem; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; }
   .poster-kicker span { padding: 0 .5rem; opacity: .65; }
   .poster-copy h3 { max-width: 600px; margin-bottom: 1.25rem; color: #fff4e8; font-family: Impact, "Arial Black", sans-serif; font-size: clamp(2.8rem, 5.2vw, 4.5rem); font-weight: 900; line-height: .99; letter-spacing: -.015em; text-transform: uppercase; text-wrap: balance; }
@@ -210,7 +210,8 @@ const structuredData = {
   .story-link:hover { color: #ffb7a6; text-decoration: none; }
   .empty-archive { color: #aaa39d; }
   @media (max-width: 800px) {
-    .poster-copy { width: 75%; padding: 2rem; }
+    .poster-copy { width: 56%; padding: 2rem; }
+    .poster-copy h3 { font-size: clamp(2.3rem, 4.8vw, 3.6rem); }
     .date-stamp { top: 1.5rem; right: 1.5rem; width: 90px; }
     .stamp-day { font-size: 3.2rem; }
     .stamp-month { font-size: .9rem; }
@@ -221,9 +222,9 @@ const structuredData = {
     .shows-page { padding-top: 2rem; }
     .page-heading { margin-bottom: 2rem; }
     .page-intro { font-size: 1rem; }
-    .show-poster { min-height: 0; padding-top: 200px; }
-    .poster-photo { height: 320px; object-position: 50% 30%; }
-    .poster-shade { background: linear-gradient(0deg, #17110e 0%, #17110e 35%, #17110e55 66%, transparent 100%); }
+    .show-poster { min-height: 0; padding-top: 300px; }
+    .poster-photo { inset: 0 0 auto; width: 100%; height: 380px; object-position: 50% 25%; }
+    .poster-shade { background: linear-gradient(180deg, transparent 170px, #17110e 380px); }
     .poster-copy { width: 100%; padding: 1.5rem; }
     .poster-copy h3 { max-width: 350px; font-size: clamp(2.8rem, 12vw, 3.8rem); }
     .poster-description { font-size: .9rem; }
