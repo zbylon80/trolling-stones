@@ -1,0 +1,67 @@
+---
+import { Image } from "astro:assets";
+import Lightbox from "./Lightbox.astro";
+import photo1 from "../../public/images/poster01.jpg";
+import photo2 from "../../public/images/poster02.jpg";
+import photo3 from "../../public/images/poster03.jpg";
+import photo4 from "../../public/images/poster04.jpg";
+import photo5 from "../../public/images/background01.jpg";
+import photo6 from "../../public/images/concert-promo.jpg";
+import blues from "../../public/images/blues.jpg";
+const lang = Astro.props.lang === "en" ? "en" : "pl";
+const en = lang === "en";
+const photos = [
+  { image: photo1, file: "poster01.jpg", group: "band", alt: en ? "TRolling Stones with their guitars" : "TRolling Stones z gitarami" },
+  { image: photo2, file: "poster02.jpg", group: "band", alt: en ? "The band during an outdoor photo session" : "Zespół podczas sesji plenerowej" },
+  { image: photo3, file: "poster03.jpg", group: "band", alt: en ? "TRolling Stones on the steps" : "TRolling Stones na schodach" },
+  { image: blues, file: "blues.jpg", group: "shows", alt: "Blues Club, Gdynia — 06.12.2025" },
+  { image: photo4, file: "poster04.jpg", group: "band", alt: en ? "The band behind a metal fence" : "Zespół za metalowym ogrodzeniem" },
+  { image: photo5, file: "background01.jpg", group: "band", alt: en ? "TRolling Stones band portrait" : "Portret zespołu TRolling Stones" },
+  { image: photo6, file: "concert-promo.jpg", group: "band", alt: en ? "Six musicians, a guitar case and a moment on the steps" : "Sześciu muzyków, futerał i chwila na schodach" }
+];
+---
+<section class="container gallery-page">
+  <header><p class="section-kicker">{en ? "On stage / Behind the scenes" : "Na scenie / Poza sceną"}</p><h1 class="display-title">{en ? "Gallery" : "Galeria"}</h1><p class="page-lead">{en ? "The people, the places, the moments." : "Ludzie, miejsca, momenty."}</p></header>
+  <div class="gallery-filters" role="group" aria-label={en ? "Photo categories" : "Kategorie zdjęć"}>
+    <button type="button" data-filter="all" aria-pressed="true">{en ? "All" : "Wszystkie"}<span aria-hidden="true">07</span></button>
+    <button type="button" data-filter="band" aria-pressed="false">{en ? "The band" : "Zespół"}<span aria-hidden="true">06</span></button>
+    <button type="button" data-filter="shows" aria-pressed="false">{en ? "Shows" : "Koncerty"}<span aria-hidden="true">01</span></button>
+  </div>
+  <div class="photo-grid">
+    {photos.map((photo) => (
+      <figure class="gallery-item" data-category={photo.group}>
+        <a href={`/images/${photo.file}`} data-lightbox data-lightbox-group={photo.group} data-alt={photo.alt} aria-label={`${en ? "Enlarge" : "Powiększ"}: ${photo.alt}`}>
+          <Image src={photo.image} alt={photo.alt} widths={[400, 700, 1000]} sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 33vw" format="webp" quality={78} loading="lazy" />
+          <span class="zoom-mark" aria-hidden="true">↗︎</span>
+        </a>
+        <figcaption>{photo.group === "shows" ? photo.alt : (en ? "TRolling Stones / Photo session" : "TRolling Stones / Sesja zespołu")}</figcaption>
+      </figure>
+    ))}
+  </div>
+  <Lightbox lang={lang} />
+</section>
+<style>
+  .gallery-page { padding-top: 3rem; }
+  .page-lead { margin-top: .5rem; color: #b8aa9b; }
+  .gallery-filters { display: flex; flex-wrap: wrap; gap: .6rem; margin: 2rem 0 1.5rem; }
+  .gallery-filters button { display: inline-flex; align-items: center; gap: .7rem; min-height: 44px; padding: .65rem 1rem; border: 1px solid #463227; border-radius: .3rem; color: #bda68f; font-size: .8rem; }
+  .gallery-filters button[aria-pressed="true"] { border-color: #ab654b; background: #2c1b12; color: #fff0df; }
+  .gallery-filters span { font-size: .6rem; color: #a47854; }
+  .photo-grid { columns: 3; column-gap: 1.2rem; }
+  .gallery-item { break-inside: avoid; margin: 0 0 1.2rem; }
+  .gallery-item[hidden] { display: none; }
+  .gallery-item a { position: relative; display: block; overflow: hidden; border: 1px solid #3c2c22; border-radius: .6rem; }
+  .gallery-item :global(img) { width: 100%; height: auto; }
+  .zoom-mark { position: absolute; right: .75rem; bottom: .75rem; display: grid; place-items: center; width: 35px; height: 35px; border: 1px solid #fff3; border-radius: 50%; background: #1b100ed9; color: #fff0df; }
+  figcaption { padding: .55rem .15rem 0; color: #a18b76; font-size: .65rem; }
+  @media (max-width: 900px) { .photo-grid { columns: 2; } }
+  @media (max-width: 600px) { .gallery-page { padding-top: 2rem; } .photo-grid { columns: 1; } }
+</style>
+<script>
+  const filters = [...document.querySelectorAll<HTMLButtonElement>("[data-filter]")];
+  const items = [...document.querySelectorAll<HTMLElement>("[data-category]")];
+  filters.forEach(button => button.addEventListener("click", () => {
+    filters.forEach(filter => filter.setAttribute("aria-pressed", String(filter === button)));
+    items.forEach(item => { item.hidden = button.dataset.filter !== "all" && item.dataset.category !== button.dataset.filter; });
+  }));
+</script>

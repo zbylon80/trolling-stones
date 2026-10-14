@@ -1,0 +1,36 @@
+---
+import { Image } from "astro:assets";
+import photo from "../../public/images/background01.jpg";
+const en = Astro.props.lang === "en";
+const base = en ? "/en" : "";
+const sections = en ? [
+  { title: "It started with the Stones.", text: "We founded TRolling Stones in 2015, originally as The Rolling Stones Tribute. A shared love of rock’n’roll and the urge to bring the energy of those legendary songs to the stage brought us together. Our name got a little more trollish along the way. The spirit stayed the same." },
+  { title: "Experience you can hear.", text: "We are experienced musicians who previously played in bands including Dry and Riverhead. That background shapes our sound: full, lively and built for playing in front of an audience." },
+  { title: "The same crew. A shared energy.", text: "The line-up has changed only once: in 2016 Piotr Abraham joined the band. We have been playing together ever since. On stage it is loud, wild and always with a wink — because rock’n’roll is about having a good time, too." }
+] : [
+  { title: "Zaczęło się od Stonesów.", text: "TRolling Stones założyliśmy w 2015 roku, początkowo pod nazwą The Rolling Stones Tribute. Połączyła nas miłość do rock’n’rolla i chęć dzielenia się energią kultowych kawałków z publicznością. Z czasem nazwa trochę się „strollowała”. Duch pozostał ten sam." },
+  { title: "Doświadczenie, które słychać.", text: "Tworzymy zespół jako doświadczeni muzycy, którzy wcześniej grali m.in. w Dry i Riverhead. To doświadczenie przekładamy na bogate, soczyste brzmienie i granie, które najlepiej sprawdza się przed publicznością." },
+  { title: "Ten sam skład. Wspólna energia.", text: "Skład zmienił się tylko raz — w 2016 roku dołączył do nas Piotr Abraham. Od tamtej pory gramy razem nieprzerwanie. Na scenie jest głośno, dziko i z przymrużeniem oka, bo rock’n’roll to także dobra zabawa." }
+];
+---
+<section class="container bio-page">
+  <header><p class="section-kicker">{en ? "On stage since 2015" : "Na scenie od 2015"}</p><h1 class="display-title">Bio</h1><p class="bio-lead">{en ? "Six musicians. One shared love of rock’n’roll." : "Sześciu muzyków. Wspólna miłość do rock’n’rolla."}</p></header>
+  <div class="bio-grid">
+    <figure><Image src={photo} alt={en ? "The six members of TRolling Stones" : "Sześciu muzyków TRolling Stones"} widths={[500, 900, 1200]} sizes="(max-width: 800px) 100vw, 45vw" format="webp" quality={80} loading="eager" /><figcaption>TRolling Stones / Tribute to The Rolling Stones</figcaption></figure>
+    <div class="bio-story">{sections.map((section) => (<section><h2>{section.title}</h2><p>{section.text}</p></section>))}<div class="bio-actions"><a class="site-button button-primary" href={`${base}/sklad`}>{en ? "Meet the band" : "Poznaj skład"}</a><a class="site-button button-outline" href={`${base}/kontakt`}>{en ? "Book the band" : "Zaproś nas na scenę"}</a></div></div>
+  </div>
+</section>
+<style>
+  .bio-page { padding-top: 3rem; }
+  .bio-lead { margin-top: .5rem; color: #b8aa9b; }
+  .bio-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin-top: 2.5rem; align-items: start; }
+  figure { position: sticky; top: 115px; margin: 0; }
+  figure :global(img) { width: 100%; height: auto; border-radius: .7rem; border: 1px solid #4d3527; }
+  figcaption { padding-top: .8rem; color: #a4886e; font-size: .6rem; letter-spacing: .06em; }
+  .bio-story > section { padding-bottom: 1.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid #3b2b20; }
+  .bio-story h2 { margin-bottom: .8rem; color: #fff0df; font-size: 1.4rem; font-weight: 800; letter-spacing: -.03em; }
+  .bio-story p { color: #bcae9f; font-size: .95rem; line-height: 1.9; }
+  .bio-actions { display: flex; flex-wrap: wrap; gap: .7rem; }
+  @media (max-width: 800px) { .bio-grid { grid-template-columns: 1fr; gap: 2rem; } figure { position: static; } }
+  @media (max-width: 600px) { .bio-page { padding-top: 2rem; } }
+</style>

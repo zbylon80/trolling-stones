@@ -1,0 +1,103 @@
+---
+import { Image } from "astro:assets";
+import brandImage from "../../public/images/logo.jpg";
+
+interface Props {
+  lang: "pl" | "en";
+  items: readonly { label: string; slug: string }[];
+  homeHref: string;
+  plHref: string;
+  enHref: string;
+  pathName: string;
+}
+const { lang, items, homeHref, plHref, enHref, pathName } = Astro.props;
+const base = lang === "en" ? "/en" : "";
+---
+<a class="skip-link" href="#main-content">{lang === "en" ? "Skip to content" : "Przejdź do treści"}</a>
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href={homeHref} aria-label="TRolling Stones">
+      <Image src={brandImage} alt="" width={112} widths={[56, 112]} sizes="56px" format="webp" quality={80} />
+      <span class="brand-name">TRolling Stones<small>Tribute to The Rolling Stones</small></span>
+    </a>
+    <details class="nav-disclosure" id="site-menu" open>
+      <summary class="menu-toggle" aria-label="Menu">
+        <span>Menu</span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 8h16M4 16h16" /></svg>
+      </summary>
+      <nav class="site-nav" aria-label={lang === "en" ? "Main navigation" : "Główna nawigacja"}>
+        {items.map((item) => (
+          <a href={`${base}${item.slug}`} aria-current={pathName === `${base}${item.slug}` ? "page" : undefined} class:list={{ "booking-nav": item.slug === "/kontakt" }}>
+            {item.label}
+          </a>
+        ))}
+      </nav>
+    </details>
+    <div class="language-switch" aria-label={lang === "en" ? "Language" : "Język"}>
+      <a href={plHref} lang="pl" hreflang="pl" aria-label="Polski" aria-current={lang === "pl" ? "page" : undefined}>PL</a>
+      <span aria-hidden="true">/</span>
+      <a href={enHref} lang="en" hreflang="en" aria-label="English" aria-current={lang === "en" ? "page" : undefined}>EN</a>
+    </div>
+  </div>
+</header>
+<style>
+  .skip-link { position: fixed; top: .75rem; left: 1rem; z-index: 100; padding: .8rem 1rem; border-radius: .3rem; background: #fff0d8; color: #17110e; transform: translateY(-200%); }
+  .skip-link:focus { transform: translateY(0); }
+  .site-header { position: sticky; top: 0; z-index: 50; border-bottom: 1px solid #fff1; background: #080706f5; backdrop-filter: blur(16px); }
+  .header-inner { position: relative; display: flex; align-items: center; gap: 1.5rem; min-height: 88px; }
+  .brand { display: inline-flex; align-items: center; gap: .65rem; color: #fff0df; text-decoration: none; flex-shrink: 0; }
+  .brand :global(img) { width: 56px; height: 56px; object-fit: contain; }
+  .brand-name { font-size: 1.05rem; font-weight: 800; letter-spacing: -.03em; }
+  .brand-name small { display: block; margin-top: .15rem; font-size: .52rem; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: #a89b8f; }
+  .nav-disclosure { flex: 1; min-width: 0; }
+  .menu-toggle { display: none; }
+  .site-nav { display: flex; justify-content: flex-end; align-items: center; gap: 1.35rem; }
+  .site-nav a { padding: .55rem 0; color: #b8aea6; font-size: .8rem; font-weight: 500; text-decoration: none; white-space: nowrap; }
+  .site-nav a:hover { color: #fff0df; }
+  .site-nav a[aria-current="page"] { color: #fff0df; box-shadow: 0 2px 0 #ed5144; }
+  .site-nav .booking-nav { padding: .55rem .8rem; border: 1px solid #735144; border-radius: .3rem; color: #fff0df; }
+  .language-switch { display: flex; align-items: center; gap: .4rem; padding-left: 1rem; border-left: 1px solid #fff2; font-size: .65rem; font-weight: 700; }
+  .language-switch a { padding: .4rem .15rem; color: #998f86; text-decoration: none; }
+  .language-switch a[aria-current="page"], .language-switch a:hover { color: #fff0df; }
+  .language-switch span { color: #53473e; }
+  a:focus-visible, summary:focus-visible { outline: 2px solid #f79883; outline-offset: 5px; }
+  @media (max-width: 960px) {
+    .header-inner { min-height: 72px; gap: .8rem; }
+    .brand { flex: 1; gap: .5rem; }
+    .brand :global(img) { width: 44px; height: 44px; }
+    .brand-name { font-size: .95rem; }
+    .brand-name small { font-size: .45rem; letter-spacing: .06em; }
+    .language-switch { order: 2; padding-left: 0; border-left: 0; }
+    .nav-disclosure { flex: 0 0 auto; order: 3; }
+    .menu-toggle { display: flex; align-items: center; justify-content: center; gap: .5rem; padding: .6rem .65rem; border: 1px solid #fff2; border-radius: .3rem; color: #fff0df; cursor: pointer; list-style: none; font-size: .7rem; }
+    .menu-toggle::-webkit-details-marker { display: none; }
+    .nav-disclosure[open] .menu-toggle { border-color: #b3624f; }
+    .site-nav { position: absolute; top: 100%; right: 1rem; left: 1rem; display: grid; gap: .3rem; padding: .8rem; max-height: 70vh; overflow-y: auto; border: 1px solid #493329; border-radius: 0 0 .7rem .7rem; background: #14100e; box-shadow: 0 15px 30px #0008; }
+    .site-nav a, .site-nav .booking-nav { padding: .8rem; border: 0; border-radius: .3rem; font-size: .95rem; }
+    .site-nav a:hover, .site-nav a[aria-current="page"] { background: #382018; box-shadow: none; }
+  }
+  @media (max-width: 360px) {
+    .header-inner { gap: .5rem; }
+    .brand-name { font-size: .85rem; }
+    .brand-name small { font-size: .4rem; }
+    .brand :global(img) { width: 36px; height: 36px; }
+    .menu-toggle { padding: .55rem; }
+    .menu-toggle span { display: none; }
+  }
+</style>
+<script>
+  const menu = document.querySelector<HTMLDetailsElement>("#site-menu");
+  const mobile = window.matchMedia("(max-width: 960px)");
+  function syncMenu() { if (menu) menu.open = !mobile.matches; }
+  syncMenu();
+  mobile.addEventListener("change", syncMenu);
+  document.addEventListener("click", (event) => {
+    if (mobile.matches && menu?.open && event.target instanceof Node && !menu.contains(event.target)) menu.open = false;
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && mobile.matches && menu?.open) {
+      menu.open = false;
+      menu.querySelector<HTMLElement>("summary")?.focus();
+    }
+  });
+</script>

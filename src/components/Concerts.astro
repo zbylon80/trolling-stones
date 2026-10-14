@@ -131,7 +131,7 @@ const structuredData = {
               {venue(gig) && <p class="memory-venue">{venue(gig)}</p>}
               <div class="memory-bottom">
                 <span class="memory-year">{gig.date.slice(0, 4)} <span aria-hidden="true">/</span> TRolling Stones</span>
-                {gig.story && <a class="story-link" href={`${basePath}${gig.story}`} aria-label={`${copy.story}: ${city(gig)}, ${formattedDate(gig.date)}`}>{copy.story}<span aria-hidden="true">↗︎</span></a>}
+                {gig.story && <a class="story-link" href={`${basePath}${en ? (gig.storyEn ?? gig.story) : gig.story}`} aria-label={`${copy.story}: ${city(gig)}, ${formattedDate(gig.date)}`}>{copy.story}<span aria-hidden="true">↗︎</span></a>}
               </div>
             </div>
           </article>

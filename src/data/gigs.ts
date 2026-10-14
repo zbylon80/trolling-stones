@@ -14,6 +14,7 @@ export type Gig = {
   photoAltEn?: string;
   photoPosition?: string;
   story?: string;
+  storyEn?: string;
 };
 
 export const upcomingGigs: Gig[] = [
@@ -50,6 +51,7 @@ export const pastGigs: Gig[] = [
     photoAlt: "TRolling Stones z publicznością w Blues Clubie w Gdyni",
     photoAltEn: "TRolling Stones with the audience at Blues Club in Gdynia",
     photoPosition: "50% 45%",
-    story: "/aktualnosci"
+    story: "/aktualnosci#2025-12-07-blues-club-podziekowania",
+    storyEn: "/aktualnosci#2025-12-07-blues-club-thank-you"
   }
 ];

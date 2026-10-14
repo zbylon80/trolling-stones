@@ -8,6 +8,7 @@ export type NewsItem = {
   date: string;
   title: string;
   summary: string;
+  eventDate?: string;
   image?: string;
   video?: string;
   links?: NewsLink[];
@@ -25,6 +26,7 @@ export const news: NewsItem[] = [
   {
     id: '2025-12-06-gdynia',
     date: '2025-12-06',
+    eventDate: '2025-12-06',
     title: 'Blues Club Gdynia – koncert z gośćmi',
     summary:
       '6 grudnia wracamy do Blues Clubu w Gdyni na specjalny koncert, podczas którego wystąpią z nami bardziej lub mniej znani goście. Przygotowujemy energetyczny, świąteczny set i kilka niespodzianek. Jak widać na załączonym filmie, nie obyło się bez drobnych komplikacji 🙂',

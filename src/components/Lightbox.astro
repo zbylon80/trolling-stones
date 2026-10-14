@@ -1,176 +1,67 @@
 ---
-
+const en = Astro.props.lang === "en" || Astro.url.pathname.startsWith("/en/");
 ---
-
-<div
-  id='lightbox-overlay'
-  class='fixed inset-0 z-50 hidden items-center justify-center bg-black/90 p-4'
-  role='dialog'
-  aria-modal='true'
-  aria-label='Podgląd zdjęcia'
->
-  <button
-    id='lightbox-close'
-    class='absolute right-4 top-4 inline-flex items-center justify-center rounded-md bg-white/10 p-2 text-white hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white'
-    aria-label='Zamknij podgląd'
-  >
-    &times;
-  </button>
-  <button
-    id='lightbox-prev'
-    class='absolute left-4 top-1/2 hidden -translate-y-1/2 p-3 text-xl bg-neutral-800/70 hover:bg-neutral-700/70 text-white rounded-full'
-    aria-label='Poprzednie zdjęcie'
-  >
-    &lsaquo;
-  </button>
-  <button
-    id='lightbox-next'
-    class='absolute right-4 top-1/2 hidden -translate-y-1/2 p-3 text-xl bg-neutral-800/70 hover:bg-neutral-700/70 text-white rounded-full'
-    aria-label='Następne zdjęcie'
-  >
-    &rsaquo;
-  </button>
-  <img
-    id='lightbox-image'
-    alt='Podgląd'
-    class='max-h-[90vh] max-w-[90vw] object-contain rounded'
-  />
-  <div
-    id='lightbox-caption'
-    class='absolute bottom-4 left-1/2 -translate-x-1/2 text-center text-neutral-300 text-sm px-3'
-  >
+<dialog id="lightbox-overlay" aria-label={en ? "Photo preview" : "Podgląd zdjęcia"}>
+  <div class="lightbox-top"><p id="lightbox-caption"></p><button id="lightbox-close" type="button" autofocus aria-label={en ? "Close preview" : "Zamknij podgląd"}>×</button></div>
+  <img id="lightbox-image" alt="" />
+  <div class="lightbox-controls">
+    <button id="lightbox-prev" type="button" aria-label={en ? "Previous photo" : "Poprzednie zdjęcie"}>‹</button>
+    <span id="lightbox-counter" aria-live="polite"></span>
+    <button id="lightbox-next" type="button" aria-label={en ? "Next photo" : "Następne zdjęcie"}>›</button>
   </div>
-  <!-- Kliknięcie tła zamyka -->
-  <button
-    id='lightbox-backdrop'
-    class='absolute inset-0 -z-10'
-    aria-hidden='true'></button>
-  <style is:inline>
-    /* Tailwind classes handle styling */
-  </style>
-  <script>
-    const overlay = document.querySelector<HTMLDivElement>('#lightbox-overlay');
-    const imgEl = document.querySelector<HTMLImageElement>('#lightbox-image');
-    const captionEl =
-      document.querySelector<HTMLDivElement>('#lightbox-caption');
-    const closeBtn =
-      document.querySelector<HTMLButtonElement>('#lightbox-close');
-    const backdropBtn =
-      document.querySelector<HTMLButtonElement>('#lightbox-backdrop');
-    const prevBtn =
-      document.querySelector<HTMLButtonElement>('#lightbox-prev');
-    const nextBtn =
-      document.querySelector<HTMLButtonElement>('#lightbox-next');
-
-    let triggers: Element[] = [];
-    let currentIndex = -1;
-
-    function collectTriggers(source: Element) {
-      const group = source.getAttribute('data-lightbox-group');
-      triggers = Array.from(document.querySelectorAll('[data-lightbox]')).filter(
-        (el) => {
-          const elGroup = el.getAttribute('data-lightbox-group');
-          return elGroup === group || (!elGroup && !group);
-        }
-      );
-    }
-
-    function updateNavVisibility() {
-      const hasMultiple = triggers.length > 1;
-      prevBtn?.classList.toggle('hidden', !hasMultiple);
-      nextBtn?.classList.toggle('hidden', !hasMultiple);
-    }
-
-    function render(index: number) {
-      const trigger = triggers[index];
-      if (!trigger || !imgEl) return;
-
-      const full =
-        trigger.getAttribute('data-full') ||
-        trigger.getAttribute('src') ||
-        trigger.getAttribute('href');
-      if (!full) return;
-
-      const alt =
-        trigger.getAttribute('alt') || trigger.getAttribute('data-alt') || '';
-
-      imgEl.src = full;
-      imgEl.alt = alt || 'Podgląd';
-      const hideCaption = trigger.hasAttribute('data-lightbox-hide-caption');
-      if (captionEl) {
-        if (hideCaption || !alt) {
-          captionEl.textContent = '';
-          captionEl.classList.add('hidden');
-        } else {
-          captionEl.textContent = alt;
-          captionEl.classList.remove('hidden');
-        }
-      }
-      currentIndex = index;
-      updateNavVisibility();
-    }
-
-    function openLightbox(index: number) {
-      if (!overlay) return;
-      render(index);
-      overlay.classList.remove('hidden');
-      overlay.classList.add('flex');
-      document.body.style.overflow = 'hidden';
-    }
-
-    function closeLightbox() {
-      if (!overlay) return;
-      overlay.classList.add('hidden');
-      overlay.classList.remove('flex');
-      if (imgEl) imgEl.src = '';
-      if (captionEl) {
-        captionEl.textContent = '';
-        captionEl.classList.add('hidden');
-      }
-      document.body.style.overflow = '';
-      triggers = [];
-      currentIndex = -1;
-      updateNavVisibility();
-    }
-
-    function showRelative(step: number) {
-      if (triggers.length < 2) return;
-      const nextIndex = (currentIndex + step + triggers.length) % triggers.length;
-      render(nextIndex);
-    }
-
-    // Delegation: elements with data-lightbox
-    document.addEventListener('click', (e) => {
-      const target = e.target;
-      if (!(target instanceof Element)) return;
-      const trigger = target.closest('[data-lightbox]');
-      if (trigger) {
-        e.preventDefault();
-        collectTriggers(trigger);
-        const index = triggers.indexOf(trigger);
-        if (index !== -1) openLightbox(index);
-      }
-    });
-
-    // Close actions
-    closeBtn?.addEventListener('click', closeLightbox);
-    backdropBtn?.addEventListener('click', closeLightbox);
-    prevBtn?.addEventListener('click', () => showRelative(-1));
-    nextBtn?.addEventListener('click', () => showRelative(1));
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        closeLightbox();
-        return;
-      }
-      if (!overlay || overlay.classList.contains('hidden')) return;
-      if (e.key === 'ArrowLeft') {
-        e.preventDefault();
-        showRelative(-1);
-      }
-      if (e.key === 'ArrowRight') {
-        e.preventDefault();
-        showRelative(1);
-      }
-    });
-  </script>
-</div>
+</dialog>
+<style>
+  dialog { width: min(1100px, calc(100vw - 2rem)); max-height: calc(100dvh - 2rem); padding: 1rem; margin: auto; border: 1px solid #69503c; border-radius: .65rem; background: #120e0b; color: #fff0df; }
+  dialog::backdrop { background: #000d; backdrop-filter: blur(5px); }
+  .lightbox-top { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: .6rem; }
+  .lightbox-top p { margin: 0; color: #c8b6a2; font-size: .8rem; }
+  button { width: 44px; height: 44px; flex-shrink: 0; border: 1px solid #624431; border-radius: .3rem; background: #24180f; color: #fff0df; font-size: 1.6rem; }
+  button:hover { background: #493022; }
+  #lightbox-image { width: 100%; height: min(70dvh, 800px); object-fit: contain; }
+  .lightbox-controls { display: flex; align-items: center; justify-content: center; gap: 1rem; margin-top: .75rem; }
+  #lightbox-counter { color: #a98c71; font-size: .7rem; }
+</style>
+<script>
+  const modal = document.querySelector<HTMLDialogElement>("#lightbox-overlay");
+  const image = document.querySelector<HTMLImageElement>("#lightbox-image");
+  const caption = document.querySelector("#lightbox-caption");
+  const counter = document.querySelector("#lightbox-counter");
+  const previous = document.querySelector<HTMLButtonElement>("#lightbox-prev");
+  const next = document.querySelector<HTMLButtonElement>("#lightbox-next");
+  let photos: HTMLElement[] = [];
+  let index = 0;
+  function renderPhoto() {
+    const trigger = photos[index];
+    if (!trigger || !image) return;
+    image.src = trigger.dataset.full || trigger.getAttribute("href") || trigger.getAttribute("src") || "";
+    image.alt = trigger.dataset.alt || trigger.getAttribute("alt") || "";
+    if (caption) caption.textContent = image.alt;
+    if (counter) counter.textContent = `${index + 1} / ${photos.length}`;
+    previous?.classList.toggle("hidden", photos.length < 2);
+    next?.classList.toggle("hidden", photos.length < 2);
+  }
+  function step(amount: number) { if (photos.length) { index = (index + amount + photos.length) % photos.length; renderPhoto(); } }
+  document.addEventListener("click", (event) => {
+    if (!(event.target instanceof Element)) return;
+    const trigger = event.target.closest<HTMLElement>("[data-lightbox]");
+    if (!trigger || !modal) return;
+    event.preventDefault();
+    const group = trigger.dataset.lightboxGroup;
+    photos = [...document.querySelectorAll<HTMLElement>("[data-lightbox]")].filter(item => item.dataset.lightboxGroup === group && !item.closest("[hidden]"));
+    index = photos.indexOf(trigger);
+    renderPhoto();
+    modal.showModal();
+  });
+  document.querySelector("#lightbox-close")?.addEventListener("click", () => modal?.close());
+  previous?.addEventListener("click", () => step(-1));
+  next?.addEventListener("click", () => step(1));
+  modal?.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowLeft") { event.preventDefault(); step(-1); }
+    if (event.key === "ArrowRight") { event.preventDefault(); step(1); }
+  });
+  modal?.addEventListener("click", (event) => {
+    const bounds = modal.getBoundingClientRect();
+    if (event.target === modal && (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom)) modal.close();
+  });
+  modal?.addEventListener("close", () => { image?.removeAttribute("src"); photos = []; });
+</script>

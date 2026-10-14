@@ -1,69 +1,46 @@
 ---
 const lang = Astro.props.lang === "en" ? "en" : "pl";
-
 const texts = {
   pl: {
-    message:
-      "Używamy plików cookie tylko w niezbędnym zakresie oraz do osadzania treści (np. YouTube). Szczegóły znajdziesz w polityce prywatności. Możesz zaakceptować lub odrzucić.",
-    reject: "Odrzuć",
-    accept: "Akceptuj wszystkie"
+    title: "Ty wybierasz, co wczytujemy.",
+    message: "YouTube uruchomimy dopiero, gdy na to pozwolisz. Możesz włączyć odtwarzacz lub pozostać przy zdjęciach i linkach.",
+    reject: "Odrzuć", accept: "Akceptuj wszystkie"
   },
   en: {
-    message:
-      "We use cookies only where necessary and for embedded media (e.g. YouTube). See the privacy policy for details. You can accept or reject.",
-    reject: "Reject",
-    accept: "Accept all"
+    title: "You choose what we load.",
+    message: "YouTube loads only when you allow it. Enable the player or keep browsing photos and links.",
+    reject: "Reject", accept: "Accept all"
   }
 } as const;
 ---
-<div id="cookie-banner" class="fixed inset-x-0 bottom-0 z-[60] hidden">
+<div id="cookie-banner" class="fixed inset-x-0 bottom-0 z-[60] hidden" role="region" aria-label={lang === "en" ? "Media preferences" : "Ustawienia multimediów"}>
   <div class="container mb-4 rounded-lg border border-neutral-800 bg-neutral-950/95 p-4 backdrop-blur">
     <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-      <p class="text-sm text-neutral-200">
-        {texts[lang].message}
-      </p>
+      <div><p class="mb-1 text-sm font-semibold text-neutral-100">{texts[lang].title}</p><p class="text-sm text-neutral-300">{texts[lang].message}</p></div>
       <div class="flex shrink-0 gap-2">
-        <button id="cookie-reject" class="rounded-md border border-neutral-700 px-3 py-2 text-sm hover:bg-neutral-900">
-          {texts[lang].reject}
-        </button>
-        <button id="cookie-accept" class="rounded-md bg-white/10 px-3 py-2 text-sm hover:bg-white/20">
-          {texts[lang].accept}
-        </button>
+        <button id="cookie-reject" class="rounded-md border border-neutral-700 px-3 py-2 text-sm hover:bg-neutral-900">{texts[lang].reject}</button>
+        <button id="cookie-accept" class="rounded-md bg-white/10 px-3 py-2 text-sm hover:bg-white/20">{texts[lang].accept}</button>
       </div>
     </div>
   </div>
 </div>
-
 <script>
-  const KEY = 'cookieConsent';
-  const accepted = 'accepted';
-  const rejected = 'rejected';
-
-  function hideBanner() {
-    const el = document.getElementById('cookie-banner');
-    if (el) el.classList.add('hidden');
+  const banner = document.getElementById("cookie-banner");
+  function hideBanner() { banner?.classList.add("hidden"); }
+  function showBanner() { banner?.classList.remove("hidden"); }
+  function setConsent(value: "accepted" | "rejected") {
+    try { localStorage.setItem("cookieConsent", value); } catch {}
+    document.dispatchEvent(new CustomEvent("cookie:consent", { detail: value }));
+    hideBanner();
   }
-
-  function showBanner() {
-    const el = document.getElementById('cookie-banner');
-    if (el) el.classList.remove('hidden');
-  }
-
-  function setConsent(value: string) {
-    try { localStorage.setItem(KEY, value); } catch {}
-    document.dispatchEvent(new CustomEvent('cookie:consent', { detail: value }));
-  }
-
-  document.addEventListener('DOMContentLoaded', () => {
-    let value = null;
-    try { value = localStorage.getItem(KEY); } catch {}
-    if (value !== accepted && value !== rejected) {
-      showBanner();
-    }
-
-    const acceptBtn = document.getElementById('cookie-accept');
-    const rejectBtn = document.getElementById('cookie-reject');
-    acceptBtn?.addEventListener('click', () => { setConsent(accepted); hideBanner(); });
-    rejectBtn?.addEventListener('click', () => { setConsent(rejected); hideBanner(); });
+  let consent: string | null = null;
+  try { consent = localStorage.getItem("cookieConsent"); } catch {}
+  if (consent !== "accepted" && consent !== "rejected") showBanner();
+  document.getElementById("cookie-accept")?.addEventListener("click", () => setConsent("accepted"));
+  document.getElementById("cookie-reject")?.addEventListener("click", () => setConsent("rejected"));
+  document.addEventListener("cookie:consent", hideBanner);
+  document.querySelector("[data-cookie-settings]")?.addEventListener("click", () => {
+    showBanner();
+    document.getElementById("cookie-reject")?.focus();
   });
 </script>

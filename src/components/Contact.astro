@@ -1,0 +1,106 @@
+---
+import { Image } from "astro:assets";
+import managerPhoto from "../../public/images/manager.jpg";
+import SocialLinks from "./SocialLinks.astro";
+import { booking } from "../data/site";
+interface Props { lang?: "pl" | "en"; }
+const { lang = "pl" } = Astro.props;
+const en = lang === "en";
+const copy = en ? {
+  title: "Contact", intro: "Let’s bring the band to your stage.",
+  kicker: "Booking / Media", heading: "Let’s play at your place.",
+  text: "A club night, a festival or an event? Get in touch and let’s talk about the show.",
+  email: "Email", phone: "Phone", write: "Email us", call: "Call us",
+  technical: "For organisers", rider: "Technical rider (PDF)",
+  riderText: "Stage setup and technical requirements, all in one place.",
+  follow: "Keep in touch.", social: "Videos, photos and news from the road."
+} : {
+  title: "Kontakt", intro: "Spotkajmy się na Twojej scenie.",
+  kicker: "Booking / Media", heading: "Zagrajmy u Ciebie.",
+  text: "Klubowy wieczór, festiwal, wydarzenie? Odezwij się i ustalmy szczegóły koncertu.",
+  email: "E-mail", phone: "Tel.", write: "Napisz", call: "Zadzwoń",
+  technical: "Dla organizatorów", rider: "Rider techniczny (PDF)",
+  riderText: "Układ sceny i wymagania techniczne w jednym miejscu.",
+  follow: "Zostańmy w kontakcie.", social: "Klipy, zdjęcia i wieści z koncertowej trasy."
+};
+---
+<section class="container contact-page">
+  <header class="contact-heading"><p class="section-kicker">{copy.kicker}</p><h1 class="display-title">{copy.title}</h1><p>{copy.intro}</p></header>
+  <article class="booking-card">
+    <div class="manager-photo">
+      <Image src={managerPhoto} alt={en ? `${booking.name} — TRolling Stones manager` : `${booking.name} — manager TRolling Stones`} widths={[320, 500, 700]} sizes="(max-width: 600px) 100vw, 30vw" format="webp" loading="eager" quality={80} />
+      <div class="manager-caption"><span>Manager</span><h2>{booking.name}</h2></div>
+    </div>
+    <div class="booking-content">
+      <p class="section-kicker">TRolling Stones / Booking</p>
+      <h2>{copy.heading}</h2>
+      <p class="booking-intro">{copy.text}</p>
+      <dl class="contact-details">
+        <div><dt>{copy.email}</dt><dd><a href={`mailto:${booking.email}`}>{booking.email}</a></dd></div>
+        <div><dt>{copy.phone}</dt><dd><a href={booking.phoneHref}>{booking.phone}</a></dd></div>
+      </dl>
+      <div class="booking-actions">
+        <a class="site-button button-primary" href={`mailto:${booking.email}`}>{copy.write}<span aria-hidden="true">→</span></a>
+        <a class="site-button button-outline" href={booking.phoneHref}>{copy.call}</a>
+      </div>
+    </div>
+  </article>
+
+  <aside class="rider-card" aria-labelledby="rider-heading">
+    <div class="document-mark" aria-hidden="true">PDF</div>
+    <div><p class="section-kicker">{copy.technical}</p><h2 id="rider-heading">{copy.rider}</h2><p>{copy.riderText}</p></div>
+    <a class="rider-link" href={booking.rider} target="_blank" rel="noopener noreferrer">
+      {copy.rider}<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 3v12m-4-4 4 4 4-4M5 16v5h14v-5" /></svg>
+    </a>
+  </aside>
+  <section class="contact-social" aria-labelledby="social-heading"><h2 id="social-heading" class="section-title">{copy.follow}</h2><p>{copy.social}</p><SocialLinks /></section>
+</section>
+<style>
+  .contact-page { padding-top: 3rem; }
+  .contact-heading { margin-bottom: 2.25rem; }
+  .contact-heading > p:last-child { color: #b8aa9b; font-size: 1rem; }
+  .booking-card { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.7fr); overflow: hidden; border: 1px solid #433126; border-radius: 1rem; background: #16110e; }
+  .manager-photo { position: relative; min-height: 410px; }
+  .manager-photo :global(img) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 32%; }
+  .manager-photo::after { position: absolute; inset: 0; content: ""; background: linear-gradient(0deg, #100a07e6, transparent 55%); }
+  .manager-caption { position: absolute; z-index: 1; bottom: 1.7rem; left: 1.7rem; right: 1rem; }
+  .manager-caption span { display: block; margin-bottom: .4rem; color: #deb18c; font-size: .6rem; text-transform: uppercase; letter-spacing: .16em; }
+  .manager-caption h2 { margin: 0; color: #fff0df; font-size: 1.45rem; font-weight: 700; line-height: 1.2; }
+  .booking-content { padding: 2.75rem; }
+  .booking-content > h2 { margin: .9rem 0 1.1rem; color: #fff0df; font-family: Impact, "Arial Black", sans-serif; font-size: clamp(2.3rem, 4vw, 3.3rem); font-weight: 900; line-height: 1.07; }
+  .booking-intro { max-width: 450px; margin-bottom: 1.75rem; color: #b9aa99; font-size: .95rem; line-height: 1.7; }
+  .contact-details { display: grid; gap: .75rem; margin: 0 0 1.75rem; }
+  .contact-details > div { display: grid; grid-template-columns: 60px minmax(0, 1fr); align-items: baseline; gap: .65rem; }
+  .contact-details dt { color: #9d8977; font-size: .75rem; }
+  .contact-details dd { margin: 0; min-width: 0; }
+  .contact-details a { color: #fff0df; font-size: 1.05rem; font-weight: 600; overflow-wrap: anywhere; text-decoration: none; }
+  .contact-details a:hover { color: #f7ae8f; }
+  .booking-actions { display: flex; flex-wrap: wrap; gap: .75rem; }
+  .rider-card { display: flex; align-items: center; gap: 1.2rem; padding: 1.5rem; margin-top: 1rem; border: 1px solid #3d3027; border-radius: .6rem; background: #100d0b; }
+  .document-mark { display: grid; place-items: center; width: 52px; height: 62px; flex-shrink: 0; border: 1px solid #866044; border-radius: .25rem; color: #e6b890; font-size: .75rem; font-weight: 800; }
+  .rider-card h2 { margin: .4rem 0 .3rem; color: #f1e0cd; font-size: 1.05rem; font-weight: 600; }
+  .rider-card > div:nth-child(2) { flex: 1; }
+  .rider-card > div > p:last-child { margin: 0; color: #ac9885; font-size: .8rem; }
+  .rider-link { display: inline-flex; align-items: center; gap: 1rem; padding: .9rem 1rem; border: 1px solid #75503a; border-radius: .3rem; color: #f7c79c; font-size: .75rem; font-weight: 600; text-decoration: none; }
+  .rider-link:hover { border-color: #da9770; color: #fff0df; }
+  .contact-social { margin-top: 3rem; }
+  .contact-social > p { margin: .65rem 0 1.5rem; color: #a99b8d; font-size: .85rem; }
+  @media (max-width: 800px) {
+    .booking-content { padding: 2rem; }
+    .rider-card { flex-wrap: wrap; }
+    .rider-link { margin-left: 72px; }
+  }
+  @media (max-width: 600px) {
+    .contact-page { padding-top: 2rem; }
+    .booking-card { grid-template-columns: 1fr; }
+    .manager-photo { min-height: 330px; }
+    .manager-photo :global(img) { object-position: 50% 20%; }
+    .booking-content { padding: 1.5rem; }
+    .booking-content > h2 { font-size: 2.4rem; }
+    .contact-details > div { grid-template-columns: 1fr; gap: .25rem; }
+    .contact-details a { font-size: 1rem; }
+    .rider-card { padding: 1.25rem; gap: .9rem; }
+    .rider-card > div:nth-child(2) { min-width: 160px; }
+    .rider-link { margin-left: 0; width: 100%; justify-content: space-between; }
+  }
+</style>

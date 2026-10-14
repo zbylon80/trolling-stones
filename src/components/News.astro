@@ -1,0 +1,68 @@
+---
+import { news } from "../data/news";
+import { newsEn } from "../data/news-en";
+import { upcomingGigs } from "../data/gigs";
+const en = Astro.props.lang === "en";
+const base = en ? "/en" : "";
+const items = [...(en ? newsEn : news)].sort((a, b) => b.date.localeCompare(a.date));
+const nextGig = [...upcomingGigs].sort((a, b) => a.date.localeCompare(b.date))[0];
+const today = new Intl.DateTimeFormat("sv-SE", { timeZone: "Europe/Warsaw" }).format(new Date());
+const formattedDate = (date: string) => new Date(`${date}T12:00:00Z`).toLocaleDateString(en ? "en-GB" : "pl-PL", { day: "2-digit", month: "long", year: "numeric", timeZone: "Europe/Warsaw" });
+const ticketLabel = (label: string) => /kup bilety|buy tickets/i.test(label);
+---
+<section class="container news-page">
+  <header><p class="section-kicker">{en ? "From the road" : "Z koncertowej trasy"}</p><h1 class="display-title">{en ? "News" : "Aktualności"}</h1><p class="news-lead">{en ? "Shows, videos and stories from behind the scenes." : "Koncerty, klipy i historie zza kulis."}</p></header>
+  {nextGig && (
+    <aside class="news-next"><div><p class="section-kicker">{en ? "Coming up" : "Już wkrótce"}</p><h2>{en ? (nextGig.headlineEn ?? nextGig.venue) : (nextGig.headline ?? nextGig.venue)}</h2><p>{formattedDate(nextGig.date)} <span aria-hidden="true">/</span> {nextGig.city}</p></div><a class="site-button button-outline" href={`${base}/koncerty`}>{en ? "Show details" : "Szczegóły koncertu"}<span aria-hidden="true">→</span></a></aside>
+  )}
+  <div class="news-grid">
+    {items.map((item) => {
+      const long = item.summary.length > 300;
+      const excerpt = long ? item.summary.slice(0, item.summary.lastIndexOf(" ", 260)) : item.summary;
+      const ended = !!item.eventDate && item.eventDate < today;
+      const links = item.links?.filter(link => !(ended && ticketLabel(link.label)));
+      return (
+        <article class="news-card" id={item.id}>
+          {item.image && <img class="news-image" src={item.image} alt={item.title} width="2048" height="1150" loading="lazy" />}
+          <div class="news-copy"><div class="news-date"><time datetime={item.date}>{formattedDate(item.date)}</time>{ended && <span>{en ? "Past event" : "Wydarzenie minione"}</span>}</div><h2>{item.title}</h2>
+            {long ? (<details class="news-story"><summary><span class="news-excerpt">{excerpt}…</span><span class="read-more">{en ? "Read the full story" : "Czytaj pełną relację"}<span aria-hidden="true"> +</span></span><span class="read-less">{en ? "Collapse story" : "Zwiń relację"}<span aria-hidden="true"> −</span></span></summary><p>{item.summary}</p></details>) : <p class="news-summary">{item.summary}</p>}
+            {item.video && <video class="news-video" controls preload="none" playsinline><source src={item.video} type="video/mp4" />{en ? "Your browser does not support video playback." : "Twoja przeglądarka nie obsługuje odtwarzania wideo."}</video>}
+            {links && links.length > 0 && <div class="news-links">{links.map(link => <a class="text-action" href={link.url} target="_blank" rel="noopener noreferrer">{link.label}<span aria-hidden="true">↗︎</span></a>)}</div>}
+          </div>
+        </article>
+      );
+    })}
+  </div>
+  <aside class="news-follow"><div><h2>{en ? "More from behind the scenes." : "Jeszcze więcej zza kulis."}</h2><p>{en ? "You can also find our announcements and clips on Facebook." : "Nasze zapowiedzi i klipy znajdziesz także na Facebooku."}</p></div><a class="site-button button-outline" href="https://www.facebook.com/stones3city" target="_blank" rel="noopener noreferrer">{en ? "Open Facebook" : "Przejdź na Facebooka"}<span aria-hidden="true">↗︎</span></a></aside>
+</section>
+<style>
+  .news-page { padding-top: 3rem; }
+  .news-lead { margin-top: .5rem; color: #b8aa9b; }
+  .news-next, .news-follow { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.25rem; padding: 1.5rem; margin: 2rem 0; border: 1px solid #62432f; border-radius: .6rem; background: #21160e; }
+  .news-next h2 { margin: .55rem 0 .5rem; color: #fff0df; font-size: 1.45rem; font-weight: 800; letter-spacing: -.03em; }
+  .news-next > div > p:last-child { margin: 0; color: #c8ae92; font-size: .8rem; }
+  .news-next > div > p:last-child span { padding: 0 .5rem; color: #a46a46; }
+  .news-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; align-items: start; }
+  .news-card { overflow: hidden; border: 1px solid #3f2e22; border-radius: .65rem; background: #13100d; scroll-margin-top: 110px; }
+  .news-image { width: 100%; height: auto; }
+  .news-copy { padding: 1.5rem; }
+  .news-date { display: flex; flex-wrap: wrap; align-items: center; gap: .7rem; color: #c7906c; font-size: .65rem; }
+  .news-date > span { color: #98826d; }
+  .news-copy h2 { margin: .75rem 0 1rem; color: #fff0df; font-size: 1.35rem; font-weight: 750; letter-spacing: -.035em; line-height: 1.25; }
+  .news-summary, .news-story p, .news-excerpt { color: #bbad9e; font-size: .85rem; line-height: 1.85; }
+  .news-story summary { cursor: pointer; list-style: none; }
+  .news-story summary::-webkit-details-marker { display: none; }
+  .news-excerpt { display: block; }
+  .read-more, .read-less { display: inline-block; margin-top: .9rem; color: #e6a882; font-size: .75rem; font-weight: 600; }
+  .read-less { display: none; }
+  .news-story[open] .news-excerpt, .news-story[open] .read-more { display: none; }
+  .news-story[open] .read-less { display: inline-block; margin-top: 0; }
+  .news-story p { margin-top: .85rem; }
+  .news-story summary:focus-visible { outline: 2px solid #f79883; outline-offset: 5px; }
+  .news-video { width: 100%; max-height: 350px; margin-top: 1.25rem; border-radius: .4rem; background: black; }
+  .news-links { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid #3e2c1e; }
+  .news-follow { border-color: #3f2e22; background: #13100d; margin-top: 2.5rem; margin-bottom: 0; }
+  .news-follow h2 { margin-bottom: .5rem; color: #f2dfc9; font-size: 1.25rem; font-weight: 700; }
+  .news-follow p { margin: 0; color: #a88d73; font-size: .85rem; }
+  @media (max-width: 700px) { .news-page { padding-top: 2rem; } .news-grid { grid-template-columns: 1fr; } }
+</style>

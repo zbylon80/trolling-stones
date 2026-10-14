@@ -30,7 +30,7 @@ Then(
       const fieldLabel = row.field;
       const valueText = row.value;
 
-      await expect(this.page.getByText(fieldLabel, { exact: false })).toBeVisible();
+      await expect(this.page.locator('.contact-details dt').getByText(fieldLabel, { exact: true })).toBeVisible();
       if (valueText) {
         const link = this.page.getByRole('link', { name: valueText });
         await expect(link).toBeVisible();
@@ -42,7 +42,7 @@ Then(
 Then(
   'the social link {string} should point to {string}',
   async function (this: PlaywrightWorld, name: string, url: string) {
-    const link = this.page.getByRole('link', { name });
+    const link = this.page.getByRole('main').getByRole('link', { name, exact: true });
     await expect(link).toHaveAttribute('href', url);
   }
 );

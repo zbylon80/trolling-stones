@@ -7,14 +7,14 @@ Feature: Static pages render correctly
 
     Examples:
       | path            | heading                                       |
-      | /               | TRolling Stones - oficjalna strona            |
+      | /               | Rock’n’roll.            |
       | /koncerty       | Koncerty                                      |
       | /aktualnosci    | Aktualności                                  |
       | /bio            | Bio                                           |
       | /galeria        | Galeria                                       |
       | /sklad          | Skład                                        |
       | /kontakt        | Kontakt                                       |
-      | /en/            | TRolling Stones - official website            |
+      | /en/            | Rock’n’roll.            |
       | /en/koncerty    | Shows                                         |
       | /en/aktualnosci | News                                          |
       | /en/bio         | Bio                                           |

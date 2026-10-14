@@ -12,6 +12,7 @@ export const newsEn: NewsItem[] = [
   {
     id: "2025-12-06-gdynia",
     date: "2025-12-06",
+    eventDate: "2025-12-06",
     title: "Blues Club Gdynia - special guests show",
     summary:
       "On 6 December we return to Blues Club in Gdynia for a special concert with surprise guests. We are preparing a high-energy holiday set and a couple of twists. As the video proves, nothing ever goes completely according to plan with us.",

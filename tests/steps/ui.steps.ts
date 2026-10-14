@@ -152,8 +152,7 @@ Then('the hero intro should be {string}', async function (
   this: PlaywrightWorld,
   text: string
 ) {
-  const heroSection = this.page.locator('section.container').first();
-  const paragraph = heroSection.locator('p').first();
+  const paragraph = this.page.locator('.hero-intro');
   await expect(paragraph).toHaveText(text);
 });
 
@@ -161,7 +160,7 @@ Then('the intro paragraph should be {string}', async function (
   this: PlaywrightWorld,
   text: string
 ) {
-  const intro = this.page.locator('section.container').first().locator('p').first();
+  const intro = this.page.locator('.page-intro');
   await expect(intro).toHaveText(text);
 });
 
@@ -169,7 +168,7 @@ Then('the contact lead text should be {string}', async function (
   this: PlaywrightWorld,
   text: string
 ) {
-  const lead = this.page.locator('section.container').locator('p').first();
+  const lead = this.page.locator('.contact-heading > p').last();
   await expect(lead).toHaveText(text);
 });
 
@@ -183,6 +182,6 @@ Then('the cookie message should be {string}', async function (
     return el != null && !el.classList.contains('hidden');
   });
   await expect(banner).toBeVisible();
-  const message = banner.locator('p');
+  const message = banner.locator('p').last();
   await expect(message).toHaveText(text);
 });

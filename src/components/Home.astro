@@ -1,0 +1,141 @@
+---
+import { Image } from "astro:assets";
+import bandPhoto from "../../public/images/poster02.jpg";
+import YouTubeCarousel from "./YouTubeCarousel.astro";
+import SocialLinks from "./SocialLinks.astro";
+import { upcomingGigs } from "../data/gigs";
+interface Props { lang?: "pl" | "en"; }
+const { lang = "pl" } = Astro.props;
+const en = lang === "en";
+const base = en ? "/en" : "";
+const nextGig = [...upcomingGigs].sort((a, b) => a.date.localeCompare(b.date))[0];
+const nextDate = nextGig ? new Date(`${nextGig.date}T12:00:00Z`) : null;
+const copy = en ? {
+  headline: "Rock’n’roll.", second: "Full throttle.",
+  intro: "Stones riffs, six musicians and the kind of energy you feel best in front of the stage.",
+  shows: "See shows", booking: "Book the band", since: "On stage since 2015",
+  next: "Next show", details: "Show details", videos: "Latest videos",
+  videoIntro: "Turn it up. Get a taste of the live experience.",
+  about: "Six musicians. One obsession.", aboutCopy: "The sound of The Rolling Stones, our own character and a shared love of playing live. Meet the people behind the riffs.",
+  meet: "Meet the band", online: "Beyond the stage", follow: "Stay in the loop.",
+  followIntro: "Videos, photos and news from the road. Find us here."
+} : {
+  headline: "Rock’n’roll.", second: "Bez hamulców.",
+  intro: "Stonesowe riffy, sześciu muzyków i energia, którą najlepiej poczuć pod sceną.",
+  shows: "Zobacz koncerty", booking: "Zaproś nas na scenę", since: "Na scenie od 2015",
+  next: "Najbliższy koncert", details: "Szczegóły koncertu", videos: "Nasze klipy",
+  videoIntro: "Podkręć głośność. Tak brzmi TRolling Stones.",
+  about: "Sześciu muzyków. Jedna zajawka.", aboutCopy: "Brzmienie The Rolling Stones, nasz własny charakter i wspólna miłość do grania na żywo. Poznaj ludzi, którzy stoją za tymi riffami.",
+  meet: "Poznaj zespół", online: "Poza sceną", follow: "Bądź na bieżąco.",
+  followIntro: "Klipy, zdjęcia i wieści z koncertowej trasy. Tu nas znajdziesz."
+};
+---
+<div class="container home-page">
+  <section class="home-hero" aria-labelledby="home-title">
+    <div class="hero-photo">
+      <Image src={bandPhoto} alt={en ? "TRolling Stones with their guitars" : "TRolling Stones z gitarami"} widths={[480, 800, 1200]} sizes="(max-width: 700px) 100vw, 60vw" loading="eager" fetchpriority="high" format="webp" quality={80} />
+    </div>
+    <div class="hero-shade" aria-hidden="true"></div>
+    <div class="hero-content">
+      <p class="section-kicker">Tribute to The Rolling Stones</p>
+      <h1 id="home-title">{copy.headline}<br /><span>{copy.second}</span></h1>
+      <p class="hero-intro">{copy.intro}</p>
+      <div class="hero-actions">
+        <a class="site-button button-primary" href={`${base}/koncerty`}>{copy.shows}<span aria-hidden="true">→</span></a>
+        <a class="site-button button-outline" href={`${base}/kontakt`}>{copy.booking}</a>
+      </div>
+      <p class="hero-footnote"><span aria-hidden="true"></span>{copy.since} <span class="hero-footnote-separator" aria-hidden="true">/</span> Live & loud</p>
+    </div>
+  </section>
+
+  {nextGig && nextDate && (
+    <aside class="next-show" aria-label={copy.next}>
+      <time class="next-date" datetime={nextGig.date} aria-label={nextDate.toLocaleDateString(en ? "en-GB" : "pl-PL", { day: "numeric", month: "long", year: "numeric", timeZone: "Europe/Warsaw" })}>
+        <strong>{nextGig.date.slice(8)}</strong>
+        <span>{nextDate.toLocaleDateString(en ? "en-GB" : "pl-PL", { month: "short", timeZone: "Europe/Warsaw" }).replace(".", "")}<small>{nextGig.date.slice(0, 4)}</small></span>
+      </time>
+      <div class="next-copy">
+        <p>{copy.next}</p>
+        <h2>{en ? (nextGig.cityEn ?? nextGig.city) : nextGig.city}<span aria-hidden="true"> / </span>{en ? (nextGig.venueEn ?? nextGig.venue) : nextGig.venue}</h2>
+      </div>
+      <a class="next-link" href={`${base}/koncerty`}>{copy.details}<span aria-hidden="true">→</span></a>
+    </aside>
+  )}
+
+  <section class="home-media" aria-labelledby="videos-title">
+    <div class="media-heading"><p class="section-kicker">Live sessions</p><h2 id="videos-title" class="section-title">{copy.videos}</h2><p>{copy.videoIntro}</p></div>
+    <div class="media-grid">
+      <YouTubeCarousel lang={lang} />
+      <aside class="band-teaser">
+        <p class="section-kicker">TRolling Stones</p>
+        <h3>{copy.about}</h3>
+        <p class="teaser-copy">{copy.aboutCopy}</p>
+        <a class="text-action" href={`${base}/sklad`}>{copy.meet}<span aria-hidden="true">→</span></a>
+      </aside>
+    </div>
+  </section>
+
+  <section class="home-social" aria-labelledby="follow-title">
+    <p class="section-kicker">{copy.online}</p>
+    <div class="social-heading"><h2 id="follow-title" class="section-title">{copy.follow}</h2><p>{copy.followIntro}</p></div>
+    <SocialLinks />
+  </section>
+</div>
+<style>
+  .home-page { padding-top: 2rem; }
+  .home-hero { position: relative; isolation: isolate; overflow: hidden; min-height: 510px; border: 1px solid #3d2d22; border-radius: 1rem; background: #15100d; }
+  .hero-photo { position: absolute; z-index: -3; inset: 0 0 0 auto; width: 62%; }
+  .hero-photo :global(img) { width: 100%; height: 100%; object-fit: cover; object-position: 45% 50%; }
+  .hero-shade { position: absolute; z-index: -2; inset: 0; background: linear-gradient(90deg, #15100d 0%, #15100df0 30%, #15100d99 48%, #15100d10 74%), linear-gradient(0deg, #15100d80, transparent 50%); }
+  .hero-content { width: 64%; padding: 3.5rem; }
+  .hero-content h1 { margin: 1.15rem 0 1.5rem; color: #fff0df; font-family: Impact, "Arial Black", sans-serif; font-size: clamp(3.3rem, 5.7vw, 5.2rem); font-weight: 900; line-height: 1.02; letter-spacing: -.025em; }
+  .hero-content h1 span { color: #ed7258; }
+  .hero-intro { max-width: 350px; margin-bottom: 1.65rem; font-size: .95rem; line-height: 1.75; color: #cbbdad; }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: .7rem; }
+  .hero-footnote { display: flex; align-items: center; gap: .5rem; margin: 2rem 0 0; color: #aa9b8b; font-size: .63rem; letter-spacing: .035em; text-transform: uppercase; }
+  .hero-footnote > span:first-child { width: .3rem; height: .3rem; border-radius: 50%; background: #e99579; }
+  .hero-footnote-separator { margin: 0 .3rem; color: #6a4a39; }
+  .next-show { display: flex; align-items: center; gap: 1.3rem; margin-top: 1rem; padding: 1.15rem 1.5rem; border: 1px solid #4c3426; border-radius: .65rem; background: #1b1510; }
+  .next-date { display: flex; align-items: center; gap: .65rem; padding-right: 1.3rem; border-right: 1px solid #6f4b3240; color: #fff0d8; }
+  .next-date strong { font-size: 2.9rem; line-height: 1; font-weight: 900; letter-spacing: -.06em; }
+  .next-date span { font-size: .72rem; font-weight: 700; text-transform: uppercase; }
+  .next-date small { display: block; margin-top: .2rem; color: #ae9781; font-size: .58rem; }
+  .next-copy { flex: 1; }
+  .next-copy p { margin: 0 0 .25rem; color: #c28b69; font-size: .6rem; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; }
+  .next-copy h2 { margin: 0; color: #fff0df; font-size: 1.1rem; font-weight: 700; }
+  .next-copy h2 span { color: #895a41; }
+  .next-link { display: inline-flex; align-items: center; gap: 1.2rem; color: #f1c5a1; font-size: .75rem; font-weight: 600; text-decoration: none; white-space: nowrap; }
+  .next-link:hover { color: #fff0df; }
+  .home-media, .home-social { margin-top: 4rem; }
+  .media-heading > p:last-child { margin-top: .55rem; margin-bottom: 1.5rem; color: #a99b8d; font-size: .85rem; }
+  .media-grid { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 1.5rem; align-items: start; }
+  .band-teaser { align-self: stretch; display: flex; flex-direction: column; justify-content: center; padding: 1.8rem; border-left: 1px solid #3d3027; }
+  .band-teaser h3 { margin: .8rem 0 1rem; color: #fff0df; font-size: clamp(1.6rem, 2.5vw, 2.15rem); font-weight: 800; line-height: 1.15; letter-spacing: -.04em; }
+  .teaser-copy { margin-bottom: 1.5rem; color: #ac9d8e; font-size: .85rem; line-height: 1.8; }
+  .social-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin: .5rem 0 1.5rem; }
+  .social-heading p { margin: 0; color: #a99b8d; font-size: .85rem; }
+  @media (max-width: 960px) {
+    .hero-content { padding: 2.5rem; width: 75%; }
+    .hero-content h1 { font-size: clamp(3rem, 6vw, 4.5rem); }
+    .band-teaser { padding: 1.2rem; }
+  }
+  @media (max-width: 700px) {
+    .home-page { padding-top: 1rem; }
+    .home-hero { padding-top: 255px; min-height: 0; }
+    .hero-photo { inset: 0 0 auto; width: 100%; height: 320px; }
+    .hero-photo :global(img) { object-position: 50% 25%; }
+    .hero-shade { background: linear-gradient(180deg, transparent 130px, #15100d 315px); }
+    .hero-content { width: 100%; padding: 1.5rem; }
+    .hero-content h1 { font-size: clamp(2.5rem, 9.5vw, 4rem); margin-top: .8rem; }
+    .hero-intro { font-size: .9rem; }
+    .hero-footnote { margin-top: 1.5rem; }
+    .next-show { gap: .9rem; padding: 1rem; flex-wrap: wrap; }
+    .next-date { padding-right: .9rem; }
+    .next-copy h2 { font-size: .95rem; }
+    .next-link { width: 100%; padding-top: .75rem; border-top: 1px solid #493325; justify-content: space-between; }
+    .home-media, .home-social { margin-top: 2.75rem; }
+    .media-grid { grid-template-columns: 1fr; }
+    .band-teaser { padding: 1.25rem 0 0; border-left: 0; border-top: 1px solid #3d3027; }
+    .social-heading { align-items: flex-start; flex-direction: column; gap: .65rem; }
+  }
+</style>

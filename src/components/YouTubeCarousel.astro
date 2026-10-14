@@ -1,64 +1,110 @@
 ﻿---
-interface Props {
-  lang?: "pl" | "en";
-}
-
-const { lang = "pl" } = Astro.props as Props;
-const locale = lang === "en" ? "en" : "pl";
-const labels = {
-  pl: { prev: "Poprzedni klip", next: "Następny klip" },
-  en: { prev: "Previous clip", next: "Next clip" },
-} as const;
+interface Props { lang?: "pl" | "en"; }
+const { lang = "pl" } = Astro.props;
+const labels = lang === "en" ? {
+  prev: "Previous clip", next: "Next clip", play: "Play video",
+  allow: "Allow YouTube and play", note: "Playing this video connects to YouTube.",
+  external: "Open on YouTube", latest: "Latest addition"
+} : {
+  prev: "Poprzedni klip", next: "Następny klip", play: "Odtwórz klip",
+  allow: "Zezwól na YouTube i odtwórz", note: "Odtworzenie klipu połączy Cię z YouTube.",
+  external: "Otwórz na YouTube", latest: "Ostatnio dodany"
+};
 ---
-<div class="relative">
-  <div id="yt-container" class="relative w-full" style="padding-top: 56.25%">
-    <iframe
-      class="absolute inset-0 h-full w-full rounded-lg border border-neutral-800"
-      src="https://www.youtube-nocookie.com/embed/Va2NqLJPnkw"
-      title="YouTube video"
-      frameborder="0"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-      referrerpolicy="strict-origin-when-cross-origin"
-      allowfullscreen></iframe>
+<div class="video-carousel" data-video-carousel data-lang={lang} data-play-label={labels.play} data-allow-label={labels.allow}>
+  <div id="yt-container" class="video-stage">
+    <div class="video-cover">
+      <img src="/images/blues.jpg" alt={lang === "en" ? "TRolling Stones with the audience at Blues Club" : "TRolling Stones z publicznością w Blues Clubie"} width="2048" height="1150" loading="lazy" />
+      <div class="video-cover-shade" aria-hidden="true"></div>
+      <button type="button" class="video-play" data-video-play><span class="play-symbol" aria-hidden="true">▶</span><span data-video-play-label>{labels.allow}</span></button>
+      <p class="video-note">{labels.note}</p>
+    </div>
   </div>
-  <button
-    id="prev"
-    class="absolute left-0 top-1/2 -translate-y-1/2 p-2 text-xl bg-neutral-800/70 hover:bg-neutral-700/70 text-white rounded-full z-10"
-    aria-label={labels[locale].prev}
-    type="button"
-  >
-    ‹
-  </button>
-  <button
-    id="next"
-    class="absolute right-0 top-1/2 -translate-y-1/2 p-2 text-xl bg-neutral-800/70 hover:bg-neutral-700/70 text-white rounded-full z-10"
-    aria-label={labels[locale].next}
-    type="button"
-  >
-    ›
-  </button>
+  <div class="video-controls">
+    <div class="video-meta"><span data-video-count>06 / 06</span><span data-video-title aria-live="polite">{labels.latest}</span></div>
+    <div class="video-arrows">
+      <button id="prev" type="button" aria-label={labels.prev}>‹</button>
+      <button id="next" type="button" aria-label={labels.next}>›</button>
+    </div>
+  </div>
+  <a class="video-external" data-video-external href="https://www.youtube.com/watch?v=8VtqYMDBSe8" target="_blank" rel="noopener noreferrer">{labels.external}<span aria-hidden="true">↗︎</span></a>
 </div>
-
+<style>
+  .video-carousel { min-width: 0; }
+  .video-stage { position: relative; width: 100%; aspect-ratio: 16/9; overflow: hidden; border: 1px solid #4c3628; border-radius: .7rem; background: #15100d; }
+  .video-stage :global(iframe) { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .video-cover { position: absolute; inset: 0; }
+  .video-cover img { width: 100%; height: 100%; object-fit: cover; }
+  .video-cover-shade { position: absolute; inset: 0; background: #10090560; }
+  .video-play { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; align-items: center; gap: .75rem; max-width: 90%; padding: .8rem 1.05rem; border: 1px solid #f5c39b80; border-radius: .4rem; background: #17100ee8; color: #fff0df; font-size: .75rem; font-weight: 600; text-align: left; }
+  .video-play:hover { background: #a7392af0; border-color: #e99176; }
+  .play-symbol { display: grid; place-items: center; width: 30px; height: 30px; border: 1px solid #f5c39b60; border-radius: 50%; font-size: .65rem; flex-shrink: 0; }
+  .video-note { position: absolute; bottom: .9rem; left: .8rem; right: .8rem; margin: 0; color: #ffe9d3; font-size: .6rem; text-align: center; text-shadow: 0 1px 4px #000; }
+  .video-controls { display: flex; align-items: center; justify-content: space-between; gap: .8rem; margin-top: .9rem; }
+  .video-meta { display: flex; align-items: baseline; flex-wrap: wrap; gap: .75rem; font-size: .75rem; color: #d2c2af; }
+  [data-video-count] { color: #a57d5a; font-size: .6rem; letter-spacing: .06em; white-space: nowrap; }
+  .video-arrows { display: flex; gap: .5rem; }
+  .video-arrows button { width: 44px; height: 44px; border: 1px solid #5b3e2c; border-radius: .3rem; background: #1a120d; color: #fff0df; font-size: 1.5rem; }
+  .video-arrows button:hover { background: #352015; }
+  .video-external { display: inline-flex; gap: .65rem; margin-top: .6rem; color: #a7907a; font-size: .65rem; text-decoration: none; }
+  .video-external:hover { color: #f1c5a1; }
+  @media (max-width: 420px) { .video-play { width: max-content; font-size: .65rem; gap: .6rem; padding: .65rem; } .video-note { font-size: .55rem; bottom: .6rem; } }
+</style>
 <script>
-  const container = document.querySelector<HTMLDivElement>('#yt-container');
-  const prevBtn = document.querySelector<HTMLButtonElement>('#prev');
-  const nextBtn = document.querySelector<HTMLButtonElement>('#next');
-  const videos = ['Va2NqLJPnkw', 'P7VS3KmmEVk', 'V29vfbnwk94', 'qhkNdJ04e1c', 'D7F8xH0-5rM', '8VtqYMDBSe8'];
-  let index = Math.floor(Math.random() * videos.length);
-
-  function render() {
-    if (!container) return;
-    const id = videos[index];
-    container.innerHTML = `<iframe class="absolute inset-0 h-full w-full rounded-lg border border-neutral-800" src="https://www.youtube-nocookie.com/embed/${id}" title="YouTube video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
+  const root = document.querySelector<HTMLDivElement>("[data-video-carousel]");
+  const stage = root?.querySelector<HTMLDivElement>("#yt-container");
+  const originalCover = stage?.innerHTML ?? "";
+  const en = root?.dataset.lang === "en";
+  const videos = [
+    { id: "Va2NqLJPnkw", title: "Can’t You Hear Me Knocking (live)" },
+    { id: "P7VS3KmmEVk", title: "Paint It Black — WOŚP 2025" },
+    { id: "V29vfbnwk94", title: en ? "From our channel · 03" : "Z naszego kanału · 03" },
+    { id: "qhkNdJ04e1c", title: en ? "From our channel · 04" : "Z naszego kanału · 04" },
+    { id: "D7F8xH0-5rM", title: en ? "From our channel · 05" : "Z naszego kanału · 05" },
+    { id: "8VtqYMDBSe8", title: en ? "Latest addition" : "Ostatnio dodany" }
+  ];
+  let index = videos.length - 1;
+  let playing = false;
+  let consent: string | null = null;
+  try { consent = localStorage.getItem("cookieConsent"); } catch {}
+  function updateLabel() {
+    const label = root?.querySelector("[data-video-play-label]");
+    if (label) label.textContent = consent === "accepted" ? root?.dataset.playLabel ?? "" : root?.dataset.allowLabel ?? "";
   }
-
-  prevBtn?.addEventListener('click', () => {
-    index = (index - 1 + videos.length) % videos.length;
+  function render() {
+    if (!stage || !root) return;
+    const video = videos[index];
+    const title = root.querySelector("[data-video-title]");
+    const count = root.querySelector("[data-video-count]");
+    const external = root.querySelector<HTMLAnchorElement>("[data-video-external]");
+    if (title) title.textContent = video.title;
+    if (count) count.textContent = `${String(index + 1).padStart(2, "0")} / ${String(videos.length).padStart(2, "0")}`;
+    if (external) external.href = `https://www.youtube.com/watch?v=${video.id}`;
+    if (playing && consent === "accepted") {
+      const iframe = document.createElement("iframe");
+      iframe.src = `https://www.youtube-nocookie.com/embed/${video.id}?autoplay=1`;
+      iframe.title = video.title;
+      iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+      iframe.referrerPolicy = "strict-origin-when-cross-origin";
+      iframe.allowFullscreen = true;
+      stage.replaceChildren(iframe);
+    } else { stage.innerHTML = originalCover; updateLabel(); }
+  }
+  root?.addEventListener("click", (event) => {
+    if (!(event.target instanceof Element) || !event.target.closest("[data-video-play]")) return;
+    consent = "accepted";
+    try { localStorage.setItem("cookieConsent", consent); } catch {}
+    document.dispatchEvent(new CustomEvent("cookie:consent", { detail: consent }));
+    playing = true;
     render();
   });
-  nextBtn?.addEventListener('click', () => {
-    index = (index + 1) % videos.length;
-    render();
+  root?.querySelector("#prev")?.addEventListener("click", () => { index = (index - 1 + videos.length) % videos.length; render(); });
+  root?.querySelector("#next")?.addEventListener("click", () => { index = (index + 1) % videos.length; render(); });
+  document.addEventListener("cookie:consent", (event) => {
+    const value = (event as CustomEvent).detail;
+    if (value !== "accepted" && value !== "rejected") return;
+    consent = value;
+    if (consent !== "accepted") { playing = false; render(); } else updateLabel();
   });
-  render();
+  updateLabel();
 </script>

@@ -13,17 +13,17 @@ Feature: Polish copy keeps diacritics intact
 
   Scenario: Homepage hero paragraph uses Polish diacritics
     Given I open the homepage
-    Then the hero intro should be "Rock'n'roll z pulsującą energią. Sprawdź nasze koncerty, obejrzyj klipy i bądź na bieżąco z nowościami."
+    Then the hero intro should be "Stonesowe riffy, sześciu muzyków i energia, którą najlepiej poczuć pod sceną."
 
   Scenario: Concerts intro copy keeps Polish letters
     Given I open the page "/koncerty"
-    Then the intro paragraph should be "Nadchodzące daty występów."
+    Then the intro paragraph should be "Widzimy się pod sceną."
 
   Scenario: Contact lead paragraph uses Polish diacritics
     Given I open the kontakt page
-    Then the contact lead text should be "Rezerwacje koncertów, media, współpraca."
+    Then the contact lead text should be "Spotkajmy się na Twojej scenie."
 
   Scenario: Cookie banner message is written with Polish diacritics
     Given the cookie banner storage is cleared
     And I open the homepage
-    Then the cookie message should be "Używamy plików cookie tylko w niezbędnym zakresie oraz do osadzania treści (np. YouTube). Szczegóły znajdziesz w polityce prywatności. Możesz zaakceptować lub odrzucić."
+    Then the cookie message should be "YouTube uruchomimy dopiero, gdy na to pozwolisz. Możesz włączyć odtwarzacz lub pozostać przy zdjęciach i linkach."

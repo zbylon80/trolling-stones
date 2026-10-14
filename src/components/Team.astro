@@ -1,0 +1,38 @@
+---
+import { Image } from "astro:assets";
+import Lightbox from "./Lightbox.astro";
+import walec from "../../public/images/members/walec.jpg";
+import slodki from "../../public/images/members/slodki.jpg";
+import hamo from "../../public/images/members/hamo.jpg";
+import piter from "../../public/images/members/piter.jpg";
+import wiciu from "../../public/images/members/wiciu.jpg";
+import zbylon from "../../public/images/members/zbylon.jpg";
+const en = Astro.props.lang === "en";
+const members = [
+  { key: "walec", image: walec, name: "Artur ‘Walec’ Dembicki", pl: "Gitara prowadząca", en: "Lead guitar" },
+  { key: "slodki", image: slodki, name: "Krzysztof ‘Słodki’ Słodkowski", pl: "Bas", en: "Bass" },
+  { key: "hamo", image: hamo, name: "Piotr ‘Hamo’ Abraham", pl: "Perkusja", en: "Drums" },
+  { key: "piter", image: piter, name: "Piotr ‘Piter’ Jędrzejewski", pl: "Klawisze", en: "Keys" },
+  { key: "wiciu", image: wiciu, name: "Witold ‘Wiciu’ Piasek", pl: "Gitara rytmiczna", en: "Rhythm guitar" },
+  { key: "zbylon", image: zbylon, name: "Zbigniew ‘Zbylon’ Kalinowski", pl: "Wokal, harmonijka", en: "Vocals, harmonica" }
+];
+---
+<section class="container team-page">
+  <header><p class="section-kicker">TRolling Stones / The band</p><h1 class="display-title">{en ? "Line-up" : "Skład"}</h1><p class="team-lead">{en ? "Meet the people behind the riffs." : "Poznaj ludzi, którzy stoją za tymi riffami."}</p></header>
+  <div class="member-grid">{members.map((member) => (<article class="member-card"><a class="member-photo" href={`/images/members/${member.key}.jpg`} data-lightbox data-lightbox-group="members" data-alt={`${member.name} — ${en ? member.en : member.pl}`} aria-label={`${en ? "Enlarge photo" : "Powiększ zdjęcie"}: ${member.name}`}><Image src={member.image} alt={member.name} widths={[320, 500, 700]} sizes="(max-width: 600px) 100vw, (max-width: 900px) 50vw, 33vw" format="webp" quality={80} loading="lazy" /><span aria-hidden="true">↗︎</span></a><div class="member-copy"><h2>{member.name}</h2><p>{en ? member.en : member.pl}</p></div></article>))}</div>
+  <Lightbox />
+</section>
+<style>
+  .team-page { padding-top: 3rem; }
+  .team-lead { margin-top: .5rem; color: #b8aa9b; }
+  .member-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; margin-top: 2.25rem; }
+  .member-card { min-width: 0; }
+  .member-photo { position: relative; display: block; overflow: hidden; aspect-ratio: 4/5; border: 1px solid #463126; border-radius: .65rem; }
+  .member-photo :global(img) { width: 100%; height: 100%; object-fit: cover; object-position: 50% 20%; }
+  .member-photo > span { position: absolute; bottom: .75rem; right: .75rem; display: grid; place-items: center; width: 35px; height: 35px; border-radius: 50%; background: #17100dcc; color: #fff0df; }
+  .member-copy { padding: 1rem .1rem; }
+  .member-copy h2 { margin-bottom: .35rem; color: #fff0df; font-size: 1.08rem; font-weight: 700; letter-spacing: -.025em; }
+  .member-copy p { margin: 0; color: #d49572; font-size: .75rem; }
+  @media (max-width: 900px) { .member-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 600px) { .team-page { padding-top: 2rem; } .member-grid { grid-template-columns: 1fr; } }
+</style>

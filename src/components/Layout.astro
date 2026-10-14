@@ -1,6 +1,8 @@
 ---
 import "../styles/global.css";
 import CookieBanner from "./CookieBanner.astro";
+import SiteHeader from "./SiteHeader.astro";
+import SocialLinks from "./SocialLinks.astro";
 
 const siteOrigin = Astro.site?.origin ?? Astro.url?.origin ?? "";
 const rawPathName = Astro.url.pathname ?? "/";
@@ -57,7 +59,16 @@ const plHref = pathName.startsWith("/en") ? pathName.replace(/^\/en/, "") || "/"
 const enHref =
   pathName.startsWith("/en") ? pathName : pathName === "/" ? "/en" : `/en${pathName}`;
 
-const { title = defaults[lang].title, description = defaults[lang].description } = Astro.props;
+const descriptions: Record<string, { pl: string; en: string }> = {
+  "/koncerty": { pl: "Najbliższe koncerty i wspomnienia z występów TRolling Stones — tribute to The Rolling Stones.", en: "Upcoming shows and past performances by TRolling Stones — tribute to The Rolling Stones." },
+  "/galeria": { pl: "Zdjęcia zespołu TRolling Stones. Poznaj nasz rock’n’rollowy świat.", en: "Photos of TRolling Stones. Step into our rock’n’roll world." },
+  "/aktualnosci": { pl: "Koncertowe zapowiedzi, nowe klipy i wieści od zespołu TRolling Stones.", en: "Show announcements, new videos and news from TRolling Stones." },
+  "/bio": { pl: "Historia TRolling Stones — sześciu muzyków i wspólna pasja do The Rolling Stones.", en: "The story of TRolling Stones — six musicians sharing a love of The Rolling Stones." },
+  "/sklad": { pl: "Poznaj muzyków TRolling Stones: gitary, bas, perkusja, klawisze, wokal i harmonijka.", en: "Meet TRolling Stones: guitars, bass, drums, keys, vocals and harmonica." },
+  "/kontakt": { pl: "Zaproś TRolling Stones na koncert. Kontakt bookingowy do managera i rider techniczny.", en: "Book TRolling Stones for your stage. Contact the band’s manager and get the technical rider." }
+};
+const localPath = pathName.replace(/^\/en(?=\/|$)/, "") || "/";
+const { title = defaults[lang].title, description = descriptions[localPath]?.[lang] ?? defaults[lang].description } = Astro.props;
 
 const structuredData = {
   "@context": "https://schema.org",
@@ -88,6 +99,9 @@ const structuredData = {
     <link rel="shortcut icon" href="/favicon.ico" />
     <meta name="google-site-verification" content="yzvYq1K4LrHnxUqZLI39cGlQVfze41ElrWh1v36kU3Y" />
     <link rel="canonical" href={canonicalUrl} />
+    <link rel="alternate" hreflang="pl" href={`${siteOrigin}${plHref}`} />
+    <link rel="alternate" hreflang="en" href={`${siteOrigin}${enHref}`} />
+    <link rel="alternate" hreflang="x-default" href={`${siteOrigin}${plHref}`} />
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
@@ -98,55 +112,23 @@ const structuredData = {
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
-    <script type="application/ld+json">{JSON.stringify(structuredData)}</script>
+    <script type="application/ld+json" set:html={JSON.stringify(structuredData).replace(/</g, "\\u003c")} />
   </head>
   <body>
-    <div class="sticky top-0 z-50 border-b border-neutral-800/60 bg-black/95 backdrop-blur">
-      <div class="container flex justify-end gap-2 py-1">
-        {(["pl", "en"] as const).map((code) => (
-          <a
-            href={code === "pl" ? plHref : enHref}
-            class:list={{
-              "flex items-center gap-2 rounded px-2 py-1 text-xs uppercase tracking-wide transition": true,
-              "border border-neutral-700 hover:border-neutral-500 text-neutral-200": lang !== code,
-              "border border-white/40 bg-white/10 text-white": lang === code
-            }}
-            aria-current={lang === code ? "page" : undefined}
-            aria-label={code === "pl" ? "Polski" : "English"}
-          >
-            <img
-              src={code === "pl" ? "/images/flags/pl.svg" : "/images/flags/gb.svg"}
-              alt=""
-              width="16"
-              height="16"
-              class="h-4 w-4"
-            />
-            {code.toUpperCase()}
-          </a>
-        ))}
-      </div>
-    </div>
-    <header class="sticky top-[2.25rem] z-40 border-b border-neutral-800 bg-black/90">
-      <div class="container flex flex-col gap-3 pt-2 pb-1 sm:flex-row sm:items-center sm:justify-between sm:pt-1 sm:pb-0.5 md:py-0">
-        <div class="flex items-center justify-between gap-3">
-          <a href={homeHref} class="flex items-center gap-3 font-bold tracking-wide text-lg sm:text-xl">
-            <img src="/images/logo.jpg" alt="Logo TRolling Stones" class="h-20 w-20 sm:h-[7.5rem] sm:w-[7.5rem] md:h-[11.25rem] md:w-[11.25rem] rounded-full object-cover" width="144" height="144" />
-            <span>TRolling Stones</span>
-          </a>
-        </div>
-        <nav class="flex flex-wrap justify-center sm:justify-end gap-3 sm:gap-4 text-sm">
-          {defaults[lang].nav.map((link) => (
-            <a href={`${basePath}${link.slug}`}>{link.label}</a>
-          ))}
-        </nav>
-      </div>
-    </header>
-    <main>
+    <SiteHeader lang={lang} items={defaults[lang].nav} homeHref={homeHref} plHref={plHref} enHref={enHref} pathName={pathName} />
+    <main id="main-content" tabindex="-1">
       <slot />
     </main>
-    <footer class="border-t border-neutral-800 mt-16">
-      <div class="container py-8 text-sm text-neutral-400">
-        {defaults[lang].footer}
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-top">
+          <div><p class="footer-brand">TRolling Stones</p><p class="footer-tagline">Tribute to The Rolling Stones / Live & loud</p></div>
+          <SocialLinks compact />
+        </div>
+        <div class="footer-bottom">
+          <p>{defaults[lang].footer}</p>
+          <div class="footer-links"><a href={`${basePath}/koncerty`}>{lang === "en" ? "Shows" : "Koncerty"}</a><a href={`${basePath}/kontakt`}>{lang === "en" ? "Booking & contact" : "Booking i kontakt"}</a><button type="button" data-cookie-settings>{lang === "en" ? "Media preferences" : "Ustawienia multimediów"}</button></div>
+        </div>
       </div>
     </footer>
     <CookieBanner lang={lang} />
