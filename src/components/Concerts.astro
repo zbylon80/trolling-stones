@@ -1,0 +1,244 @@
+---
+import { upcomingGigs, pastGigs, type Gig } from "../data/gigs";
+
+interface Props {
+  lang?: "pl" | "en";
+}
+const { lang = "pl" } = Astro.props;
+const en = lang === "en";
+const locale = en ? "en-GB" : "pl-PL";
+const copy = en ? {
+  title: "Shows", intro: "See you in front of the stage.",
+  upcoming: "Upcoming shows", next: "Next up", live: "Live",
+  tickets: "Buy tickets", soon: "Tickets coming soon",
+  follow: "Follow the announcements", past: "Past shows",
+  memories: "The music ends. The memories stay.",
+  gallery: "Visit the gallery",
+  story: "Relive this night", empty: "Our concert memories will appear here."
+} : {
+  title: "Koncerty", intro: "Widzimy się pod sceną.",
+  upcoming: "Nadchodzące koncerty", next: "Najbliższy koncert", live: "Na żywo",
+  tickets: "Kup bilety", soon: "Bilety wkrótce",
+  follow: "Śledź zapowiedzi", past: "Minione koncerty",
+  memories: "Muzyka wybrzmiała. Wspomnienia zostały.",
+  gallery: "Zajrzyj do galerii",
+  story: "Wróć do tego wieczoru", empty: "Tutaj pojawią się wspomnienia z koncertów."
+};
+const city = (gig: Gig) => en ? (gig.cityEn ?? gig.city) : gig.city;
+const venue = (gig: Gig) => en ? (gig.venueEn ?? gig.venue) : gig.venue;
+const date = (value: string) => new Date(`${value}T12:00:00Z`);
+const formattedDate = (value: string) => date(value).toLocaleDateString(locale, {
+  day: "2-digit", month: "long", year: "numeric", timeZone: "Europe/Warsaw"
+});
+const month = (value: string) => date(value).toLocaleDateString(locale, {
+  month: "short", timeZone: "Europe/Warsaw"
+}).replace(".", "");
+const basePath = en ? "/en" : "";
+const events = [
+  ...upcomingGigs.map((gig) => ({ gig, upcoming: true })),
+  ...pastGigs.map((gig) => ({ gig, upcoming: false }))
+];
+const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": events.map(({ gig, upcoming }) => ({
+    "@type": "MusicEvent",
+    name: `TRolling Stones — ${venue(gig) || city(gig)}`,
+    startDate: gig.date,
+    ...(upcoming ? { eventStatus: "https://schema.org/EventScheduled" } : {}),
+    location: {
+      "@type": "Place", name: venue(gig) || city(gig),
+      address: { "@type": "PostalAddress", addressLocality: gig.city, addressCountry: "PL" }
+    },
+    performer: { "@type": "MusicGroup", name: "TRolling Stones" },
+    url: `${Astro.site?.origin ?? ""}${basePath}/koncerty`,
+    ...(gig.photo ? { image: `${Astro.site?.origin ?? ""}${gig.photo}` } : {}),
+    ...(gig.tickets ? { offers: { "@type": "Offer", url: gig.tickets, availability: "https://schema.org/InStock" } } : {})
+  }))
+};
+---
+<section class="container shows-page">
+  <header class="page-heading">
+    <p class="eyebrow">TRolling Stones <span aria-hidden="true">/</span> Live & loud</p>
+    <h1>{copy.title}<span aria-hidden="true">.</span></h1>
+    <p class="page-intro">{copy.intro}</p>
+  </header>
+
+  {upcomingGigs.length > 0 && (
+    <section class="upcoming-section" aria-labelledby="upcoming-heading">
+      <div class="section-heading">
+        <h2 id="upcoming-heading">{copy.upcoming}</h2>
+        <span class="live-label"><span aria-hidden="true"></span>{copy.live}</span>
+      </div>
+      <div class="upcoming-list">
+        {upcomingGigs.map((gig, index) => (
+          <article class="show-poster">
+            <img class="poster-photo" src={gig.photo ?? "/images/background01.jpg"} alt="" width="2048" height="1150" loading={index === 0 ? "eager" : "lazy"} />
+            <div class="poster-shade" aria-hidden="true"></div>
+            <div class="poster-copy">
+              <p class="poster-kicker">{index === 0 ? copy.next : copy.live} <span aria-hidden="true">/</span> {gig.date.slice(0, 4)}</p>
+              <h3>{en ? gig.headlineEn : gig.headline}</h3>
+              <p class="poster-venue">{city(gig)} <span aria-hidden="true">/</span> {venue(gig)}</p>
+              <p class="poster-description">{en ? gig.descriptionEn : gig.description}</p>
+              <div class="poster-actions">
+                {gig.tickets ? (
+                  <a class="action-link primary-action" href={gig.tickets} target="_blank" rel="noopener noreferrer">{copy.tickets}<span aria-hidden="true">↗︎</span></a>
+                ) : (
+                  <span class="ticket-note"><span aria-hidden="true"></span>{copy.soon}</span>
+                )}
+                <a class="action-link follow-link" href="https://www.facebook.com/stones3city" target="_blank" rel="noopener noreferrer">{copy.follow}<span aria-hidden="true">↗︎</span></a>
+              </div>
+            </div>
+            <time class="date-stamp" datetime={gig.date} aria-label={formattedDate(gig.date)}>
+              <span class="stamp-day">{gig.date.slice(8)}</span>
+              <span class="stamp-month">{month(gig.date)}</span>
+              <span class="stamp-year">{gig.date.slice(0, 4)}</span>
+            </time>
+            <span class="poster-footnote" aria-hidden="true">Tribute to The Rolling Stones</span>
+          </article>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <section class="archive-section" aria-labelledby="past-heading">
+    <div class="archive-heading">
+      <div>
+        <p class="eyebrow">{en ? "From the road" : "Z koncertowej trasy"}</p>
+        <h2 id="past-heading">{copy.past}</h2>
+        <p class="archive-intro">{copy.memories}</p>
+      </div>
+      <a class="action-link gallery-link" href={`${basePath}/galeria`}>{copy.gallery}<span aria-hidden="true">↗︎</span></a>
+    </div>
+    {pastGigs.length === 0 ? (
+      <p class="empty-archive">{copy.empty}</p>
+    ) : (
+      <div class="archive-grid">
+        {pastGigs.map((gig) => (
+          <article class="memory-card">
+            <div class:list={["memory-image", { "memory-art": !gig.photo }]}>
+              {gig.photo ? (
+                <img src={gig.photo} alt={en ? gig.photoAltEn : gig.photoAlt} width="2048" height="1150" loading="lazy" style={`object-position: ${gig.photoPosition ?? "50% 60%"}`} />
+              ) : (
+                <div class="memory-date-art" aria-hidden="true">
+                  <span class="art-day">{gig.date.slice(8)}</span>
+                  <span class="art-month">{month(gig.date)} / {gig.date.slice(2, 4)}</span>
+                </div>
+              )}
+              <time datetime={gig.date}>{formattedDate(gig.date)}</time>
+            </div>
+            <div class="memory-copy">
+              <h3>{city(gig)}</h3>
+              {venue(gig) && <p class="memory-venue">{venue(gig)}</p>}
+              <div class="memory-bottom">
+                <span class="memory-year">{gig.date.slice(0, 4)} <span aria-hidden="true">/</span> TRolling Stones</span>
+                {gig.story && <a class="story-link" href={`${basePath}${gig.story}`} aria-label={`${copy.story}: ${city(gig)}, ${formattedDate(gig.date)}`}>{copy.story}<span aria-hidden="true">↗︎</span></a>}
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    )}
+  </section>
+  <script type="application/ld+json" set:html={JSON.stringify(structuredData).replace(/</g, "\\u003c")} />
+</section>
+
+<style>
+  .shows-page { padding-top: 3rem; padding-bottom: 1.5rem; }
+  .page-heading { margin-bottom: 2.75rem; }
+  .eyebrow { margin: 0; color: #aaa39d; font-size: .7rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; }
+  .eyebrow span { margin: 0 .5rem; color: #e95144; }
+  h1, h2, h3, p { margin-top: 0; }
+  .page-heading h1 { margin: .6rem 0 .55rem; font-size: clamp(3rem, 6vw, 4.8rem); font-weight: 900; letter-spacing: -.065em; line-height: 1; }
+  .page-heading h1 span { color: #ed5144; }
+  .page-intro { margin-bottom: 0; color: #c2bbb5; font-size: 1.1rem; }
+  .section-heading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
+  .section-heading h2 { margin-bottom: 0; font-size: 1.1rem; font-weight: 600; }
+  .live-label { display: flex; align-items: center; gap: .5rem; color: #f57c6f; font-size: .7rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+  .live-label span { width: .4rem; height: .4rem; border-radius: 50%; background: #ed5144; box-shadow: 0 0 12px #ed5144a0; }
+  .upcoming-list { display: grid; gap: 1.5rem; }
+  .show-poster { position: relative; isolation: isolate; overflow: hidden; min-height: 440px; border: 1px solid #51302a; border-radius: 1rem; background: #17110e; }
+  .poster-photo { position: absolute; z-index: -3; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 48%; }
+  .poster-shade { position: absolute; z-index: -2; inset: 0; background: linear-gradient(90deg, rgba(19,12,10,.97) 0%, rgba(19,12,10,.9) 28%, rgba(19,12,10,.45) 58%, rgba(19,12,10,.05) 100%), linear-gradient(0deg, rgba(16,10,8,.6), transparent 45%); }
+  .poster-copy { position: relative; padding: 2.8rem; width: 64%; }
+  .poster-kicker { margin-bottom: 1.25rem; color: #f79883; font-size: .7rem; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; }
+  .poster-kicker span { padding: 0 .5rem; opacity: .65; }
+  .poster-copy h3 { max-width: 600px; margin-bottom: 1.25rem; color: #fff4e8; font-family: Impact, "Arial Black", sans-serif; font-size: clamp(2.8rem, 5.2vw, 4.5rem); font-weight: 900; line-height: .99; letter-spacing: -.015em; text-transform: uppercase; text-wrap: balance; }
+  .poster-venue { margin-bottom: .65rem; color: #fff4e8; font-size: 1.2rem; font-weight: 600; }
+  .poster-venue span { margin: 0 .45rem; color: #ed5144; }
+  .poster-description { max-width: 370px; margin-bottom: 1.65rem; color: #cbbeb4; font-size: .95rem; line-height: 1.65; }
+  .poster-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 1rem 1.4rem; }
+  .ticket-note { display: inline-flex; align-items: center; gap: .55rem; color: #f6e3cf; font-size: .8rem; font-weight: 600; }
+  .ticket-note span { width: .35rem; height: .35rem; border-radius: 50%; background: #ed5144; }
+  .action-link { display: inline-flex; align-items: center; justify-content: center; gap: 1rem; font-size: .8rem; font-weight: 600; text-decoration: none; transition: border-color .2s, background .2s; }
+  .action-link:hover { text-decoration: none; }
+  .action-link:focus-visible, .story-link:focus-visible { outline: 2px solid #f57c6f; outline-offset: 5px; }
+  .follow-link { border: 1px solid #8d736760; border-radius: .35rem; padding: .8rem 1rem; color: #fff4e8; background: #1b100d90; }
+  .follow-link:hover { border-color: #f57c6f; background: #321a14; color: #fff; }
+  .primary-action { border-radius: .35rem; padding: .8rem 1rem; color: white; background: #bd3329; }
+  .primary-action:hover { color: white; background: #d84437; }
+  .date-stamp { position: absolute; right: 2rem; top: 2rem; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 116px; padding: .9rem .5rem .75rem; background: #fff0d8; color: #261711; box-shadow: 0 8px 25px #0005; transform: rotate(4deg); }
+  .stamp-day { font-size: 4.3rem; line-height: 1; font-weight: 900; letter-spacing: -.08em; padding-right: .2rem; }
+  .stamp-month { margin-top: .25rem; font-size: 1.1rem; line-height: 1.3; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+  .stamp-year { margin-top: .4rem; font-size: .7rem; letter-spacing: .12em; }
+  .poster-footnote { position: absolute; right: 2rem; bottom: 1.3rem; color: #fff0d8b0; font-size: .6rem; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; }
+  .archive-section { margin-top: 3.5rem; }
+  .archive-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 1.5rem; margin-bottom: 1.5rem; }
+  .archive-heading h2 { margin: .45rem 0 .5rem; font-size: clamp(1.7rem, 3vw, 2.3rem); font-weight: 800; letter-spacing: -.045em; }
+  .archive-intro { margin-bottom: 0; font-size: .9rem; color: #aaa39d; }
+  .gallery-link { padding-bottom: .35rem; color: #f18c7c; white-space: nowrap; }
+  .gallery-link:hover { color: #ffb7a6; }
+  .archive-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; }
+  .memory-card { overflow: hidden; border-radius: .75rem; border: 1px solid #2c2521; background: #14110f; transition: border-color .25s; }
+  .memory-card:hover { border-color: #805045; }
+  .memory-image { position: relative; overflow: hidden; aspect-ratio: 4/3; }
+  .memory-image::after { position: absolute; inset: 0; content: ""; pointer-events: none; background: linear-gradient(0deg, #0005, transparent 50%); }
+  .memory-image img { width: 100%; height: 100%; object-fit: cover; transition: transform .45s; }
+  .memory-card:hover img { transform: scale(1.035); }
+  .memory-image time { position: absolute; z-index: 1; top: .85rem; left: .85rem; padding: .45rem .65rem; border: 1px solid #fff2; border-radius: .3rem; color: #fff5ec; background: #18110ce6; font-size: .7rem; font-weight: 600; }
+  .memory-art { background: radial-gradient(ellipse at 85% 0%, #d94a3550, transparent 65%), #58231e; }
+  .memory-card:nth-child(even) .memory-art { background: radial-gradient(ellipse at 15% 100%, #cc6d3550, transparent 65%), #503023; }
+  .memory-date-art { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 1rem; color: #fff0d8; transform: rotate(-6deg); }
+  .art-day { font-family: Impact, "Arial Black", sans-serif; font-size: clamp(6rem, 10vw, 9rem); line-height: 1; letter-spacing: -.04em; }
+  .art-month { padding: .6rem 0; border-top: 2px solid #f18c7c; border-bottom: 2px solid #f18c7c; font-size: 1rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+  .memory-copy { padding: 1.3rem; }
+  .memory-copy h3 { margin-bottom: .2rem; color: #fff3e5; font-size: 1.35rem; font-weight: 700; letter-spacing: -.035em; }
+  .memory-venue { margin-bottom: 0; color: #c6b9ac; font-size: .9rem; }
+  .memory-bottom { display: flex; flex-direction: column; align-items: flex-start; gap: .8rem; margin-top: 1.2rem; padding-top: 1rem; border-top: 1px solid #332820; }
+  .memory-year { color: #a6998b; font-size: .65rem; letter-spacing: .04em; }
+  .memory-year span { margin: 0 .4rem; color: #ba6e59; }
+  .story-link { display: inline-flex; align-items: center; gap: .65rem; color: #f18c7c; font-size: .75rem; font-weight: 600; text-decoration: none; }
+  .story-link:hover { color: #ffb7a6; text-decoration: none; }
+  .empty-archive { color: #aaa39d; }
+  @media (max-width: 800px) {
+    .poster-copy { width: 75%; padding: 2rem; }
+    .date-stamp { top: 1.5rem; right: 1.5rem; width: 90px; }
+    .stamp-day { font-size: 3.2rem; }
+    .stamp-month { font-size: .9rem; }
+    .archive-grid { gap: .85rem; }
+    .memory-copy { padding: 1rem; }
+  }
+  @media (max-width: 600px) {
+    .shows-page { padding-top: 2rem; }
+    .page-heading { margin-bottom: 2rem; }
+    .page-intro { font-size: 1rem; }
+    .show-poster { min-height: 0; padding-top: 200px; }
+    .poster-photo { height: 320px; object-position: 50% 30%; }
+    .poster-shade { background: linear-gradient(0deg, #17110e 0%, #17110e 35%, #17110e55 66%, transparent 100%); }
+    .poster-copy { width: 100%; padding: 1.5rem; }
+    .poster-copy h3 { max-width: 350px; font-size: clamp(2.8rem, 12vw, 3.8rem); }
+    .poster-description { font-size: .9rem; }
+    .poster-kicker { margin-bottom: 1rem; }
+    .date-stamp { top: 1.1rem; right: 1.1rem; width: 88px; }
+    .poster-footnote { display: none; }
+    .archive-section { margin-top: 2.5rem; }
+    .archive-heading { align-items: flex-start; flex-direction: column; gap: .8rem; }
+    .archive-grid { grid-template-columns: 1fr; gap: 1.25rem; }
+    .memory-image { aspect-ratio: 16/10; }
+    .memory-copy { padding: 1.25rem; }
+    .memory-bottom { flex-direction: row; flex-wrap: wrap; justify-content: space-between; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .memory-image img, .memory-card, .action-link { transition: none; }
+    .memory-card:hover img { transform: none; }
+  }
+</style>
