@@ -21,8 +21,8 @@ export const upcomingGigs: Gig[] = [
     date: "2026-12-05",
     city: "Gdynia",
     venue: "Blues Club",
-    headline: "Wracamy do Blues Clubu!",
-    headlineEn: "Back at the Blues Club!",
+    headline: "Wracamy do Blues Clubu",
+    headlineEn: "Back at the Blues Club",
     description: "Stonesowe riffy. Klubowy klimat. Widzimy się pod sceną.",
     descriptionEn: "Stones riffs. An intimate club. See you in front of the stage.",
     photo: "/images/concert-promo.jpg"
