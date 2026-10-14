@@ -25,7 +25,7 @@ export const upcomingGigs: Gig[] = [
     headlineEn: "Back at the Blues Club!",
     description: "Stonesowe riffy. Klubowy klimat. Widzimy się pod sceną.",
     descriptionEn: "Stones riffs. An intimate club. See you in front of the stage.",
-    photo: "/images/blues.jpg"
+    photo: "/images/background01.jpg"
   }
 ];
 

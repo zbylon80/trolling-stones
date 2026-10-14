@@ -72,7 +72,7 @@ const structuredData = {
       <div class="upcoming-list">
         {upcomingGigs.map((gig, index) => (
           <article class="show-poster">
-            <img class="poster-photo" src={gig.photo ?? "/images/background01.jpg"} alt="" width="2048" height="1150" loading={index === 0 ? "eager" : "lazy"} />
+            <img class="poster-photo" src={gig.photo ?? "/images/background01.jpg"} alt="" width="2042" height="1361" loading={index === 0 ? "eager" : "lazy"} />
             <div class="poster-shade" aria-hidden="true"></div>
             <div class="poster-copy">
               <p class="poster-kicker">{index === 0 ? copy.next : copy.live} <span aria-hidden="true">/</span> {gig.date.slice(0, 4)}</p>
@@ -157,7 +157,7 @@ const structuredData = {
   .live-label span { width: .4rem; height: .4rem; border-radius: 50%; background: #ed5144; box-shadow: 0 0 12px #ed5144a0; }
   .upcoming-list { display: grid; gap: 1.5rem; }
   .show-poster { position: relative; isolation: isolate; overflow: hidden; min-height: 440px; border: 1px solid #51302a; border-radius: 1rem; background: #17110e; }
-  .poster-photo { position: absolute; z-index: -3; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 48%; }
+  .poster-photo { position: absolute; z-index: -3; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 20%; }
   .poster-shade { position: absolute; z-index: -2; inset: 0; background: linear-gradient(90deg, rgba(19,12,10,.97) 0%, rgba(19,12,10,.9) 28%, rgba(19,12,10,.45) 58%, rgba(19,12,10,.05) 100%), linear-gradient(0deg, rgba(16,10,8,.6), transparent 45%); }
   .poster-copy { position: relative; padding: 2.8rem; width: 64%; }
   .poster-kicker { margin-bottom: 1.25rem; color: #f79883; font-size: .7rem; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; }
@@ -228,7 +228,10 @@ const structuredData = {
     .poster-copy h3 { max-width: 350px; font-size: clamp(2.8rem, 12vw, 3.8rem); }
     .poster-description { font-size: .9rem; }
     .poster-kicker { margin-bottom: 1rem; }
-    .date-stamp { top: 1.1rem; right: 1.1rem; width: 88px; }
+    .date-stamp { top: 1rem; right: 1rem; width: 70px; padding: .5rem; }
+    .stamp-day { font-size: 2.4rem; }
+    .stamp-month { font-size: .7rem; }
+    .stamp-year { font-size: .55rem; margin-top: .25rem; }
     .poster-footnote { display: none; }
     .archive-section { margin-top: 2.5rem; }
     .archive-heading { align-items: flex-start; flex-direction: column; gap: .8rem; }
