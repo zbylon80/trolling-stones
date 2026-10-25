@@ -22,6 +22,7 @@ for (const page of ["koncerty", "en/koncerty"]) {
     assert.equal((html.match(/class="private-event-thumbnail"/g) ?? []).length, 8);
     // Owner-supplied private entries remain separate from source-verified MusicEvent records.
     const metadata = [...html.matchAll(/<script[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)]
+      .filter((match) => match[1].includes('"@graph"'))
       .map((match) => JSON.parse(match[1])).find((data) => data["@graph"]);
     assert.equal(metadata["@graph"].length, 23);
     assert(html.includes("2026-07-11"));

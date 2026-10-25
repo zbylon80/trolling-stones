@@ -33,6 +33,9 @@ jobs:
         run: |
           npm run build
 
+      - name: Verify approved production scope and concert archive
+        run: npm run test:production
+
       - name: Deploy via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.4.0
         with:

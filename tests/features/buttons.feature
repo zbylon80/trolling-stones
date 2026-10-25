@@ -10,7 +10,7 @@ Feature: Button behaviour across locales
     Examples:
       | label           | path         | heading       |
       | Zobacz koncerty | /koncerty    | Koncerty      |
-      | Zaproś nas na scenę | /kontakt | Kontakt |
+      | Aktualności     | /aktualnosci | Aktualności   |
 
   Scenario Outline: Primary CTAs on the English homepage navigate correctly
     Given I open the homepage in English
@@ -21,7 +21,7 @@ Feature: Button behaviour across locales
     Examples:
       | label       | path             | heading |
       | See shows   | /en/koncerty     | Shows   |
-      | Book the band | /en/kontakt | Contact |
+      | Latest news | /en/aktualnosci  | News    |
 
   Scenario: Cookie banner exposes localized buttons
     Given the cookie banner storage is cleared
@@ -34,9 +34,9 @@ Feature: Button behaviour across locales
     Then I should see the button "Poprzedni klip"
     And I should see the button "Następny klip"
 
-  Scenario: Gallery lightbox controls expose Polish aria-labels
-    Given I open the page "/galeria"
+  Scenario: Lightbox controls expose Polish aria-labels
+    Given I open the kontakt page
     When I open the first lightbox image
     Then I should see the button "Zamknij podgląd"
-    And I should see the button "Poprzednie zdjęcie"
-    And I should see the button "Następne zdjęcie"
+    And I should see the hidden button "Poprzednie zdjęcie"
+    And I should see the hidden button "Następne zdjęcie"

@@ -1,6 +1,14 @@
-import { Then } from "@cucumber/cucumber";
+import { Given, Then } from "@cucumber/cucumber";
 import { expect } from "@playwright/test";
 import type { PlaywrightWorld } from "../support/world.js";
+
+Given("I use a narrow viewport", async function (this: PlaywrightWorld) {
+  await this.page.setViewportSize({ width: 320, height: 800 });
+});
+
+Then("the concert intro should be {string}", async function (this: PlaywrightWorld, text: string) {
+  await expect(this.page.locator(".shows-page .page-intro")).toHaveText(text);
+});
 
 // Independent expectations: dates are concert dates, not photo publication dates.
 const archive = [

@@ -10,6 +10,7 @@
     "build:preview": "astro build && node scripts/prepare-preview.mjs",
     "preview:staging": "node scripts/serve-preview.mjs",
     "test:preview": "node --test tests/preview-build.test.mjs",
+    "test:production": "node --test tests/production-scope.test.mjs tests/private-events-build.test.mjs",
     "preview": "astro preview",
     "preview:lan": "astro preview --host",
     "astro": "astro",

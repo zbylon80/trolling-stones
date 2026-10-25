@@ -3,7 +3,7 @@ import { expect } from '@playwright/test';
 import type { PlaywrightWorld } from '../support/world.js';
 
 Given('I open the homepage', async function (this: PlaywrightWorld) {
-  await this.page.goto('http://localhost:4321/');
+  await this.page.goto('/');
 });
 
 Given('I open the homepage in English', async function (this: PlaywrightWorld) {

@@ -1,0 +1,35 @@
+{
+  "baseline": "0ae77b5d1b698c963cc260699273dadf0200218c",
+  "allowedConcertPaths": [
+    "src/components/Concerts.astro",
+    "src/components/PrivateEventThumbnail.astro",
+    "src/data/gigs.ts",
+    "src/data/private-gigs.ts"
+  ],
+  "protectedSources": {
+    "src/components/CookieBanner.astro": "041873def6b1ff58c9ce86b239e339a481d1d1ab3d22547bd24ed5cdef1e2621",
+    "src/components/Layout.astro": "251e938f979a82b724b2a22ffaeef3a311e95441eaf22976c7c6549c663f10f6",
+    "src/components/Lightbox.astro": "426c557a5ffafe83d61412dcbc2fbb231b669a1d833b00df88ce9d1d0e81f0df",
+    "src/components/YouTubeCarousel.astro": "7843b05be515a7b0cc87147d7e505ee6a73587d6a1db7db2f6a666c407ecb856",
+    "src/components/YouTubeEmbed.astro": "15cfe5cb3b9a6bd758bfd435c838e9085fe7b2f5237c96c28ee36c2ed6f12017",
+    "src/data/news-en.ts": "447a9101c4b12a74977fb830fd716a2a9abe055b6daed35cc218af47779d483e",
+    "src/data/news.ts": "cd908b71da9b73115ea51d7ac9d4bb03f98f78c0be8ac71851c1e475b5471956",
+    "src/env.d.ts": "cc719d1ef0609cd73ab9d19df5df62df8a3f84bed76b9e6b0ae1f669c67a1ff8",
+    "src/pages/404.astro": "e1e82fbf214719260e7f92f6ff2a0525a71e5d133a0c817092c620f7f545254c",
+    "src/pages/aktualnosci.astro": "045fe1335e2e1403897541384bc52b547ca85a8718a0fdc086033ecb0974fb9f",
+    "src/pages/bio.astro": "72043beb90ce09da885e91b09870a2372f99205f53e2bb1b5a9854e0bf5a25d4",
+    "src/pages/en/aktualnosci.astro": "b9596b4c33d7734f6bb849d2a41e2703247dae5a9130033b9b90462d49e6dc33",
+    "src/pages/en/bio.astro": "9b02aeba55a878cd69f223b157c97e13c5c114db6cd2d9386f27ace279e7cce2",
+    "src/pages/en/galeria.astro": "bf995a843ccb5a2d7b22e5075fb01ddcd9de0c54d170b76146e4e468083bf4c2",
+    "src/pages/en/index.astro": "dd960856347ef2c012990ca705bd81399c0c90bf993308285482367a673d2cf0",
+    "src/pages/en/koncerty.astro": "fe8ce805c4ad8502f600b470f5a4f91e343854e284189323b980a4dc35c95513",
+    "src/pages/en/kontakt.astro": "ea6aaf4db5e748d8df60bfab4fde6bfbdde626e58769e19f6bde3ad57c1d5989",
+    "src/pages/en/sklad.astro": "dbc4d7110a53d7fcc2c7221f4b3ce924a84902a50f43e275266cde340a30a50a",
+    "src/pages/galeria.astro": "fb69ebe301db3ec0462f35df9d01cef11bf0d7e4b3456c4be3732c489fb7e8d2",
+    "src/pages/index.astro": "ec22a2da09453fa9f38382199f2c81335fa5a1f915f53be02efbe720484868cb",
+    "src/pages/koncerty.astro": "a5de3901a1b4869caeeab20aedfa876a729e72d08089e14ee0c1dbe507d72187",
+    "src/pages/kontakt.astro": "602b01595e68989993e1059a7a2eef724852fda1fd68ea5eef65e9fa1efb6baf",
+    "src/pages/sklad.astro": "cee02b2294b0d4ff4b7351cc46d5f1ca033819c857079866671bf7e895105295",
+    "src/styles/global.css": "fee232e1cf9803b52b32bf71520fde5762fbceda869c1418e06804e53a876ab9"
+  }
+}
