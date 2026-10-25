@@ -84,7 +84,7 @@ Then("the past Blues Club article should not offer tickets", async function (thi
 });
 
 When("I follow the Blues Club memory", async function (this: PlaywrightWorld) {
-  await this.page.locator(".story-link").click();
+  await this.page.locator('.story-link[href="/aktualnosci#2025-12-07-blues-club-podziekowania"]').click();
 });
 
 Then("I should reach the Blues Club story", async function (this: PlaywrightWorld) {

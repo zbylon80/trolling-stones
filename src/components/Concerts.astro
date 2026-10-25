@@ -1,5 +1,7 @@
 ---
 import { upcomingGigs, pastGigs, type Gig } from "../data/gigs";
+import { privateGigs } from "../data/private-gigs";
+import PrivateEventThumbnail from "./PrivateEventThumbnail.astro";
 
 interface Props {
   lang?: "pl" | "en";
@@ -14,7 +16,8 @@ const copy = en ? {
   follow: "Follow the announcements", past: "Past shows",
   memories: "The music ends. The memories stay.",
   gallery: "Visit the gallery",
-  story: "Relive this night", empty: "Our concert memories will appear here."
+  older: "Older shows", olderRange: "2023 and earlier", expand: "Expand", collapse: "Collapse",
+  story: "Relive this night", source: "Event / report", preview: "Event preview", credit: "Photo", start: "Starts at", empty: "Our concert memories will appear here."
 } : {
   title: "Koncerty", intro: "Widzimy się pod sceną.",
   upcoming: "Nadchodzące koncerty", next: "Najbliższy koncert", live: "Na żywo",
@@ -22,7 +25,8 @@ const copy = en ? {
   follow: "Śledź zapowiedzi", past: "Minione koncerty",
   memories: "Muzyka wybrzmiała. Wspomnienia zostały.",
   gallery: "Zajrzyj do galerii",
-  story: "Wróć do tego wieczoru", empty: "Tutaj pojawią się wspomnienia z koncertów."
+  older: "Starsze koncerty", olderRange: "2023 i wcześniej", expand: "Rozwiń", collapse: "Zwiń",
+  story: "Wróć do tego wieczoru", source: "Wydarzenie / relacja", preview: "Miniatura wydarzenia", credit: "Fot.", start: "Start", empty: "Tutaj pojawią się wspomnienia z koncertów."
 };
 const city = (gig: Gig) => en ? (gig.cityEn ?? gig.city) : gig.city;
 const venue = (gig: Gig) => en ? (gig.venueEn ?? gig.venue) : gig.venue;
@@ -34,6 +38,12 @@ const month = (value: string) => date(value).toLocaleDateString(locale, {
   month: "short", timeZone: "Europe/Warsaw"
 }).replace(".", "");
 const basePath = en ? "/en" : "";
+const archiveGigs = [
+  ...pastGigs,
+  ...privateGigs
+].sort((a, b) => b.date.localeCompare(a.date));
+const recentGigs = archiveGigs.filter((gig) => gig.date >= "2024-01-01");
+const olderGigs = archiveGigs.filter((gig) => gig.date < "2024-01-01");
 const events = [
   ...upcomingGigs.map((gig) => ({ gig, upcoming: true })),
   ...pastGigs.map((gig) => ({ gig, upcoming: false }))
@@ -43,7 +53,7 @@ const structuredData = {
   "@graph": events.map(({ gig, upcoming }) => ({
     "@type": "MusicEvent",
     name: `TRolling Stones — ${venue(gig) || city(gig)}`,
-    startDate: gig.date,
+    startDate: gig.startTime ?? gig.date,
     ...(upcoming ? { eventStatus: "https://schema.org/EventScheduled" } : {}),
     location: {
       "@type": "Place", name: venue(gig) || city(gig),
@@ -78,6 +88,7 @@ const structuredData = {
               <p class="poster-kicker">{index === 0 ? copy.next : copy.live} <span aria-hidden="true">/</span> {gig.date.slice(0, 4)}</p>
               <h3>{en ? gig.headlineEn : gig.headline}</h3>
               <p class="poster-venue">{city(gig)} <span aria-hidden="true">/</span> {venue(gig)}</p>
+              {gig.startTime && <p class="poster-time">{copy.start} <time datetime={gig.startTime}>{new Date(gig.startTime).toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Warsaw" })}</time></p>}
               <p class="poster-description">{en ? gig.descriptionEn : gig.description}</p>
               <div class="poster-actions">
                 {gig.tickets ? (
@@ -109,15 +120,22 @@ const structuredData = {
       </div>
       <a class="action-link gallery-link" href={`${basePath}/galeria`}>{copy.gallery}<span aria-hidden="true">↗︎</span></a>
     </div>
-    {pastGigs.length === 0 ? (
+    {archiveGigs.length === 0 && (
       <p class="empty-archive">{copy.empty}</p>
-    ) : (
+    )}
+    {recentGigs.length > 0 && (
       <div class="archive-grid">
-        {pastGigs.map((gig) => (
-          <article class="memory-card">
-            <div class:list={["memory-image", { "memory-art": !gig.photo }]}>
-              {gig.photo ? (
+        {recentGigs.map((gig) => (
+          <article class="memory-card concert-entry" data-private-concert={gig.privateEvent ? "true" : undefined}>
+            <div class:list={["memory-image", { "memory-art": !gig.photo && !gig.preview && !gig.privateEvent, "memory-preview": !!gig.preview && !gig.photo }]}>
+              {gig.privateEvent ? (
+                <PrivateEventThumbnail date={gig.date} lang={lang} />
+              ) : gig.photo ? (
                 <img src={gig.photo} alt={en ? gig.photoAltEn : gig.photoAlt} width="2048" height="1150" loading="lazy" style={`object-position: ${gig.photoPosition ?? "50% 60%"}`} />
+              ) : gig.preview && gig.source ? (
+                <a class="memory-preview-link" href={gig.source} target="_blank" rel="noopener noreferrer" aria-label={`${copy.source}: ${city(gig)}, ${formattedDate(gig.date)}`}>
+                  <img src={gig.preview} alt={`${copy.preview}: ${city(gig)}, ${formattedDate(gig.date)}`} width="720" height="720" loading="lazy" decoding="async" />
+                </a>
               ) : (
                 <div class="memory-date-art" aria-hidden="true">
                   <span class="art-day">{gig.date.slice(8)}</span>
@@ -129,14 +147,40 @@ const structuredData = {
             <div class="memory-copy">
               <h3>{city(gig)}</h3>
               {venue(gig) && <p class="memory-venue">{venue(gig)}</p>}
+              {gig.previewCredit && <p class="memory-credit">{copy.credit} {gig.previewCredit}</p>}
               <div class="memory-bottom">
                 <span class="memory-year">{gig.date.slice(0, 4)} <span aria-hidden="true">/</span> TRolling Stones</span>
                 {gig.story && <a class="story-link" href={`${basePath}${en ? (gig.storyEn ?? gig.story) : gig.story}`} aria-label={`${copy.story}: ${city(gig)}, ${formattedDate(gig.date)}`}>{copy.story}<span aria-hidden="true">↗︎</span></a>}
+                {!gig.story && gig.source && <a class="story-link source-link" href={gig.source} target="_blank" rel="noopener noreferrer" aria-label={`${copy.source}: ${city(gig)}, ${formattedDate(gig.date)}`}>{copy.source}<span aria-hidden="true">↗︎</span></a>}
               </div>
             </div>
           </article>
         ))}
       </div>
+    )}
+    {olderGigs.length > 0 && (
+      <details class="older-shows">
+        <summary class="older-toggle">
+          <span class="older-toggle-copy"><strong>{copy.older}</strong><span>{copy.olderRange}</span></span>
+          <span class="older-toggle-action">
+            <span class="when-closed">{copy.expand}</span><span class="when-open">{copy.collapse}</span>
+            <svg class="older-chevron" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          </span>
+        </summary>
+        <ul class="older-list" role="list">
+          {olderGigs.map((gig) => (
+            <li class="older-concert concert-entry">
+              <time datetime={gig.date}>{formattedDate(gig.date)}</time>
+              <div class="older-location"><h3>{city(gig)}</h3>{venue(gig) && <p>{venue(gig)}</p>}</div>
+              {gig.story ? (
+                <a class="story-link older-link" href={`${basePath}${en ? (gig.storyEn ?? gig.story) : gig.story}`} aria-label={`${copy.story}: ${city(gig)}, ${formattedDate(gig.date)}`}>{copy.story}<span aria-hidden="true">↗︎</span></a>
+              ) : gig.source && (
+                <a class="story-link source-link older-link" href={gig.source} target="_blank" rel="noopener noreferrer" aria-label={`${copy.source}: ${city(gig)}, ${formattedDate(gig.date)}`}>{copy.source}<span aria-hidden="true">↗︎</span></a>
+              )}
+            </li>
+          ))}
+        </ul>
+      </details>
     )}
   </section>
   <script type="application/ld+json" set:html={JSON.stringify(structuredData).replace(/</g, "\\u003c")} />
@@ -164,6 +208,7 @@ const structuredData = {
   .poster-copy h3 { max-width: 600px; margin-bottom: 1.25rem; color: #fff4e8; font-family: Impact, "Arial Black", sans-serif; font-size: clamp(2.8rem, 5.2vw, 4.5rem); font-weight: 900; line-height: .99; letter-spacing: -.015em; text-transform: uppercase; text-wrap: balance; }
   .poster-venue { margin-bottom: .65rem; color: #fff4e8; font-size: 1.2rem; font-weight: 600; }
   .poster-venue span { margin: 0 .45rem; color: #ed5144; }
+  .poster-time { margin-bottom: .65rem; color: #f6e3cf; font-size: .9rem; font-weight: 600; }
   .poster-description { max-width: 370px; margin-bottom: 1.65rem; color: #cbbeb4; font-size: .95rem; line-height: 1.65; }
   .poster-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 1rem 1.4rem; }
   .ticket-note { display: inline-flex; align-items: center; gap: .55rem; color: #f6e3cf; font-size: .8rem; font-weight: 600; }
@@ -171,6 +216,7 @@ const structuredData = {
   .action-link { display: inline-flex; align-items: center; justify-content: center; gap: 1rem; font-size: .8rem; font-weight: 600; text-decoration: none; transition: border-color .2s, background .2s; }
   .action-link:hover { text-decoration: none; }
   .action-link:focus-visible, .story-link:focus-visible { outline: 2px solid #f57c6f; outline-offset: 5px; }
+  .memory-preview-link:focus-visible { outline: 2px solid #f57c6f; outline-offset: -3px; }
   .follow-link { border: 1px solid #8d736760; border-radius: .35rem; padding: .8rem 1rem; color: #fff4e8; background: #1b100d90; }
   .follow-link:hover { border-color: #f57c6f; background: #321a14; color: #fff; }
   .primary-action { border-radius: .35rem; padding: .8rem 1rem; color: white; background: #bd3329; }
@@ -193,6 +239,12 @@ const structuredData = {
   .memory-image::after { position: absolute; inset: 0; content: ""; pointer-events: none; background: linear-gradient(0deg, #0005, transparent 50%); }
   .memory-image img { width: 100%; height: 100%; object-fit: cover; transition: transform .45s; }
   .memory-card:hover img { transform: scale(1.035); }
+  .memory-preview { background: radial-gradient(ellipse at 50% 0%, #473126, transparent 80%), #1c1714; }
+  .memory-preview-link { display: block; width: 100%; height: 100%; }
+  .memory-preview img { object-fit: contain; padding: .8rem .8rem 3rem; }
+  .memory-card:hover .memory-preview img { transform: none; }
+  .memory-image.memory-preview::after { display: none; }
+  .memory-image.memory-preview time { top: auto; bottom: .65rem; pointer-events: none; }
   .memory-image time { position: absolute; z-index: 1; top: .85rem; left: .85rem; padding: .45rem .65rem; border: 1px solid #fff2; border-radius: .3rem; color: #fff5ec; background: #18110ce6; font-size: .7rem; font-weight: 600; }
   .memory-art { background: radial-gradient(ellipse at 85% 0%, #d94a3550, transparent 65%), #58231e; }
   .memory-card:nth-child(even) .memory-art { background: radial-gradient(ellipse at 15% 100%, #cc6d3550, transparent 65%), #503023; }
@@ -202,12 +254,34 @@ const structuredData = {
   .memory-copy { padding: 1.3rem; }
   .memory-copy h3 { margin-bottom: .2rem; color: #fff3e5; font-size: 1.35rem; font-weight: 700; letter-spacing: -.035em; }
   .memory-venue { margin-bottom: 0; color: #c6b9ac; font-size: .9rem; }
+  .memory-credit { margin: .5rem 0 0; color: #aaa39d; font-size: .7rem; }
   .memory-bottom { display: flex; flex-direction: column; align-items: flex-start; gap: .8rem; margin-top: 1.2rem; padding-top: 1rem; border-top: 1px solid #332820; }
   .memory-year { color: #a6998b; font-size: .65rem; letter-spacing: .04em; }
   .memory-year span { margin: 0 .4rem; color: #ba6e59; }
   .story-link { display: inline-flex; align-items: center; gap: .65rem; color: #f18c7c; font-size: .75rem; font-weight: 600; text-decoration: none; }
   .story-link:hover { color: #ffb7a6; text-decoration: none; }
   .empty-archive { color: #aaa39d; }
+  .older-shows { margin-top: 2rem; border: 1px solid #3d3028; border-radius: .75rem; background: #14110f; overflow: hidden; }
+  .older-toggle { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1.35rem 1.5rem; cursor: pointer; list-style: none; transition: background .2s; }
+  .older-toggle::-webkit-details-marker { display: none; }
+  .older-toggle::marker { content: ""; }
+  .older-toggle:hover { background: #241912; }
+  .older-toggle:focus-visible { outline: 2px solid #f57c6f; outline-offset: -4px; border-radius: .65rem; }
+  .older-toggle-copy { display: flex; flex-direction: column; gap: .3rem; }
+  .older-toggle-copy strong { color: #fff0df; font-size: 1.15rem; font-weight: 700; letter-spacing: -.025em; }
+  .older-toggle-copy > span { color: #aaa39d; font-size: .8rem; }
+  .older-toggle-action { display: inline-flex; align-items: center; gap: .65rem; color: #f18c7c; font-size: .8rem; font-weight: 600; }
+  .older-chevron { flex-shrink: 0; transition: transform .2s; }
+  .older-shows[open] .older-chevron { transform: rotate(180deg); }
+  .older-shows .when-open { display: none; }
+  .older-shows[open] .when-closed { display: none; }
+  .older-shows[open] .when-open { display: inline; }
+  .older-list { margin: 0; padding: 0 1.5rem; list-style: none; }
+  .older-concert { display: grid; grid-template-columns: 11rem minmax(0, 1fr) auto; align-items: center; gap: 1rem; padding: 1.1rem 0; border-top: 1px solid #332820; }
+  .older-concert time { color: #b7a99c; font-size: .8rem; font-variant-numeric: tabular-nums; }
+  .older-location h3 { margin: 0; color: #fff0df; font-size: 1rem; font-weight: 600; }
+  .older-location p { margin: .3rem 0 0; color: #c6b9ac; font-size: .85rem; }
+  .older-link { justify-self: end; }
   @media (max-width: 800px) {
     .poster-copy { width: 56%; padding: 2rem; }
     .poster-copy h3 { font-size: clamp(2.3rem, 4.8vw, 3.6rem); }
@@ -239,9 +313,15 @@ const structuredData = {
     .memory-image { aspect-ratio: 16/10; }
     .memory-copy { padding: 1.25rem; }
     .memory-bottom { flex-direction: row; flex-wrap: wrap; justify-content: space-between; }
+    .older-toggle { padding: 1.1rem; }
+    .older-toggle-copy strong { font-size: 1rem; }
+    .older-toggle-action { gap: .3rem; font-size: .75rem; }
+    .older-list { padding: 0 1.1rem; }
+    .older-concert { grid-template-columns: minmax(0, 1fr); gap: .55rem; padding: 1rem 0; }
+    .older-link { justify-self: start; margin-top: .2rem; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .memory-image img, .memory-card, .action-link { transition: none; }
+    .memory-image img, .memory-card, .action-link, .older-toggle, .older-chevron { transition: none; }
     .memory-card:hover img { transform: none; }
   }
 </style>

@@ -1,0 +1,56 @@
+---
+interface Props {
+  date: string;
+  lang?: "pl" | "en";
+}
+const { date, lang = "pl" } = Astro.props;
+const palettes = [
+  { base: "#191415", glow: "#8d3931", accent: "#efae7e", secondary: "#da6651" },
+  { base: "#12191e", glow: "#265b71", accent: "#d9b978", secondary: "#7fbbcb" },
+  { base: "#201710", glow: "#795128", accent: "#f1d29a", secondary: "#e39561" },
+  { base: "#17151e", glow: "#533e75", accent: "#debca0", secondary: "#b994cc" }
+];
+const variant = Number(date.replaceAll("-", "")) % palettes.length;
+const palette = palettes[variant];
+const glowId = `private-glow-${date}`;
+const beamId = `private-beam-${date}`;
+const caption = lang === "en" ? "PRIVATE SHOW" : "KONCERT PRYWATNY";
+const alt = lang === "en" ? "Private show illustration: microphone and stage lights" : "Grafika koncertu prywatnego: mikrofon i światła sceniczne";
+---
+<svg class="private-event-thumbnail" viewBox="0 0 720 540" width="720" height="540" role="img" aria-label={alt} xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id={glowId} cx="50%" cy="30%" r="75%">
+      <stop offset="0" stop-color={palette.glow} />
+      <stop offset="1" stop-color={palette.base} />
+    </radialGradient>
+    <linearGradient id={beamId} x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color={palette.accent} stop-opacity=".22" />
+      <stop offset="1" stop-color={palette.accent} stop-opacity="0" />
+    </linearGradient>
+  </defs>
+  <rect width="720" height="540" fill={`url(#${glowId})`} />
+  <path d={variant % 2 ? "M80 0 470 410 220 410 35 0Z M640 0 500 410 240 410 690 0Z" : "M110 0 500 410 250 410 55 0Z M610 0 465 410 210 410 665 0Z"} fill={`url(#${beamId})`} />
+  <rect x="22" y="22" width="676" height="496" rx="12" fill="none" stroke={palette.accent} stroke-opacity=".16" />
+  <g stroke={palette.secondary} stroke-opacity=".18" fill="none">
+    <circle cx="360" cy="240" r="150" />
+    <circle cx="360" cy="240" r="170" stroke-dasharray="3 11" />
+    <path d="M54 405H666 M54 414H666" />
+  </g>
+  <g transform={variant % 2 ? "translate(16 0)" : "translate(-16 0)"} stroke={palette.accent} stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+    <g transform="rotate(18 360 215)">
+      <rect x="325" y="116" width="70" height="135" rx="35" fill={palette.base} />
+      <path d="M338 135H382 M334 150H386 M333 165H387 M333 180H387 M334 195H386" stroke-width="3" opacity=".7" />
+      <path d="M313 204V224Q313 267 360 267Q407 267 407 224V204" fill="none" />
+    </g>
+    <path d="M350 270V370 M312 387 350 370 388 387" fill="none" />
+    <path d="M350 295C275 320 450 330 413 369C380 403 472 400 510 400" fill="none" stroke-width="3" opacity=".65" />
+  </g>
+  <text x="52" y="460" fill={palette.accent} font-family="Arial, sans-serif" font-size="33" font-weight="800" letter-spacing="-1">TRolling Stones</text>
+  <text x="54" y="489" fill={palette.secondary} font-family="Arial, sans-serif" font-size="13" font-weight="700" letter-spacing="3">{caption}</text>
+  <g fill={palette.accent} opacity=".6">
+    <circle cx="626" cy="460" r="3" /><circle cx="642" cy="460" r="3" /><circle cx="658" cy="460" r="3" />
+  </g>
+</svg>
+<style>
+  .private-event-thumbnail { display: block; width: 100%; height: 100%; }
+</style>
