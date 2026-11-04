@@ -1,6 +1,7 @@
 ---
 import Layout from "@components/Layout.astro";
 import Lightbox from "@components/Lightbox.astro";
+import GalleryAlbums from "@components/GalleryAlbums.astro";
 
 const photos = [
   { src: "/images/poster01.jpg", alt: "Poster 01 - TRolling Stones" },
@@ -13,7 +14,7 @@ const photos = [
 <Layout lang="en" title="Gallery - TRolling Stones">
   <section class="container py-12">
     <h1 class="text-3xl font-bold">Gallery</h1>
-    <div class="mt-6 grid gap-4 sm:grid-cols-2 md:grid-cols-3 md:auto-rows-[minmax(200px,_1fr)]">
+    <div id="gallery-main" class="mt-6 grid gap-4 sm:grid-cols-2 md:grid-cols-3 md:auto-rows-[minmax(200px,_1fr)]">
       {photos.map((p, index) => {
         const isPoster = index === 0;
         return (
@@ -35,6 +36,7 @@ const photos = [
         );
       })}
     </div>
+    <GalleryAlbums lang="en" />
   </section>
   <Lightbox />
 </Layout>

@@ -1,0 +1,124 @@
+---
+import albums from "../data/gallery-albums.json";
+
+interface Props {
+  lang?: "pl" | "en";
+}
+
+const { lang = "pl" } = Astro.props;
+const en = lang === "en";
+const index = en ? 1 : 0;
+const dateFormatter = new Intl.DateTimeFormat(en ? "en-GB" : "pl-PL", {
+  dateStyle: "long",
+  timeZone: "UTC"
+});
+const countFormatter = new Intl.PluralRules(lang);
+const photoCount = (count: number) => {
+  const form = countFormatter.select(count);
+  return en ? `${count} ${form === "one" ? "photo" : "photos"}` :
+    `${count} ${form === "one" ? "zdjęcie" : form === "few" ? "zdjęcia" : "zdjęć"}`;
+};
+const byNewest = (a: { date?: string }, b: { date?: string }) =>
+  (b.date ?? "").localeCompare(a.date ?? "");
+const sections = [
+  {
+    id: "gallery-promotional",
+    title: en ? "Posters and promotional photos" : "Plakaty i zdjęcia promocyjne",
+    albums: albums.filter(album => album.section === "promotional").sort((a, b) => byNewest(b, a))
+  },
+  {
+    id: "gallery-concerts",
+    title: en ? "Concerts" : "Koncerty",
+    albums: albums.filter(album => !album.section).sort(byNewest)
+  },
+  {
+    id: "gallery-archive",
+    title: en ? "Archive" : "Archiwum",
+    albums: albums.filter(album => album.section === "archive")
+  }
+];
+---
+{sections.map(section => (
+<section class="photo-albums" id={section.id} aria-labelledby={`${section.id}-title`}>
+  <h2 id={`${section.id}-title`}>{section.title}</h2>
+  {section.albums.map(album => {
+    const title = album.title[index];
+    const base = `/images/gallery/${album.id}`;
+    return (
+      <details class="photo-album" id={album.id}>
+        <summary>
+          <img class="album-cover" src={`${base}/thumbs/${album.cover}`} width="144" height="96" alt="" loading="lazy" decoding="async" />
+          <span class="album-info">
+            <strong>{title}</strong>
+            <span class="album-meta">
+              {album.date && <time datetime={album.date}>{dateFormatter.format(new Date(album.date))}</time>}
+              <span>{photoCount(album.photos.length)}</span>
+            </span>
+          </span>
+          <svg class="album-chevron" viewBox="0 0 24 24" width="22" height="22" fill="none" aria-hidden="true">
+            <path d="m6 9 6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </summary>
+        {album.note && <p class="album-note">{album.note[index]}</p>}
+        {album.venueHistory && (
+          <p class="album-note">
+            <a class="album-history" href={album.venueHistory} target="_blank" rel="noopener noreferrer">
+              {en ? "About the venue (in Polish)" : "Historia klubu"}
+            </a>
+          </p>
+        )}
+        <ul class="album-grid" role="list">
+          {album.photos.map((photo, position) => {
+            const photoBase = photo.assetAlbum ? `/images/gallery/${photo.assetAlbum}` : base;
+            const full = `${photoBase}/${photo.file}`;
+            const caption = photo.caption?.[index] ?? `${title} — ${en ? "photo" : "zdjęcie"} ${position + 1}`;
+            const showCaption = photo.showCaption === true;
+            return (
+              <li>
+                <figure>
+                  <a class="album-photo" href={full} data-lightbox data-lightbox-group={album.id} data-alt={caption} data-lightbox-hide-caption={showCaption ? undefined : true}>
+                    <img src={`${photoBase}/thumbs/${photo.file}`} width={photo.width} height={photo.height} alt={caption} loading="lazy" decoding="async" />
+                  </a>
+                  {showCaption && photo.caption && <figcaption>{caption}</figcaption>}
+                </figure>
+              </li>
+            );
+          })}
+        </ul>
+      </details>
+    );
+  })}
+</section>
+))}
+
+<style>
+  .photo-albums { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid #303030; }
+  h2 { margin-bottom: 1rem; font-size: 1.4rem; font-weight: 600; }
+  .photo-album { margin-bottom: .7rem; border: 1px solid #303030; border-radius: .65rem; background: #101010; }
+  summary { display: grid; grid-template-columns: 7rem minmax(0,1fr) auto; align-items: center; gap: 1rem; padding: .65rem .9rem; list-style: none; border-radius: inherit; cursor: pointer; }
+  summary::-webkit-details-marker { display: none; }
+  summary::marker { content: ""; }
+  summary:hover { background: #181818; }
+  summary:focus-visible, .album-photo:focus-visible { outline: 2px solid #fb867b; outline-offset: 3px; }
+  .album-cover { width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; border-radius: .35rem; background: #222; }
+  .album-info { display: grid; gap: .3rem; min-width: 0; }
+  .album-info strong { font-size: 1.04rem; font-weight: 700; }
+  .album-history { text-decoration:underline; }
+  .album-meta { display: flex; flex-wrap: wrap; gap: .2rem .8rem; font-size: .8rem; color: #b5b5b5; }
+  .album-chevron { color: #fb867b; }
+  .photo-album[open] .album-chevron { transform: rotate(180deg); }
+  .album-note { margin: .75rem .9rem 0; color: #b5b5b5; font-size: .9rem; }
+  .album-grid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: .8rem; padding: .9rem; }
+  .album-photo { display: block; overflow: hidden; border-radius: .4rem; aspect-ratio: 4 / 3; background: #1b1b1b; cursor: zoom-in; }
+  .album-photo img { width: 100%; height: 100%; object-fit: cover; }
+  figcaption { margin-top: .35rem; color: #c3c3c3; font-size: .8rem; line-height: 1.4; }
+  @media (max-width: 740px) {
+    .album-grid { grid-template-columns: repeat(3,minmax(0,1fr)); }
+  }
+  @media (max-width: 500px) {
+    summary { grid-template-columns: 4.5rem minmax(0,1fr) auto; gap: .65rem; padding: .65rem; }
+    .album-info strong { font-size: .95rem; }
+    .album-meta { font-size: .75rem; }
+    .album-grid { grid-template-columns: repeat(2,minmax(0,1fr)); padding: .65rem; gap: .65rem; }
+  }
+</style>
