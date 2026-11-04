@@ -133,19 +133,6 @@
     ]
   },
   {
-    "id": "sesja-2024",
-    "section": "promotional",
-    "title": [
-      "Sesja zdjęciowa zespołu",
-      "Band photo shoot"
-    ],
-    "date": "2024-04-28",
-    "cover": "001.webp",
-    "photos": [
-{"file":"001.webp","width":520,"height":347,"caption":["Portret zespołu w plenerze, z perspektywy niskiego kadru.","An outdoor band portrait from a low angle."]}
-    ]
-  },
-  {
     "id": "blues-club-2022",
     "title": [
       "Blues Club, Gdynia",
@@ -262,8 +249,8 @@
     "id": "portrety",
     "section": "promotional",
     "title": [
-      "Zdjęcia promocyjne zespołu",
-      "Promotional band photos"
+      "Sesja zdjęciowa zespołu",
+      "Band photo shoot"
     ],
     "note": [
       "Zdjęcia zespołu w plenerze i kadry zza obiektywu.",
@@ -368,7 +355,8 @@
 {"file":"095.webp","width":266,"height":400},
 {"file":"096.webp","width":520,"height":346},
 {"file":"097.webp","width":520,"height":346},
-{"file":"098.webp","width":520,"height":346,"caption":["Czarno-białe ujęcie zespołu na tle kontenera.","The band against a shipping container in black and white."]}
+{"file":"098.webp","width":520,"height":346,"caption":["Czarno-białe ujęcie zespołu na tle kontenera.","The band against a shipping container in black and white."]},
+{"file":"001.webp","assetAlbum":"sesja-2024","width":520,"height":347,"caption":["Portret zespołu w plenerze z sesji 28 kwietnia 2024 r.","An outdoor band portrait from the 28 April 2024 photo shoot."]}
     ]
   },
   {
@@ -401,9 +389,10 @@
   {
     "id": "swiatla-sceny",
     "title": [
-      "Pod światłami sceny",
-      "Under the stage lights"
+      "Leśniczówka Rock’n’Roll Cafe, Chorzów",
+      "Leśniczówka Rock’n’Roll Cafe, Chorzów"
     ],
+    "date": "2024-12-13",
     "cover": "001.webp",
     "photos": [
 {"file":"001.webp","width":520,"height":347,"caption":["Cały zespół w kolorowym świetle reflektorów.","The full band under colourful stage lights."]},
@@ -461,20 +450,21 @@
 {"file":"001.webp","width":520,"height":325,"caption":["Klawisze na tle czerwonej cegły.","Keyboards against red brickwork."]},
 {"file":"002.webp","width":520,"height":325},
 {"file":"003.webp","width":520,"height":325,"caption":["Wokalista i gitarzysta przy mikrofonach.","The singer and guitarist at their microphones."]},
-{"file":"004.webp","width":520,"height":325,"caption":["Krzysztof „Jary” Jaryczewski przy mikrofonie z TRolling Stones.","Krzysztof “Jary” Jaryczewski at the microphone with TRolling Stones."]},
+{"file":"004.webp","width":520,"height":325,"showCaption":true,"caption":["Krzysztof „Jary” Jaryczewski przy mikrofonie z TRolling Stones.","Krzysztof “Jary” Jaryczewski at the microphone with TRolling Stones."]},
 {"file":"005.webp","width":520,"height":325},
 {"file":"006.webp","width":520,"height":325},
-{"file":"007.webp","width":520,"height":325,"caption":["Krzysztof „Jary” Jaryczewski przed publicznością Blues Clubu.","Krzysztof “Jary” Jaryczewski in front of the Blues Club crowd."]},
+{"file":"007.webp","width":520,"height":325,"showCaption":true,"caption":["Krzysztof „Jary” Jaryczewski przed publicznością Blues Clubu.","Krzysztof “Jary” Jaryczewski in front of the Blues Club crowd."]},
 {"file":"008.webp","width":520,"height":325},
 {"file":"009.webp","width":520,"height":325},
-{"file":"010.webp","width":320,"height":400,"caption":["Krzysztof „Jary” Jaryczewski z gitarą — portret sceniczny.","A stage portrait of Krzysztof “Jary” Jaryczewski with his guitar."]}
+{"file":"010.webp","width":320,"height":400,"showCaption":true,"caption":["Krzysztof „Jary” Jaryczewski z gitarą — portret sceniczny.","A stage portrait of Krzysztof “Jary” Jaryczewski with his guitar."]}
     ]
   },
   {
     "id": "scena-i-publicznosc",
+    "section": "archive",
     "title": [
-      "Scena i publiczność",
-      "Stage and crowd"
+      "Blues Club, Gdynia — archiwalne kadry",
+      "Blues Club, Gdynia — archive photos"
     ],
     "cover": "024.webp",
     "photos": [

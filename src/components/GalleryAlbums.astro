@@ -62,15 +62,17 @@ const sections = [
         {album.note && <p class="album-note">{album.note[index]}</p>}
         <ul class="album-grid" role="list">
           {album.photos.map((photo, position) => {
-            const full = `${base}/${photo.file}`;
+            const photoBase = photo.assetAlbum ? `/images/gallery/${photo.assetAlbum}` : base;
+            const full = `${photoBase}/${photo.file}`;
             const caption = photo.caption?.[index] ?? `${title} — ${en ? "photo" : "zdjęcie"} ${position + 1}`;
+            const showCaption = section.id !== "gallery-concerts" || photo.showCaption === true;
             return (
               <li>
                 <figure>
-                  <a class="album-photo" href={full} data-lightbox data-lightbox-group={album.id} data-alt={caption}>
-                    <img src={`${base}/thumbs/${photo.file}`} width={photo.width} height={photo.height} alt={caption} loading="lazy" decoding="async" />
+                  <a class="album-photo" href={full} data-lightbox data-lightbox-group={album.id} data-alt={caption} data-lightbox-hide-caption={showCaption ? undefined : true}>
+                    <img src={`${photoBase}/thumbs/${photo.file}`} width={photo.width} height={photo.height} alt={caption} loading="lazy" decoding="async" />
                   </a>
-                  {photo.caption && <figcaption>{caption}</figcaption>}
+                  {showCaption && photo.caption && <figcaption>{caption}</figcaption>}
                 </figure>
               </li>
             );

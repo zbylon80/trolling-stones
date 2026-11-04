@@ -40,8 +40,8 @@ test("both gallery pages contain the new layout, and every photo is packaged in 
     assert(html.includes('datetime="2025-12-06"'), page);
     assert.equal((html.match(/class="album-photo/g) ?? []).length, 428, page);
     for (const album of albums) {
-      for (const { file } of album.photos) {
-        const asset = `images/gallery/${album.id}`;
+      for (const { file, assetAlbum } of album.photos) {
+        const asset = `images/gallery/${assetAlbum ?? album.id}`;
         assert(html.includes(`href="${base}${asset}/${file}"`), `${page}: ${file}`);
         assert(html.includes(`src="${base}${asset}/thumbs/${file}"`), `${page}: ${file}`);
         if (page.startsWith("en/")) continue;
