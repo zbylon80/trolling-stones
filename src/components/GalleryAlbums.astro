@@ -60,6 +60,13 @@ const sections = [
           </svg>
         </summary>
         {album.note && <p class="album-note">{album.note[index]}</p>}
+        {album.venueHistory && (
+          <p class="album-note">
+            <a class="album-history" href={album.venueHistory} target="_blank" rel="noopener noreferrer">
+              {en ? "About the venue (in Polish)" : "Historia klubu"}
+            </a>
+          </p>
+        )}
         <ul class="album-grid" role="list">
           {album.photos.map((photo, position) => {
             const photoBase = photo.assetAlbum ? `/images/gallery/${photo.assetAlbum}` : base;
@@ -96,6 +103,7 @@ const sections = [
   .album-cover { width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; border-radius: .35rem; background: #222; }
   .album-info { display: grid; gap: .3rem; min-width: 0; }
   .album-info strong { font-size: 1.04rem; font-weight: 700; }
+  .album-history { text-decoration: underline; }
   .album-meta { display: flex; flex-wrap: wrap; gap: .2rem .8rem; font-size: .8rem; color: #b5b5b5; }
   .album-chevron { color: #fb867b; }
   .photo-album[open] .album-chevron { transform: rotate(180deg); }
