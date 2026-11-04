@@ -65,7 +65,7 @@ const sections = [
             const photoBase = photo.assetAlbum ? `/images/gallery/${photo.assetAlbum}` : base;
             const full = `${photoBase}/${photo.file}`;
             const caption = photo.caption?.[index] ?? `${title} — ${en ? "photo" : "zdjęcie"} ${position + 1}`;
-            const showCaption = section.id !== "gallery-concerts" || photo.showCaption === true;
+            const showCaption = photo.showCaption === true;
             return (
               <li>
                 <figure>

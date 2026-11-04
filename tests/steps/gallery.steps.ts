@@ -30,8 +30,8 @@ Then("the Blues Club album should credit the guests and caption Jary's photos",
     await expect(album.locator(".album-note")).toContainText("Jaryczewski");
     const photos = album.locator(".album-grid > li");
     await expect(photos).toHaveCount(10);
-    await expect(this.page.locator("#gallery-concerts figcaption")).toHaveCount(3);
-    await expect(this.page.locator("#gallery-concerts .album-photo:not([data-lightbox-hide-caption])")).toHaveCount(3);
+    await expect(this.page.locator("main figcaption")).toHaveCount(3);
+    await expect(this.page.locator("main [data-lightbox]:not([data-lightbox-hide-caption])")).toHaveCount(3);
     for (const index of [3, 6, 9]) {
       await expect(photos.nth(index).locator("figcaption")).toContainText(/Krzysztof [„“]Jary” Jaryczewski/);
     }

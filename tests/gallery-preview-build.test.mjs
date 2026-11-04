@@ -39,6 +39,13 @@ test("both gallery pages contain the new layout, and every photo is packaged in 
     assert(html.includes("Jaryczewski"), page);
     assert(html.includes('datetime="2025-12-06"'), page);
     assert.equal((html.match(/class="album-photo/g) ?? []).length, 428, page);
+    const captions = html.match(/<figcaption\b[^>]*>[\s\S]*?<\/figcaption>/g) ?? [];
+    assert.equal(captions.length, 3, `${page}: only Jary's photos may show captions`);
+    assert(captions.every(caption => caption.includes("Jaryczewski")), page);
+    const zoomWithCaption = (html.match(/<a class="album-photo\b[^>]*>/g) ?? [])
+      .filter(link => !link.includes("data-lightbox-hide-caption"));
+    assert.deepEqual(zoomWithCaption.map(link => link.match(/href="([^"]+)"/)?.[1]), ["004", "007", "010"]
+      .map(file => `${base}images/gallery/czerwona-scena/${file}.webp`), page);
     for (const album of albums) {
       for (const { file, assetAlbum } of album.photos) {
         const asset = `images/gallery/${assetAlbum ?? album.id}`;
