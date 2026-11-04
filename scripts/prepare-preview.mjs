@@ -17,8 +17,9 @@ export function rewritePreviewHtml(html, base = "/preview-redesign/") {
   });
   if (rewritten.includes('name="preview-build"')) return rewritten;
   const en = /<html[^>]+lang="en"/i.test(rewritten);
+  const marker = base.slice(1, -1).replace(/^preview-/, "");
   return rewritten
-    .replace(/<head(?:\s[^>]*)?>/i, '$&<meta name="robots" content="noindex, nofollow"><meta name="preview-build" content="redesign"><style>.preview-notice{padding:.55rem 1rem;background:#2c1810;color:#efc69a;font:600 12px/1.4 system-ui;text-align:center;border-bottom:1px solid #69412c}</style>')
+    .replace(/<head(?:\s[^>]*)?>/i, '$&<meta name="robots" content="noindex, nofollow"><meta name="preview-build" content="' + marker + '"><style>.preview-notice{padding:.55rem 1rem;background:#2c1810;color:#efc69a;font:600 12px/1.4 system-ui;text-align:center;border-bottom:1px solid #69412c}</style>')
     .replace(/<body(?:\s[^>]*)?>/i, '$&<div class="preview-notice">' + (en ? "Test version · Let us know what you think." : "Wersja testowa · Daj znać, co sądzisz.") + "</div>");
 }
 
