@@ -6,4 +6,6 @@ dist
 .env
 reports/
 artifacts/
+# Original import batch. Only the optimized gallery copies belong in the repo.
+/public/images/send/
 
