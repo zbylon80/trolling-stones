@@ -6,7 +6,7 @@ Then("the gallery should show the main photos, promotional photos and concerts i
   async function (this: PlaywrightWorld) {
     const orderedSections = this.page.locator("h1 + #gallery-main + #gallery-promotional + #gallery-concerts");
     await expect(orderedSections).toHaveCount(1);
-    await expect(this.page.locator("#gallery-main img[data-lightbox-hide-caption]")).toHaveCount(5);
+    await expect(this.page.locator("#gallery-main [data-lightbox-hide-caption]")).toHaveCount(5);
     await expect(this.page.locator("#gallery-promotional .photo-album")).toHaveCount(1);
     const promo = this.page.locator("#gallery-promotional #portrety");
     await expect(promo.locator("summary strong")).toHaveText(/^(Sesja zdjęciowa zespołu|Band photo shoot)$/);
@@ -14,6 +14,7 @@ Then("the gallery should show the main photos, promotional photos and concerts i
     await expect(promo.locator(".album-photo").last()).toHaveAttribute("href", "/images/gallery/sesja-2024/001.webp");
     await expect(this.page.locator("#gallery-concerts .photo-album").first()).toHaveAttribute("id", "czerwona-scena");
     const en = new URL(this.page.url()).pathname.startsWith("/en/");
+    await expect(this.page.locator("#rumia summary strong")).toHaveText(en ? "Live in Rumia" : "Koncert w Rumii");
     const lesniczowka = this.page.locator("#gallery-concerts #swiatla-sceny");
     const summary = lesniczowka.locator("summary");
     await expect(summary.locator("strong")).toHaveText("Leśniczówka Rock’n’Roll Cafe, Chorzów");
@@ -80,6 +81,38 @@ Then("the WOŚP album should open without visible photo captions and keep the al
     await page.keyboard.press("Escape");
     await expect(overlay).toBeHidden();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-    await expect(page.locator("main img[data-lightbox-hide-caption]")).toHaveCount(5);
+    await expect(page.locator("#gallery-main [data-lightbox-hide-caption]")).toHaveCount(5);
+  }
+);
+
+Then("the concert mosaic should keep the crowd prominent and open only its own photos",
+  { timeout: 15000 }, async function (this: PlaywrightWorld) {
+    const { page } = this;
+    const mosaic = page.locator("#gallery-main");
+    const links = mosaic.locator("a[data-lightbox]");
+    await expect(links).toHaveCount(5);
+    await expect(mosaic.locator("figcaption")).toHaveCount(0);
+    await expect(links.first()).toHaveAttribute("href", "/images/gallery/scena-i-publicznosc/024.webp");
+    await expect(links.first().locator("img")).toHaveAttribute("loading", "eager");
+    await page.setViewportSize({ width: 1440, height: 1000 });
+    const lead = await links.first().boundingBox();
+    const side = await links.nth(1).boundingBox();
+    expect(lead!.width).toBeGreaterThan(side!.width * 2.5);
+    expect(lead!.height).toBeGreaterThan(side!.height * 1.8);
+    await page.setViewportSize({ width: 320, height: 800 });
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    const phoneLead = await links.first().boundingBox();
+    const phoneSide = await links.nth(1).boundingBox();
+    expect(phoneLead!.y + phoneLead!.height).toBeLessThanOrEqual(phoneSide!.y);
+    await links.first().press("Enter");
+    const image = page.locator("#lightbox-image");
+    await expect(page.locator("#lightbox-overlay")).toBeVisible();
+    await expect(image).toHaveAttribute("src", "/images/gallery/scena-i-publicznosc/024.webp");
+    await expect.poll(() => image.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0)).toBe(true);
+    await expect(page.locator("#lightbox-caption")).toBeHidden();
+    await page.keyboard.press("ArrowLeft");
+    await expect(image).toHaveAttribute("src", "/images/gallery/swiatla-sceny/037.webp");
+    await page.keyboard.press("Escape");
+    await expect(page.locator("#lightbox-overlay")).toBeHidden();
   }
 );

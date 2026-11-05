@@ -48,6 +48,11 @@ test("the official gallery has the reviewed photos and captions, without preview
     assert(captions.every(caption => caption.includes("Jaryczewski")));
     const photos = html.match(/<a class="album-photo\b[^>]*>/g) ?? [];
     assert.equal(photos.length, 428);
+    const highlights = html.match(/<a class="mosaic-shot\b[^>]*>/g) ?? [];
+    assert.equal(highlights.length, 5);
+    assert(highlights.every(link => link.includes("data-lightbox-hide-caption")));
+    assert(highlights[0].includes('href="/images/gallery/scena-i-publicznosc/024.webp"'));
+    assert(html.includes(locale ? "Live in Rumia" : "Koncert w Rumii"));
     const zoomWithCaption = photos.filter(link => !link.includes("data-lightbox-hide-caption"));
     assert.deepEqual(zoomWithCaption.map(link => link.match(/href="([^"]+)"/)?.[1]), ["004", "007", "010"]
       .map(file => `/images/gallery/czerwona-scena/${file}.webp`));
