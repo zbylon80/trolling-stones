@@ -1,0 +1,59 @@
+---
+interface Props {
+  lang?: "pl" | "en";
+}
+
+const { lang = "pl" } = Astro.props;
+const en = lang === "en";
+const photos = [
+  {
+    album: "scena-i-publicznosc", file: "024", lead: true,
+    alt: en ? "TRolling Stones and the crowd with their hands in the air at the Blues Club." : "TRolling Stones i publiczność z uniesionymi rękami w Blues Clubie."
+  },
+  {
+    album: "koszalin-2025", file: "027",
+    alt: en ? "Guitar duet under red stage lights in Koszalin." : "Gitarowy duet w czerwonym świetle na koncercie w Koszalinie."
+  },
+  {
+    album: "swiatla-sceny", file: "001",
+    alt: en ? "TRolling Stones on stage at Leśniczówka in Chorzów." : "TRolling Stones na scenie Leśniczówki w Chorzowie."
+  },
+  {
+    album: "blues-club-2022", file: "064",
+    alt: en ? "The Blues Club stage seen from behind the crowd, in black and white." : "Czarno-biały widok na scenę Blues Clubu zza publiczności."
+  },
+  {
+    album: "swiatla-sceny", file: "037",
+    alt: en ? "The band taking a bow after the show at Leśniczówka." : "Wspólny ukłon zespołu po koncercie w Leśniczówce."
+  }
+];
+---
+<div id="gallery-main" class="gallery-mosaic">
+  {photos.map(photo => {
+    const full = `/images/gallery/${photo.album}/${photo.file}.webp`;
+    const thumb = `/images/gallery/${photo.album}/thumbs/${photo.file}.webp`;
+    return (
+      <a class="mosaic-shot" href={full} data-lightbox data-lightbox-group="gallery-highlights" data-lightbox-hide-caption data-alt={photo.alt}>
+        <img src={photo.lead ? full : thumb} alt={photo.alt} width="520" height="347" loading={photo.lead ? "eager" : "lazy"} fetchpriority={photo.lead ? "high" : undefined} decoding="async" />
+      </a>
+    );
+  })}
+</div>
+
+<style>
+  .gallery-mosaic { display: grid; grid-template-columns: 3fr 1fr 1fr; grid-template-rows: repeat(2, minmax(0, 1fr)); gap: .55rem; aspect-ratio: 5 / 2; margin-top: 1.5rem; }
+  .mosaic-shot { display: block; min-width: 0; min-height: 0; overflow: hidden; border-radius: .5rem; background: #141414; cursor: zoom-in; }
+  .mosaic-shot:first-child { grid-row: span 2; }
+  .mosaic-shot img { width: 100%; height: 100%; object-fit: cover; transition: transform .3s ease; }
+  .mosaic-shot:hover img { transform: scale(1.025); }
+  .mosaic-shot:focus-visible { outline: 2px solid #fb867b; outline-offset: 3px; }
+  @media (max-width: 640px) {
+    .gallery-mosaic { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: auto; aspect-ratio: auto; gap: .45rem; }
+    .mosaic-shot { aspect-ratio: 5 / 4; }
+    .mosaic-shot:first-child { grid-column: 1 / -1; grid-row: auto; aspect-ratio: 3 / 2; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .mosaic-shot img { transition: none; }
+    .mosaic-shot:hover img { transform: none; }
+  }
+</style>

@@ -39,6 +39,11 @@ test("both gallery pages contain the new layout, and every photo is packaged in 
     assert(html.includes("Jaryczewski"), page);
     assert(html.includes('datetime="2025-12-06"'), page);
     assert.equal((html.match(/class="album-photo/g) ?? []).length, 428, page);
+    const highlights = html.match(/<a class="mosaic-shot\b[^>]*>/g) ?? [];
+    assert.equal(highlights.length, 5, page);
+    assert(highlights.every(link => link.includes("data-lightbox-hide-caption")), page);
+    assert(highlights[0].includes(`href="${base}images/gallery/scena-i-publicznosc/024.webp"`), page);
+    assert(html.includes(page.startsWith("en/") ? "Live in Rumia" : "Koncert w Rumii"), page);
     const captions = html.match(/<figcaption\b[^>]*>[\s\S]*?<\/figcaption>/g) ?? [];
     assert.equal(captions.length, 3, `${page}: only Jary's photos may show captions`);
     assert(captions.every(caption => caption.includes("Jaryczewski")), page);
